@@ -1,0 +1,170 @@
+<div class="image-viewer-container">
+  
+  <!-- En-tête du visualiseur -->
+  <div class="viewer-header">
+    <div class="header-info">
+      <h3 class="viewer-title">{{ title }}</h3>
+      <div class="image-counter" *ngIf="canNavigate">
+        <mat-chip>{{ currentIndex + 1 }} / {{ images.length }}</mat-chip>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Contrôles de zoom -->
+      <div class="zoom-controls">
+        <button mat-icon-button (click)="zoomOut()" [disabled]="zoomLevel <= 0.5" matTooltip="Zoom arrière">
+          <mat-icon>zoom_out</mat-icon>
+        </button>
+        <span class="zoom-level">{{ (zoomLevel * 100).toFixed(0) }}%</span>
+        <button mat-icon-button (click)="zoomIn()" [disabled]="zoomLevel >= 5" matTooltip="Zoom avant">
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+        <button mat-icon-button (click)="resetZoom()" matTooltip="Réinitialiser le zoom">
+          <mat-icon>zoom_out_map</mat-icon>
+        </button>
+      </div>
+
+      <!-- Contrôles de navigation -->
+      <div class="navigation-controls" *ngIf="canNavigate">
+        <button mat-icon-button (click)="previousImage()" matTooltip="Image précédente">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button (click)="nextImage()" matTooltip="Image suivante">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <!-- Contrôles de diaporama -->
+      <div class="slideshow-controls" *ngIf="canNavigate">
+        <button 
+          mat-icon-button 
+          (click)="toggleAutoPlay()" 
+          [matTooltip]="isAutoPlayActive ? 'Arrêter le diaporama' : 'Démarrer le diaporama'"
+        >
+          <mat-icon>{{ isAutoPlayActive ? 'pause' : 'play_arrow' }}</mat-icon>
+        </button>
+      </div>
+
+      <!-- Autres contrôles -->
+      <div class="other-controls">
+        <button 
+          mat-icon-button 
+          (click)="downloadImage()" 
+          *ngIf="allowDownload && currentImage"
+          matTooltip="Télécharger l'image"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+        <button 
+          mat-icon-button 
+          (click)="openFullscreen()" 
+          *ngIf="allowFullscreen"
+          matTooltip="Plein écran"
+        >
+          <mat-icon>fullscreen</mat-icon>
+        </button>
+        <button mat-icon-button (click)="close()" matTooltip="Fermer">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zone d'affichage principale -->
+  <div class="viewer-main">
+    
+    <!-- Conteneur de l'image -->
+    <div class="image-container">
+      <!-- Navigation par swipe/clic -->
+      <div class="navigation-area left-nav" (click)="previousImage()" *ngIf="canNavigate">
+        <mat-icon>chevron_left</mat-icon>
+      </div>
+
+      <!-- Image principale -->
+      <div 
+        class="image-wrapper"
+        [class.dragging]="isDragging"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp()"
+        (mouseleave)="onMouseUp()"
+        (wheel)="onWheel($event)"
+      >
+        <!-- Spinner de chargement -->
+        <div class="loading-spinner" *ngIf="isLoading">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Chargement de l'image...</p>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div class="error-message" *ngIf="hasError">
+          <mat-icon class="error-icon">error</mat-icon>
+          <h4>Erreur de chargement</h4>
+          <p>{{ errorMessage }}</p>
+          <p class="error-details">URL: {{ currentImageUrl }}</p>
+          <button mat-button color="primary" (click)="retryImageLoad()">Réessayer</button>
+        </div>
+
+        <!-- Image -->
+        <img 
+          *ngIf="currentImage && !hasError"
+          [src]="currentImageUrl"
+          [alt]="currentImage.titre"
+          [title]="currentImage.titre"
+          [style.transform]="imageTransform"
+          [style.cursor]="zoomLevel > 1 ? 'move' : 'default'"
+          (load)="onImageLoad()"
+          (error)="onImageLoadError()"
+          class="main-image"
+          draggable="false"
+        />
+
+        <!-- Informations de l'image -->
+        <div class="image-info" *ngIf="currentImage">
+          <div class="image-title">
+            <mat-icon>image</mat-icon>
+            <span>{{ currentImage.titre }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation par swipe/clic -->
+      <div class="navigation-area right-nav" (click)="nextImage()" *ngIf="canNavigate">
+        <mat-icon>chevron_right</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barre de miniatures -->
+  <div class="thumbnails-bar" *ngIf="showThumbnails && images.length > 1">
+    <div class="thumbnails-container">
+      <div 
+        class="thumbnail-item"
+        *ngFor="let image of images; let i = index; trackBy: trackByImageId"
+        [class.active]="i === currentIndex"
+        (click)="goToImage(i)"
+        [matTooltip]="image.titre"
+      >
+        <img 
+          [src]="getImageUrl(image)" 
+          [alt]="image.titre"
+          class="thumbnail-image"
+          (error)="hideErrorImage($event)"
+        />
+        <div class="thumbnail-overlay">
+          <span class="thumbnail-number">{{ i + 1 }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Raccourcis clavier -->
+  <div class="keyboard-shortcuts" *ngIf="canNavigate">
+    <div class="shortcuts-info">
+      <small>
+        <mat-icon>keyboard</mat-icon>
+        Utilisez ← → pour naviguer, +/- pour zoomer, Échap pour fermer
+      </small>
+    </div>
+  </div>
+</div> 

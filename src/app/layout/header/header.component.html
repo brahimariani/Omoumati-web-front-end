@@ -1,0 +1,78 @@
+<mat-toolbar color="primary" class="header">
+  <div class="container">
+    <!-- Section Logo et Menu -->
+    <div class="logo-section">
+      <button mat-icon-button (click)="toggleSidebar.emit()" class="menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/" class="app-title">
+        <img src="assets/images/logo.png" alt="Omoumati Logo" class="logo-img">
+        <span class="title-text">Omoumati</span>
+      </a>
+    </div>
+
+    <!-- Section Navigation (cachée pour l'instant) -->
+    <div class="navigation">
+      <!-- Navigation links peuvent être ajoutés ici -->
+    </div>
+
+    <!-- Section Actions Utilisateur -->
+    <div class="user-actions">
+      <ng-container *ngIf="(currentUser$ | async) as user; else loginButton">
+        <!-- Avatar avec Menu Déroulant -->
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
+          <div class="user-profile">
+            <div class="user-avatar">
+              {{ getUserInitials(user) }}
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ getDisplayName(user) }}</span>
+              
+            </div>
+            <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+          </div>
+        </button>
+
+        <!-- Menu Déroulant -->
+        <mat-menu #userMenu="matMenu" class="user-dropdown">
+          <div class="menu-header">
+            <div class="menu-avatar">
+              {{ getUserInitials(user) }}
+            </div>
+            <div class="menu-user-info">
+              <div class="menu-user-name">{{ getDisplayName(user) }}</div>
+              <div class="menu-user-email">{{ user.email }}</div>
+            </div>
+          </div>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item routerLink="/profile" class="menu-item">
+            <mat-icon>person</mat-icon>
+            <span>Mon Profil</span>
+          </button>
+          
+          <button mat-menu-item class="menu-item">
+            <mat-icon>settings</mat-icon>
+            <span>Paramètres</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item (click)="logout()" class="menu-item logout">
+            <mat-icon>logout</mat-icon>
+            <span>Déconnexion</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+      
+      <!-- Bouton de Connexion si non connecté -->
+      <ng-template #loginButton>
+        <a mat-raised-button color="accent" routerLink="/auth/login" class="login-button">
+          <mat-icon>login</mat-icon>
+          <span class="login-text">Connexion</span>
+        </a>
+      </ng-template>
+    </div>
+  </div>
+</mat-toolbar> 

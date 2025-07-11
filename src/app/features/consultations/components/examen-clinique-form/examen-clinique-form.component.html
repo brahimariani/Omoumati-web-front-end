@@ -1,0 +1,295 @@
+<!-- Side Panel Container pour Examen Clinique -->
+<div class="side-panel-content">
+  <!-- Header du formulaire -->
+  <div class="form-header">
+    <div class="header-info">
+      <mat-icon class="form-icon">medical_services</mat-icon>
+      <div class="header-text">
+        <h3 class="form-title">{{ formTitle }}</h3>
+        <p class="form-subtitle" *ngIf="patienteName">
+          <mat-icon>person</mat-icon>
+          {{ patienteName }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <div class="form-content">
+    <form [formGroup]="examenForm" (ngSubmit)="onSubmit()" class="examen-form">
+      
+      <!-- Section Mesures Physiques -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>monitor_weight</mat-icon>
+          Mesures Physiques
+        </h4>
+        
+        <div class="measures-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Poids (kg)</mat-label>
+            <input matInput
+                   type="number"
+                   step="0.1"
+                   formControlName="poids"
+                   placeholder="Ex: 65.5">
+            <mat-icon matSuffix>monitor_weight</mat-icon>
+            <mat-error *ngIf="getFieldError('poids')">{{ getFieldError('poids') }}</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Taille (cm)</mat-label>
+            <input matInput
+                   type="number"
+                   formControlName="taille"
+                   placeholder="Ex: 165">
+            <mat-icon matSuffix>height</mat-icon>
+            <mat-error *ngIf="getFieldError('taille')">{{ getFieldError('taille') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Calcul IMC automatique -->
+        <div class="imc-card" *ngIf="imcCalcule > 0">
+          <div class="imc-result">
+            <div class="imc-value" [ngClass]="imcClass">
+              {{ imcCalcule | number:'1.1-1' }}
+            </div>
+            <div class="imc-category">{{ categorieIMC }}</div>
+          </div>
+          <div class="imc-info">
+            <mat-icon>info</mat-icon>
+            <span>IMC calculé automatiquement</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Signes Vitaux -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>favorite</mat-icon>
+          Signes Vitaux
+        </h4>
+        
+        <div class="vitals-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Tension Artérielle</mat-label>
+            <input matInput
+                   formControlName="tensionArterielle"
+                   placeholder="120/80">
+            <mat-icon matSuffix>blood_type</mat-icon>
+            <mat-error *ngIf="getFieldError('tensionArterielle')">{{ getFieldError('tensionArterielle') }}</mat-error>
+            <mat-hint>Format: systolique/diastolique</mat-hint>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Température (°C)</mat-label>
+            <input matInput
+                   type="number"
+                   step="0.1"
+                   formControlName="temperature"
+                   placeholder="36.5">
+            <mat-icon matSuffix>device_thermostat</mat-icon>
+            <mat-error *ngIf="getFieldError('temperature')">{{ getFieldError('temperature') }}</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Fréquence Cardiaque</mat-label>
+            <input matInput
+                   type="number"
+                   formControlName="frequenceCardiaque"
+                   placeholder="72">
+            <mat-icon matSuffix>favorite</mat-icon>
+            <mat-error *ngIf="getFieldError('frequenceCardiaque')">{{ getFieldError('frequenceCardiaque') }}</mat-error>
+            <mat-hint>Battements par minute</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Alertes médicales -->
+        <div class="medical-alerts" *ngIf="hasAlertes">
+          <div class="alert-header">
+            <mat-icon color="warn">warning</mat-icon>
+            <strong>Alertes médicales</strong>
+          </div>
+          <div class="alert-list">
+            <div class="alert-item" *ngFor="let alerte of alertesSignesVitaux">
+              <mat-icon>error</mat-icon>
+              {{ alerte }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Examen Physique Général -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>visibility</mat-icon>
+          Examen Physique Général
+        </h4>
+        
+        <div class="examination-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Anomalies du squelette</mat-label>
+            <mat-select formControlName="anomalieSquelette">
+              <mat-option value="">Aucune</mat-option>
+              <mat-option *ngFor="let etat of etatOptions" [value]="etat">{{ etat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>État des conjonctives</mat-label>
+            <mat-select formControlName="etatConjonctives">
+              <mat-option value="">Non évalué</mat-option>
+              <mat-option *ngFor="let etat of etatOptions" [value]="etat">{{ etat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>État des seins</mat-label>
+            <mat-select formControlName="etatSeins">
+              <mat-option value="">Non évalué</mat-option>
+              <mat-option *ngFor="let etat of etatOptions" [value]="etat">{{ etat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Œdèmes</mat-label>
+            <mat-select formControlName="oedemes">
+              <mat-option value="">Aucun</mat-option>
+              <mat-option value="Légers">Légers</mat-option>
+              <mat-option value="Modérés">Modérés</mat-option>
+              <mat-option value="Importants">Importants</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Section Examen Obstétrical -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>pregnant_woman</mat-icon>
+          Examen Obstétrical
+        </h4>
+        
+        <div class="obstetrical-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Mouvements fœtaux</mat-label>
+            <mat-select formControlName="mouvements">
+              <mat-option value="">Non évalué</mat-option>
+              <mat-option value="Présents">Présents</mat-option>
+              <mat-option value="Diminués">Diminués</mat-option>
+              <mat-option value="Absents">Absents</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Hauteur utérine (cm)</mat-label>
+            <input matInput
+                   type="number"
+                   step="0.5"
+                   formControlName="hu"
+                   placeholder="Ex: 32">
+            <mat-error *ngIf="getFieldError('hu')">{{ getFieldError('hu') }}</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>BCF (bpm)</mat-label>
+            <input matInput
+                   type="number"
+                   formControlName="bcf"
+                   placeholder="Ex: 140">
+            <mat-hint>Bruits du cœur fœtal</mat-hint>
+            <mat-error *ngIf="getFieldError('bcf')">{{ getFieldError('bcf') }}</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Section Examen Gynécologique -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>health_and_safety</mat-icon>
+          Examen Gynécologique
+        </h4>
+        
+        <div class="gyneco-grid">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Examen au spéculum</mat-label>
+            <textarea matInput
+                      formControlName="speculum"
+                      rows="2"
+                      placeholder="Observations de l'examen au spéculum..."></textarea>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>État du col (TV)</mat-label>
+            <mat-select formControlName="toucherVaginalEtatCol">
+              <mat-option value="">Non évalué</mat-option>
+              <mat-option *ngFor="let etat of etatColOptions" [value]="etat">{{ etat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Présentation (TV)</mat-label>
+            <mat-select formControlName="toucherVaginalPresentation">
+              <mat-option value="">Non déterminée</mat-option>
+              <mat-option *ngFor="let presentation of presentationOptions" [value]="presentation">{{ presentation }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Bassin (TV)</mat-label>
+            <mat-select formControlName="toucherVaginalBassin">
+              <mat-option value="">Non évalué</mat-option>
+              <mat-option *ngFor="let bassin of bassinOptions" [value]="bassin">{{ bassin }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Section Observations -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>note</mat-icon>
+          Observations & Remarques
+        </h4>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Observations</mat-label>
+          <textarea matInput
+                    formControlName="observation"
+                    rows="4"
+                    placeholder="Observations générales, remarques particulières, recommandations..."></textarea>
+          <mat-icon matSuffix>note</mat-icon>
+          <mat-hint>Ajoutez toute observation particulière</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Actions du formulaire -->
+      <div class="form-actions">
+        <button type="button" 
+                mat-button 
+                class="cancel-button"
+                (click)="cancel()">
+          <mat-icon>close</mat-icon>
+          Annuler
+        </button>
+        
+        <button type="submit" 
+                mat-raised-button 
+                color="primary"
+                class="submit-button"
+                [disabled]="loading$ | async">
+          <span *ngIf="!(loading$ | async)">
+            <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+            {{ isEdit ? 'Mettre à jour' : 'Enregistrer' }}
+          </span>
+          <span *ngIf="loading$ | async" class="loading-content">
+            <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            {{ isEdit ? 'Mise à jour...' : 'Enregistrement...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

@@ -1,0 +1,313 @@
+<div class="dashboard-container">
+
+
+  <!-- Cartes de métriques principales -->
+  <div class="metrics-grid">
+    <mat-card class="metric-card">
+      <div class="metric-header">
+        <div class="metric-icon success">
+          <mat-icon>attach_money</mat-icon>
+        </div>
+        <div class="metric-menu">
+          <button mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">45,2k MAD</h3>
+        <p class="metric-label">Revenus du mois</p>
+        <div class="metric-change positive">
+          <mat-icon>trending_up</mat-icon>
+          +12% par rapport au mois dernier
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <div class="metric-header">
+        <div class="metric-icon info">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="metric-menu">
+          <button mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">1,247</h3>
+        <p class="metric-label">Patientes actives</p>
+        <div class="metric-change positive">
+          <mat-icon>trending_up</mat-icon>
+          +8% ce mois-ci
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <div class="metric-header">
+        <div class="metric-icon warning">
+          <mat-icon>event</mat-icon>
+        </div>
+        <div class="metric-menu">
+          <button mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">89</h3>
+        <p class="metric-label">Rendez-vous aujourd'hui</p>
+        <div class="metric-change negative">
+          <mat-icon>trending_down</mat-icon>
+          -3% par rapport à hier
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <div class="metric-header">
+        <div class="metric-icon primary">
+          <mat-icon>local_hospital</mat-icon>
+        </div>
+        <div class="metric-menu">
+          <button mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">98.2%</h3>
+        <p class="metric-label">Taux de satisfaction</p>
+        <div class="metric-change positive">
+          <mat-icon>trending_up</mat-icon>
+          +0.5% ce mois-ci
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Grille principale avec graphiques et tableaux -->
+  <div class="dashboard-grid">
+    <!-- Graphique des consultations -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>show_chart</mat-icon>
+          Consultations mensuelles
+        </mat-card-title>
+        <mat-card-subtitle>Évolution des consultations sur les 12 derniers mois</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-placeholder">
+          <!-- Placeholder pour le graphique -->
+          <div class="chart-bars">
+            <div class="bar" style="height: 40%"></div>
+            <div class="bar" style="height: 60%"></div>
+            <div class="bar" style="height: 30%"></div>
+            <div class="bar" style="height: 80%"></div>
+            <div class="bar" style="height: 55%"></div>
+            <div class="bar" style="height: 70%"></div>
+            <div class="bar" style="height: 45%"></div>
+            <div class="bar" style="height: 90%"></div>
+            <div class="bar" style="height: 65%"></div>
+            <div class="bar" style="height: 75%"></div>
+            <div class="bar" style="height: 50%"></div>
+            <div class="bar" style="height: 85%"></div>
+          </div>
+          <p class="chart-note">📊 Graphique des consultations - Intégration Chart.js à venir</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tâches récentes -->
+    <mat-card class="tasks-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>assignment</mat-icon>
+          Tâches récentes
+        </mat-card-title>
+        <mat-card-subtitle>Activités et rappels à traiter</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="task-list">
+          <div class="task-item">
+            <div class="task-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
+            <div class="task-content">
+              <h4>Consultation Mme Benali</h4>
+              <p>Contrôle grossesse - 14:30</p>
+            </div>
+            <div class="task-status">
+              <span class="status-badge warning">En attente</span>
+            </div>
+          </div>
+
+          <div class="task-item">
+            <div class="task-avatar">
+              <mat-icon>medical_services</mat-icon>
+            </div>
+            <div class="task-content">
+              <h4>Résultats d'analyses</h4>
+              <p>Mme Fadili - Urgente</p>
+            </div>
+            <div class="task-status">
+              <span class="status-badge error">Urgent</span>
+            </div>
+          </div>
+
+          <div class="task-item">
+            <div class="task-avatar">
+              <mat-icon>event_note</mat-icon>
+            </div>
+            <div class="task-content">
+              <h4>Rappel vaccination</h4>
+              <p>5 patientes ce mois-ci</p>
+            </div>
+            <div class="task-status">
+              <span class="status-badge info">Programmé</span>
+            </div>
+          </div>
+
+          <div class="task-item">
+            <div class="task-avatar">
+              <mat-icon>description</mat-icon>
+            </div>
+            <div class="task-content">
+              <h4>Rapport mensuel</h4>
+              <p>À finaliser avant demain</p>
+            </div>
+            <div class="task-status">
+              <span class="status-badge success">Terminé</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Statistiques de performance -->
+    <mat-card class="performance-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>analytics</mat-icon>
+          Performance mensuelle
+        </mat-card-title>
+        <mat-card-subtitle>Indicateurs clés de performance</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="performance-stats">
+          <div class="stat-item">
+            <div class="stat-progress">
+              <div class="progress-circle">
+                <span>85%</span>
+              </div>
+            </div>
+            <div class="stat-details">
+              <h4>Taux d'occupation</h4>
+              <p>Consultations planifiées</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-progress">
+              <div class="progress-circle success">
+                <span>92%</span>
+              </div>
+            </div>
+            <div class="stat-details">
+              <h4>Ponctualité</h4>
+              <p>Rendez-vous à l'heure</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-progress">
+              <div class="progress-circle warning">
+                <span>78%</span>
+              </div>
+            </div>
+            <div class="stat-details">
+              <h4>Suivi médical</h4>
+              <p>Protocoles respectés</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Patientes récentes -->
+    <mat-card class="patients-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>pregnant_woman</mat-icon>
+          Patientes récentes
+        </mat-card-title>
+        <mat-card-subtitle>Nouvelles inscriptions cette semaine</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="patient-list">
+          <div class="patient-item">
+            <div class="patient-avatar">SA</div>
+            <div class="patient-info">
+              <h4>Sarah Alami</h4>
+              <p>1ère grossesse • 12 semaines</p>
+            </div>
+            <div class="patient-actions">
+              <button mat-icon-button color="primary">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="patient-item">
+            <div class="patient-avatar">KM</div>
+            <div class="patient-info">
+              <h4>Khadija Mansouri</h4>
+              <p>2ème grossesse • 28 semaines</p>
+            </div>
+            <div class="patient-actions">
+              <button mat-icon-button color="primary">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="patient-item">
+            <div class="patient-avatar">LB</div>
+            <div class="patient-info">
+              <h4>Laila Bennani</h4>
+              <p>1ère grossesse • 8 semaines</p>
+            </div>
+            <div class="patient-actions">
+              <button mat-icon-button color="primary">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="patient-item">
+            <div class="patient-avatar">FF</div>
+            <div class="patient-info">
+              <h4>Fatima Fassi</h4>
+              <p>3ème grossesse • 20 semaines</p>
+            </div>
+            <div class="patient-actions">
+              <button mat-icon-button color="primary">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <button mat-stroked-button color="primary" class="view-all-btn">
+            Voir toutes les patientes
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

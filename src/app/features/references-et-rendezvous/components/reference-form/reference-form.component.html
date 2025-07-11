@@ -1,0 +1,223 @@
+<div class="reference-form-container">
+  
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ isEditMode ? 'Chargement de la référence...' : 'Traitement en cours...' }}</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error.message || 'Une erreur est survenue' }}</p>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="referenceForm" (ngSubmit)="onSubmit()" *ngIf="!(loading$ | async)" class="reference-form">
+    
+    <!-- Section Patient -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>person</mat-icon>
+        <h3>Sélection de la patiente</h3>
+        <p class="section-subtitle">Choisissez la patiente pour cette référence</p>
+      </div>
+
+      <!-- Champ de recherche pour filtrer les patientes -->
+      <mat-form-field appearance="outline" class="full-width search-field">
+        <mat-label>Rechercher une patiente</mat-label>
+        <input matInput 
+               placeholder="Nom, prénom, CIN ou téléphone..."
+               (input)="filterPatients(searchInput.value)"
+               #searchInput>
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-hint>Tapez pour filtrer la liste des patientes</mat-hint>
+      </mat-form-field>
+
+      <!-- Sélection de patiente -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Patiente *</mat-label>
+        <mat-select formControlName="patienteId" required>
+          <mat-option value="" disabled>-- Sélectionnez une patiente --</mat-option>
+          <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient.id">
+            <div class="patient-option">
+              <div class="patient-main-info">
+                <mat-icon>person</mat-icon>
+                <span class="patient-name">{{ patient.prenom }} {{ patient.nom }}</span>
+              </div>
+              <div class="patient-secondary-info">
+                <span class="patient-age" *ngIf="patient.dateNaissance">{{ calculatePatientAge(patient.dateNaissance) }} ans</span>
+                <span class="patient-contact" *ngIf="patient.telephone">{{ patient.telephone }}</span>
+                <span class="patient-cin" *ngIf="patient.cin">{{ patient.cin }}</span>
+              </div>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-hint>Sélectionnez la patiente concernée par cette référence</mat-hint>
+        <mat-error *ngIf="referenceForm.get('patienteId')?.hasError('required')">
+          La sélection d'une patiente est obligatoire
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Informations de la patiente sélectionnée -->
+      <div class="patient-info-card" *ngIf="getSelectedPatient() as patient">
+        <div class="patient-info-header">
+          <mat-icon>info</mat-icon>
+          <h4>Informations de la patiente sélectionnée</h4>
+        </div>
+        <div class="patient-info-content">
+          <div class="info-item">
+            <span class="label">Nom complet:</span>
+            <span class="value">{{ patient.prenom }} {{ patient.nom }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.dateNaissance">
+            <span class="label">Âge:</span>
+            <span class="value">{{ calculatePatientAge(patient.dateNaissance) }} ans</span>
+          </div>
+          <div class="info-item" *ngIf="patient.telephone">
+            <span class="label">Téléphone:</span>
+            <span class="value">{{ patient.telephone }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.groupageSanguin">
+            <span class="label">Groupe sanguin:</span>
+            <span class="value">{{ patient.groupageSanguin }} {{ patient.rhesus === 'POSITIF' ? '+' : '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Référence -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>assignment</mat-icon>
+        <h3>Informations de référence</h3>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Date de référence *</mat-label>
+          <input matInput [matDatepicker]="datePicker" formControlName="dateReference">
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          <mat-error *ngIf="dateError">{{ dateError }}</mat-error>
+        </mat-form-field>
+
+      
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Motif de la référence *</mat-label>
+        <textarea matInput 
+                  formControlName="motif"
+                  rows="4"
+                  placeholder="Décrivez le motif de la référence..."></textarea>
+        <mat-hint>{{ referenceForm.get('motif')?.value?.length || 0 }}/500 caractères</mat-hint>
+        <mat-error *ngIf="motifError">{{ motifError }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Section Centres -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>local_hospital</mat-icon>
+        <h3>Centres médicaux</h3>
+      </div>
+
+      <!-- Centre d'origine (lecture seule) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Centre d'origine</mat-label>
+        <input matInput 
+               [value]="centreOrigineName | async"
+               readonly>
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-hint>Votre centre d'affectation</mat-hint>
+      </mat-form-field>
+
+      <!-- Centre de destination -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Centre de destination *</mat-label>
+        <input matInput
+               formControlName="centreDestinationSearch"
+               placeholder="Rechercher un centre de destination..."
+               [matAutocomplete]="centreDestinationAuto">
+        <mat-autocomplete #centreDestinationAuto="matAutocomplete" 
+                          [displayWith]="displayCentre"
+                          (optionSelected)="onCentreDestinationSelected($event.option.value)">
+          <mat-option *ngFor="let centre of filteredCentresDestination$ | async" [value]="centre">
+            <div class="centre-option">
+              <div class="centre-main-info">
+                <strong>{{ centre.nom }}</strong>
+                <span class="centre-type">{{ centre.type }}</span>
+              </div>
+              <div class="centre-details">
+                {{ centre.adresse || 'Adresse non spécifiée' }}
+              </div>
+            </div>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="centreDestinationError">{{ centreDestinationError }}</mat-error>
+      </mat-form-field>
+
+      <!-- Informations du centre de destination sélectionné -->
+      <div class="centre-info-card" *ngIf="getSelectedCentreDestination() as centre">
+        <div class="centre-info-header">
+          <mat-icon>info</mat-icon>
+          <h4>Centre de destination sélectionné</h4>
+        </div>
+        <div class="centre-info-content">
+          <div class="info-item">
+            <span class="label">Nom du centre:</span>
+            <span class="value">{{ centre.nom }}</span>
+          </div>
+          <div class="info-item" *ngIf="centre.type">
+            <span class="label">Type:</span>
+            <span class="value centre-type-badge">{{ centre.type }}</span>
+          </div>
+          <div class="info-item" *ngIf="centre.adresse">
+            <span class="label">Adresse:</span>
+            <span class="value">{{ centre.adresse }}</span>
+          </div>
+          <div class="info-item" *ngIf="centre.telephone">
+            <span class="label">Téléphone:</span>
+            <span class="value">{{ centre.telephone }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" 
+              mat-button 
+              (click)="cancel()"
+              class="cancel-btn">
+        <mat-icon>close</mat-icon>
+        {{ viewOnly ? 'Fermer' : 'Annuler' }}
+      </button>
+
+      <button type="button" 
+              mat-button 
+              (click)="onReset()"
+              [disabled]="loading$ | async"
+              class="reset-btn"
+              *ngIf="!viewOnly">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser
+      </button>
+
+      <button type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="!referenceForm.valid || (loading$ | async)"
+              class="submit-btn"
+              *ngIf="!viewOnly">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+</div> 

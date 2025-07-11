@@ -1,0 +1,1 @@
+export { CentreDetailsComponent } from './centre-details.component'; 

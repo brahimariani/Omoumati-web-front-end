@@ -1,0 +1,139 @@
+<div class="vaccin-side-panel-container">
+  
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-overlay">
+    <div class="loading-content">
+      <mat-spinner diameter="40" [color]="isNaissanceVaccin() ? 'accent' : 'primary'"></mat-spinner>
+      <p class="loading-text">{{ isEdit ? 'Mise à jour...' : 'Ajout en cours...' }}</p>
+    </div>
+  </div>
+
+  <!-- Header du formulaire -->
+  <div class="form-header">
+    <div class="header-content">
+      <mat-icon class="header-icon" [color]="isNaissanceVaccin() ? 'accent' : 'primary'">vaccines</mat-icon>
+      <div class="header-text">
+        <h3 class="form-title">{{ getPanelTitle() }}</h3>
+        <p class="form-subtitle">{{ getVaccinTypeDisplay() }}</p>
+      </div>
+    </div>
+    
+    <!-- Type Badge -->
+    <div class="type-badge" [class.naissance-badge]="isNaissanceVaccin()" [class.patiente-badge]="!isNaissanceVaccin()">
+      <mat-icon>{{ getVaccinTypeIcon() }}</mat-icon>
+      <span>{{ isNaissanceVaccin() ? 'Naissance' : 'Patiente' }}</span>
+    </div>
+  </div>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <!-- Formulaire -->
+  <div class="form-content" *ngIf="vaccinForm">
+    <form [formGroup]="vaccinForm" (ngSubmit)="onSubmit()" class="vaccin-form">
+      
+      <!-- Section Informations du Vaccin -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">info</mat-icon>
+          <h4 class="section-title">Informations du vaccin</h4>
+        </div>
+
+        <div class="form-fields">
+          <!-- Nom du Vaccin avec Autocomplétion -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Nom du vaccin *</mat-label>
+            <input 
+              matInput 
+              placeholder="Tapez pour rechercher..."
+              formControlName="nom"
+              [matAutocomplete]="auto"
+              required>
+            <mat-icon matPrefix>vaccines</mat-icon>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onVaccinSelected($event.option.value)">
+              <mat-option *ngFor="let vaccin of filteredVaccins$ | async" [value]="vaccin">
+                <div class="option-content">
+                  <mat-icon class="option-icon">vaccines</mat-icon>
+                  <span class="option-text">{{ vaccin }}</span>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="vaccinForm.get('nom')?.hasError('required')">
+              Le nom du vaccin est requis
+            </mat-error>
+            <mat-error *ngIf="vaccinForm.get('nom')?.hasError('minlength')">
+              Minimum 2 caractères requis
+            </mat-error>
+            <mat-hint>Sélectionnez dans la liste ou tapez un nom personnalisé</mat-hint>
+          </mat-form-field>
+
+          <!-- Date de Vaccination -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Date de vaccination *</mat-label>
+            <input 
+              matInput 
+              [matDatepicker]="picker" 
+              formControlName="date" 
+              placeholder="JJ/MM/AAAA"
+              required>
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="vaccinForm.get('date')?.hasError('required')">
+              La date de vaccination est requise
+            </mat-error>
+            <mat-hint>Date prévue ou d'administration du vaccin</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Suggestions contextuelles -->
+      <div class="suggestions-section" *ngIf="getVaccinSuggestions().length > 0">
+        <div class="section-header">
+          <mat-icon class="section-icon">lightbulb</mat-icon>
+          <h4 class="section-title">Suggestions</h4>
+        </div>
+        
+        <div class="suggestions-grid">
+          <button 
+            *ngFor="let suggestion of getVaccinSuggestions().slice(0, 6)" 
+            type="button"
+            mat-stroked-button 
+            class="suggestion-chip"
+            (click)="onVaccinSelected(suggestion)">
+            <mat-icon>vaccines</mat-icon>
+            {{ suggestion }}
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Actions du formulaire -->
+  <div class="form-actions" *ngIf="vaccinForm">
+    <mat-divider class="actions-divider"></mat-divider>
+    
+    <div class="actions-buttons">
+      <button 
+        mat-button 
+        type="button" 
+        (click)="onCancel()"
+        class="cancel-button">
+        <mat-icon>cancel</mat-icon>
+        Annuler
+      </button>
+      
+      <button 
+        mat-raised-button 
+        [color]="isNaissanceVaccin() ? 'accent' : 'primary'"
+        type="submit"
+        (click)="onSubmit()"
+        [disabled]="!isFormValid() || (loading$ | async)"
+        class="submit-button">
+        <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+        {{ getSubmitButtonText() }}
+      </button>
+    </div>
+  </div>
+
+</div> 

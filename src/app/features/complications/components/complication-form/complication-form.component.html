@@ -1,0 +1,172 @@
+<div class="complication-side-panel-container">
+  
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-overlay">
+    <div class="loading-content">
+      <mat-spinner diameter="40" color="primary"></mat-spinner>
+      <p class="loading-text">{{ isEdit ? 'Mise à jour...' : 'Ajout en cours...' }}</p>
+    </div>
+  </div>
+
+  <!-- Header du formulaire -->
+  <div class="form-header">
+    <div class="header-content">
+      <mat-icon class="header-icon" color="primary">report_problem</mat-icon>
+      <div class="header-text">
+        <h3 class="form-title">{{ formTitle }}</h3>
+        <p class="form-subtitle" *ngIf="contextData">{{ getContextLabel() }}</p>
+      </div>
+    </div>
+    
+    <!-- Context Badge -->
+    <div class="context-badge" *ngIf="contextData">
+      <mat-icon>
+        {{ contextData.type === 'grossesse' ? 'pregnant_woman' : 
+           contextData.type === 'accouchement' ? 'child_care' : 'child_friendly' }}
+      </mat-icon>
+      <span>{{ getContextLabel() }}</span>
+    </div>
+  </div>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <!-- Formulaire -->
+  <div class="form-content" *ngIf="complicationForm">
+    <form [formGroup]="complicationForm" (ngSubmit)="onSubmit()" class="complication-form">
+      
+      <!-- Section Informations de la Complication -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">info</mat-icon>
+          <h4 class="section-title">Informations de la complication</h4>
+        </div>
+
+        <div class="form-fields">
+          <!-- Nature de la complication -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Nature de la complication *</mat-label>
+            <input 
+              matInput 
+              formControlName="nature" 
+              [matAutocomplete]="natureAuto"
+              placeholder="Tapez pour rechercher..."
+              required>
+            <mat-icon matPrefix>warning</mat-icon>
+            <mat-autocomplete #natureAuto="matAutocomplete">
+              <mat-option *ngFor="let nature of filteredNatures$ | async" [value]="nature">
+                <div class="option-content">
+                  <mat-icon class="option-icon">warning</mat-icon>
+                  <span class="option-text">{{ nature }}</span>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="hasError('nature', 'required')">
+              {{ getErrorMessage('nature') }}
+            </mat-error>
+            <mat-error *ngIf="hasError('nature', 'maxlength')">
+              {{ getErrorMessage('nature') }}
+            </mat-error>
+            <mat-hint>Sélectionnez dans la liste ou tapez une nature personnalisée</mat-hint>
+          </mat-form-field>
+
+          <!-- Date de la complication -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Date de la complication *</mat-label>
+            <input 
+              matInput 
+              [matDatepicker]="datePicker" 
+              formControlName="date" 
+              placeholder="JJ/MM/AAAA"
+              required>
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+            <mat-error *ngIf="hasError('date', 'required')">
+              {{ getErrorMessage('date') }}
+            </mat-error>
+            <mat-hint>Date d'occurrence de la complication</mat-hint>
+          </mat-form-field>
+
+          <!-- Lieu de la complication -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Lieu de la complication *</mat-label>
+            <input 
+              matInput 
+              formControlName="lieu" 
+              [matAutocomplete]="lieuAuto"
+              placeholder="Tapez pour rechercher..."
+              required>
+            <mat-icon matPrefix>location_on</mat-icon>
+            <mat-autocomplete #lieuAuto="matAutocomplete">
+              <mat-option *ngFor="let lieu of filteredLieux$ | async" [value]="lieu">
+                <div class="option-content">
+                  <mat-icon class="option-icon">location_on</mat-icon>
+                  <span class="option-text">{{ lieu }}</span>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="hasError('lieu', 'required')">
+              {{ getErrorMessage('lieu') }}
+            </mat-error>
+            <mat-error *ngIf="hasError('lieu', 'maxlength')">
+              {{ getErrorMessage('lieu') }}
+            </mat-error>
+            <mat-hint>Lieu d'occurrence de la complication</mat-hint>
+          </mat-form-field>
+
+          <!-- Observations -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Observations *</mat-label>
+            <textarea 
+              matInput 
+              formControlName="observation" 
+              rows="6" 
+              maxlength="1000"
+              placeholder="Décrivez en détail la complication, les circonstances, les mesures prises..."
+              required>
+            </textarea>
+            <mat-icon matPrefix>description</mat-icon>
+            <mat-hint align="end">
+              {{ complicationForm.get('observation')?.value?.length || 0 }}/1000
+            </mat-hint>
+            <mat-error *ngIf="hasError('observation', 'required')">
+              {{ getErrorMessage('observation') }}
+            </mat-error>
+            <mat-error *ngIf="hasError('observation', 'maxlength')">
+              {{ getErrorMessage('observation') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Actions du formulaire -->
+  <div class="form-actions" *ngIf="complicationForm">
+    <mat-divider class="actions-divider"></mat-divider>
+    
+    <div class="actions-buttons">
+      <button 
+        mat-button 
+        type="button" 
+        (click)="cancel()"
+        class="cancel-button">
+        <mat-icon>cancel</mat-icon>
+        Annuler
+      </button>
+      
+      <button 
+        mat-raised-button 
+        color="primary"
+        type="submit"
+        (click)="onSubmit()"
+        [disabled]="!canSubmit || (loading$ | async)"
+        class="submit-button">
+        <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+        {{ isEdit ? 'Mettre à jour' : 'Ajouter' }}
+      </button>
+    </div>
+  </div>
+
+</div> 

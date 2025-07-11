@@ -1,0 +1,107 @@
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  transition: width 0.3s ease;
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-md);
+  overflow-x: hidden;
+  padding-top: 64px; /* Hauteur du header */
+}
+
+.sidebar-open {
+  width: 240px;
+}
+
+.sidebar-closed {
+  width: 64px;
+}
+
+.sidebar-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-img {
+  height: 2rem;
+  width: 2rem;
+}
+
+.logo-text {
+  margin-left: var(--spacing-sm);
+  font-weight: var(--font-weight-medium);
+  font-size: 1.2rem;
+  color: var(--primary-500);
+}
+
+.nav-list {
+  padding: var(--spacing-sm);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.nav-item, .nav-subitem {
+  display: flex;
+  align-items: center;
+  margin: var(--spacing-xs) 0;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s;
+}
+
+.nav-item mat-icon, .nav-subitem mat-icon {
+  margin-right: var(--spacing-sm);
+}
+
+.nav-expansion {
+  border-radius: var(--radius-md);
+  margin: var(--spacing-xs) 0;
+  box-shadow: none !important;
+}
+
+.nav-expansion .mat-expansion-panel-header {
+  padding: 0 var(--spacing-md);
+  height: 48px;
+}
+
+.nav-expansion .mat-expansion-panel-body {
+  padding: 0;
+}
+
+.nav-label {
+  white-space: nowrap;
+}
+
+.active {
+  background-color: var(--primary-50);
+  color: var(--primary-500);
+}
+
+/* Remove panel styling */
+::ng-deep .nav-expansion .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+::ng-deep .nav-expansion {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .mat-expansion-indicator::after {
+  color: var(--text-secondary);
+} 

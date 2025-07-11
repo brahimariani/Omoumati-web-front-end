@@ -1,0 +1,308 @@
+<div class="utilisateur-form-container">
+  <!-- Header -->
+  <!--<div class="form-header">
+    <div class="header-content">
+      <h2 class="form-title">
+        <mat-icon>{{ isEdit ? 'edit' : 'person_add' }}</mat-icon>
+        {{ isEdit ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
+      </h2>
+      <p class="form-subtitle">
+        {{ isEdit ? 'Modifiez les informations de l\'utilisateur' : 'Créez un nouveau compte utilisateur' }}
+      </p>
+    </div>
+  </div>-->
+
+  <!-- Formulaire -->
+  <div class="form-content">
+    <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()" novalidate>
+      
+      <!-- Section Informations personnelles -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>person</mat-icon>
+            Informations personnelles
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row">
+            <!-- Matricule -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Matricule</mat-label>
+              <input matInput formControlName="matricule" placeholder="Ex: EMP001">
+              <mat-icon matSuffix>badge</mat-icon>
+              <mat-error *ngIf="matricule?.invalid && matricule?.touched">
+                {{ getErrorMessage('matricule') }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Statut -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Statut</mat-label>
+              <mat-select formControlName="statut">
+                <mat-option *ngFor="let option of statutOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>info</mat-icon>
+              <mat-error *ngIf="statut?.invalid && statut?.touched">
+                {{ getErrorMessage('statut') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <!-- Prénom -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Prénom</mat-label>
+              <input matInput formControlName="prenom" placeholder="Prénom">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="prenom?.invalid && prenom?.touched">
+                {{ getErrorMessage('prenom') }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Nom -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="nom" placeholder="Nom de famille">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="nom?.invalid && nom?.touched">
+                {{ getErrorMessage('nom') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Adresse -->
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Adresse</mat-label>
+              <textarea matInput formControlName="adresse" placeholder="Adresse complète" rows="2"></textarea>
+              <mat-icon matSuffix>location_on</mat-icon>
+              <mat-error *ngIf="adresse?.invalid && adresse?.touched">
+                {{ getErrorMessage('adresse') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Section Contact -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>contact_phone</mat-icon>
+            Informations de contact
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row">
+            <!-- Email -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="exemple@domaine.com">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-hint *ngIf="isEdit" class="email-edit-hint">
+                <mat-icon class="hint-icon">info</mat-icon>
+                Modifiez avec précaution - l'email sert à l'authentification
+              </mat-hint>
+              <mat-error *ngIf="email?.invalid && email?.touched">
+                {{ getErrorMessage('email') }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Téléphone -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Téléphone</mat-label>
+              <input matInput formControlName="telephone" placeholder="Ex: +212 6XX XXX XXX">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="telephone?.invalid && telephone?.touched">
+                {{ getErrorMessage('telephone') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Section Rôle -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>security</mat-icon>
+            Rôle et permissions
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row">
+            <!-- Rôle -->
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Rôle *</mat-label>
+              <mat-select formControlName="roleId" required>
+                <mat-option value="" disabled>-- Sélectionnez un rôle --</mat-option>
+                <mat-option *ngFor="let role of roles" [value]="role.id">
+                  <div class="role-option">
+                    <mat-icon>badge</mat-icon>
+                    <span class="role-name">{{ role.nom }}</span>
+                    <span class="role-description">{{ role.description }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>badge</mat-icon>
+              <mat-hint>Sélectionnez le rôle de l'utilisateur</mat-hint>
+              <mat-error *ngIf="roleId?.invalid && roleId?.touched">
+                La sélection d'un rôle est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Section Centre d'affectation -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>business</mat-icon>
+            Centre d'affectation
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Champ de recherche pour filtrer les centres -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Rechercher un centre</mat-label>
+            <input matInput 
+                   placeholder="Nom, adresse, téléphone ou email..."
+                   (input)="filterCentres(centreSearchInput.value)"
+                   #centreSearchInput>
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-hint>Tapez pour filtrer la liste des centres</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Centre d'affectation *</mat-label>
+            <mat-select formControlName="centreId" required>
+              <mat-option value="" disabled>-- Sélectionnez un centre --</mat-option>
+              <mat-option *ngFor="let centre of filteredCentres$ | async" [value]="centre.id">
+                <div class="centre-option">
+                  <div class="centre-main-info">
+                    <mat-icon>business</mat-icon>
+                    <span class="centre-name">{{ centre.nom }}</span>
+                  </div>
+                  <div class="centre-secondary-info">
+                    <span class="centre-type">{{ centre.type }}</span>
+                    <span class="centre-address" *ngIf="centre.adresse">{{ centre.adresse }}</span>
+                    <span class="centre-phone" *ngIf="centre.telephone">{{ centre.telephone }}</span>
+                  </div>
+                </div>
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>business</mat-icon>
+            <mat-hint>Sélectionnez le centre d'affectation de l'utilisateur</mat-hint>
+            <mat-error *ngIf="centreId?.invalid && centreId?.touched">
+              La sélection d'un centre est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Informations du centre sélectionné -->
+          <div class="centre-info-card" *ngIf="getSelectedCentre() as centre">
+            <div class="centre-info-header">
+              <mat-icon>info</mat-icon>
+              <h4>Informations du centre sélectionné</h4>
+            </div>
+            <div class="centre-info-content">
+              <div class="info-item">
+                <span class="label">Nom:</span>
+                <span class="value">{{ centre.nom }}</span>
+              </div>
+              <div class="info-item" *ngIf="centre.type">
+                <span class="label">Type:</span>
+                <span class="value">{{ centre.type }}</span>
+              </div>
+              <div class="info-item" *ngIf="centre.adresse">
+                <span class="label">Adresse:</span>
+                <span class="value">{{ centre.adresse }}</span>
+              </div>
+              <div class="info-item" *ngIf="centre.telephone">
+                <span class="label">Téléphone:</span>
+                <span class="value">{{ centre.telephone }}</span>
+              </div>
+              <div class="info-item" *ngIf="centre.email">
+                <span class="label">Email:</span>
+                <span class="value">{{ centre.email }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Section Mot de passe (pour création uniquement) -->
+      <mat-card class="form-section" *ngIf="!isEdit">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>lock</mat-icon>
+            Sécurité
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row">
+            <!-- Mot de passe -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Mot de passe</mat-label>
+              <input matInput formControlName="motDePasse" type="password" placeholder="Minimum 6 caractères">
+              <mat-icon matSuffix>lock</mat-icon>
+              <mat-error *ngIf="motDePasse?.invalid && motDePasse?.touched">
+                {{ getErrorMessage('motDePasse') }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Confirmation mot de passe -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Confirmer le mot de passe</mat-label>
+              <input matInput formControlName="confirmationMotDePasse" type="password" placeholder="Répétez le mot de passe">
+              <mat-icon matSuffix>lock_open</mat-icon>
+              <mat-error *ngIf="confirmationMotDePasse?.invalid && confirmationMotDePasse?.touched">
+                {{ getErrorMessage('confirmationMotDePasse') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Erreur de correspondance des mots de passe -->
+          <div class="password-mismatch-error" *ngIf="hasPasswordMismatch">
+            <mat-icon>error</mat-icon>
+            <span>Les mots de passe ne correspondent pas</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <div class="actions-row">
+          <div class="secondary-actions">
+            <button mat-button type="button" (click)="onReset()">
+              <mat-icon>refresh</mat-icon>
+              Réinitialiser
+            </button>
+          </div>
+
+          <div class="primary-actions">
+            <button mat-button type="button" (click)="onCancel()">
+              <mat-icon>close</mat-icon>
+              Annuler
+            </button>
+            
+            <button mat-raised-button color="primary" type="submit" 
+                    [disabled]="utilisateurForm.invalid || (loading$ | async)">
+              <mat-progress-spinner diameter="20" *ngIf="loading$ | async" mode="indeterminate"></mat-progress-spinner>
+              <mat-icon *ngIf="!(loading$ | async)">{{ isEdit ? 'save' : 'person_add' }}</mat-icon>
+              <span>{{ submitButtonText }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div> 

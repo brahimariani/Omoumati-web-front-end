@@ -1,0 +1,112 @@
+<div class="consultation-form-container">
+  
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-overlay">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ data.mode === 'create' ? 'Création en cours...' : 'Mise à jour en cours...' }}</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="consultationForm" (ngSubmit)="onSubmit()" class="consultation-form">
+    
+    <!-- Date de consultation -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <mat-icon>event</mat-icon>
+        Date de la Consultation
+      </h3>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="picker" 
+          formControlName="date"
+          [min]="minDate"
+          [max]="maxDate"
+          readonly>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="dateControl?.hasError('required')">
+          La date est obligatoire
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Observations médicales -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <mat-icon>description</mat-icon>
+        Observations Médicales
+      </h3>
+
+      <!-- Modèles prédéfinis -->
+      <div class="predefined-section">
+        <h4>Modèles de consultation</h4>
+        <div class="chips-container">
+          <mat-chip-set>
+            <mat-chip 
+              *ngFor="let obs of predefinedObservations"
+              (click)="onPredefinedObservation(obs)"
+              class="predefined-chip">
+              {{ obs.split(' - ')[0] }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+
+      <!-- Champ texte pour observations -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Observations détaillées</mat-label>
+        <textarea 
+          matInput 
+          formControlName="observation"
+          rows="8"
+          placeholder="Décrivez les observations de la consultation, l'état de la patiente, les examens effectués, les recommandations données...">
+        </textarea>
+        <mat-hint align="end" [class.warn-color]="isCharacterLimitNear()">
+          {{ getCharacterCount() }}
+        </mat-hint>
+        <mat-error *ngIf="observationControl?.hasError('required')">
+          Les observations sont obligatoires
+        </mat-error>
+        <mat-error *ngIf="observationControl?.hasError('minlength')">
+          Les observations doivent contenir au moins 10 caractères
+        </mat-error>
+        <mat-error *ngIf="observationControl?.hasError('maxlength')">
+          Les observations ne peuvent pas dépasser 2000 caractères
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        mat-button 
+        (click)="onCancel()"
+        [disabled]="(loading$ | async)">
+        <mat-icon>cancel</mat-icon>
+        Annuler
+      </button>
+      
+      <button 
+        type="submit" 
+        mat-raised-button 
+        color="primary"
+        [disabled]="consultationForm.invalid || (loading$ | async)">
+        <mat-icon>{{ data.mode === 'create' ? 'add' : 'save' }}</mat-icon>
+        {{ data.mode === 'create' ? 'Créer la Consultation' : 'Mettre à jour' }}
+      </button>
+    </div>
+  </form>
+
+
+</div> 

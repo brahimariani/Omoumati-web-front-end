@@ -1,0 +1,1 @@
+export { CentresListComponent } from './centres-list.component'; 

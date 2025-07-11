@@ -1,0 +1,286 @@
+/* =============================
+   SIDE PANEL OVERLAY
+   ============================= */
+
+.side-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  z-index: 1000;
+  pointer-events: none;
+  transition: all 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.side-panel-overlay.open {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(0, 0, 0, 0.4));
+  backdrop-filter: blur(4px);
+  pointer-events: all;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =============================
+   SIDE PANEL
+   ============================= */
+
+.side-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: var(--bg-primary);
+  box-shadow: 
+    -20px 0 40px rgba(236, 72, 153, 0.1),
+    var(--shadow-xl);
+  border-left: 1px solid var(--primary-200);
+  display: flex;
+  flex-direction: column;
+  z-index: 1001;
+  max-width: 90vw;
+  font-family: var(--font-family);
+  transform: translateX(100%);
+  transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.side-panel-overlay.open .side-panel {
+  transform: translateX(0%);
+}
+
+/* =============================
+   PANEL HEADER
+   ============================= */
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+  border-bottom: 1px solid var(--primary-200);
+  min-height: 80px;
+  position: relative;
+}
+
+.panel-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+}
+
+.panel-title {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-800);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.close-btn {
+  color: var(--primary-600) !important;
+  transition: all 0.2s ease !important;
+  margin-left: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.close-btn:hover {
+  color: var(--primary-800) !important;
+  background: var(--primary-100) !important;
+  transform: scale(1.05);
+}
+
+/* =============================
+   PANEL CONTENT
+   ============================= */
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  background: linear-gradient(180deg, var(--primary-50), var(--bg-primary));
+}
+
+/* Scrollbar personnalisée pour le contenu */
+.panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: var(--primary-50);
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: var(--primary-300);
+  border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-500);
+}
+
+/* =============================
+   RESPONSIVE DESIGN
+   ============================= */
+
+@media (max-width: 768px) {
+  .side-panel {
+    width: 100vw !important;
+    max-width: 100vw;
+    border-left: none;
+  }
+
+  .panel-header {
+    padding: var(--spacing-lg);
+    min-height: 70px;
+  }
+
+  .panel-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel-header {
+    padding: var(--spacing-md);
+    min-height: 60px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .panel-title {
+    font-size: 1.125rem;
+    width: 100%;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    margin: 0;
+  }
+}
+
+/* =============================
+   ANIMATIONS
+   ============================= */
+
+.side-panel-overlay {
+  animation: fadeIn 300ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* États pour les transitions */
+.side-panel {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* =============================
+   ACCESSIBILITÉ
+   ============================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .side-panel-overlay,
+  .side-panel,
+  .close-btn {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible pour accessibilité */
+.close-btn:focus-visible {
+  outline: 2px solid var(--primary-500) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px var(--primary-100) !important;
+}
+
+/* Support pour les lecteurs d'écran */
+.side-panel[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+/* =============================
+   THEME DARK (futur)
+   ============================= */
+
+@media (prefers-color-scheme: dark) {
+  .side-panel {
+    background: var(--bg-primary, #1a1a1a);
+    border-left-color: var(--gray-700, #4a5568);
+  }
+  
+  .panel-header {
+    background: linear-gradient(135deg, rgba(var(--primary-rgb, 66, 165, 245), 0.1), rgba(var(--primary-rgb, 66, 165, 245), 0.05));
+    border-bottom-color: var(--gray-700, #4a5568);
+  }
+  
+  .panel-content {
+    background: var(--bg-secondary, #2d2d2d);
+  }
+}
+
+/* =============================
+   ÉTATS SPÉCIAUX
+   ============================= */
+
+/* Panel en mode plein écran */
+.side-panel.fullscreen {
+  width: 100vw !important;
+  max-width: 100vw;
+}
+
+/* Panel en mode étroit */
+.side-panel.narrow {
+  width: 400px !important;
+}
+
+/* Panel en mode large */
+.side-panel.wide {
+  width: 800px !important;
+}
+
+/* Panel avec contenu de formulaire */
+.side-panel .panel-content .form-container {
+  padding: var(--spacing-xl);
+}
+
+/* Panel avec contenu de liste */
+.side-panel .panel-content .list-container {
+  padding: 0;
+}
+
+/* Panel avec tabs */
+.side-panel .panel-content .mat-mdc-tab-group {
+  height: 100%;
+}
+
+.side-panel .panel-content .mat-mdc-tab-body-wrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+.side-panel .panel-content .mat-mdc-tab-body-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+} 

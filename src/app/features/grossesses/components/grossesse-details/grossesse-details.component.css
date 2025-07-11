@@ -1,0 +1,518 @@
+/* ===== CONTENEUR PRINCIPAL ===== */
+.grossesse-details-container {
+  padding: var(--spacing-xl);
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--bg-secondary);
+  min-height: 100vh;
+}
+
+/* ===== EN-TÊTE ===== */
+.details-header {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.patient-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.patient-avatar mat-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.patient-details h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.grossesse-info {
+  margin: var(--spacing-xs) 0 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* ===== ÉTATS DE CHARGEMENT ET D'ERREUR ===== */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.loading-container p,
+.error-container p {
+  margin: var(--spacing-md) 0;
+  color: var(--text-secondary);
+}
+
+.error-container mat-icon {
+  color: var(--error);
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.error-container h3 {
+  color: var(--error);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.details-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* ===== SECTIONS ===== */
+.details-section,
+.consultations-section,
+.accouchement-section,
+.complications-section {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.mat-mdc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl) !important;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.mat-mdc-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: 1.25rem !important;
+  font-weight: var(--font-weight-semibold) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+.mat-mdc-card-title mat-icon {
+  color: var(--primary-500);
+}
+
+.section-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* ===== GRILLE DE DÉTAILS ===== */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-item label {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.detail-item span {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+/* ===== CONSULTATIONS ===== */
+.consultations-list {
+  padding: var(--spacing-xl);
+}
+
+.consultation-item {
+  padding: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+  transition: all 0.2s ease;
+}
+
+.consultation-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-300);
+}
+
+.consultation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.consultation-date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.consultation-date mat-icon {
+  color: var(--primary-500);
+  font-size: 1.25rem;
+}
+
+.consultation-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.consultation-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.consultation-summary p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ===== ACCOUCHEMENT ===== */
+.accouchement-pending,
+.accouchement-declared {
+  padding: var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex: 1;
+}
+
+.status-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: var(--primary-500);
+}
+
+.status-icon.completed {
+  color: var(--success);
+}
+
+.status-text h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.status-text p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.accouchement-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  align-items: flex-end;
+}
+
+.action-note {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: 0;
+  text-align: right;
+}
+
+/* ===== COMPLICATIONS ===== */
+.automatic-alerts,
+.complications-list {
+  padding: var(--spacing-xl);
+}
+
+.automatic-alerts h4,
+.complications-list h4 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+  border-left: 4px solid;
+}
+
+.alert-info {
+  background: var(--info-light);
+  border-left-color: var(--info);
+}
+
+.alert-warning {
+  background: var(--warning-light);
+  border-left-color: var(--warning);
+}
+
+.alert-error {
+  background: var(--error-light);
+  border-left-color: var(--error);
+}
+
+.alert-item mat-icon {
+  margin-top: 2px;
+}
+
+.alert-info mat-icon {
+  color: var(--info);
+}
+
+.alert-warning mat-icon {
+  color: var(--warning);
+}
+
+.alert-error mat-icon {
+  color: var(--error);
+}
+
+.alert-content strong {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.alert-content p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.complication-item {
+  padding: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+  transition: all 0.2s ease;
+}
+
+.complication-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--error-300);
+}
+
+.complication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.complication-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.complication-description {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.complication-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  justify-content: flex-end;
+}
+
+/* ===== ÉTATS VIDES ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--text-secondary);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .grossesse-details-container {
+    padding: var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .patient-info {
+    width: 100%;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .accouchement-pending,
+  .accouchement-declared {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .accouchement-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .consultation-summary {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .patient-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .patient-avatar mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .patient-details h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grossesse-details-container {
+    padding: var(--spacing-sm);
+  }
+
+  .details-header {
+    padding: var(--spacing-md);
+  }
+
+  .mat-mdc-card-header {
+    padding: var(--spacing-md) !important;
+  }
+
+  .details-grid,
+  .consultations-list,
+  .automatic-alerts,
+  .complications-list {
+    padding: var(--spacing-md);
+  }
+
+  .consultation-header,
+  .complication-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .consultation-actions,
+  .complication-actions {
+    align-self: flex-end;
+  }
+}

@@ -1,0 +1,226 @@
+<div class="grossesse-list-container">
+  <!-- En-tête avec bouton d'ajout -->
+  <div class="list-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon>pregnant_woman</mat-icon>
+        Gestion des Grossesses
+      </h1>
+      <button mat-raised-button color="primary" (click)="onNewGrossesse()" class="add-button">
+        <mat-icon>add</mat-icon>
+        Nouvelle Grossesse
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-container">
+    <mat-card class="filters-card">
+      <mat-card-content>
+        <div class="filter-section">
+          <label class="filter-label">Statut des grossesses :</label>
+          <mat-button-toggle-group 
+            [value]="(statusFilter$ | async)" 
+            (change)="onStatusFilterChange($event.value)"
+            class="status-filter">
+            <mat-button-toggle value="ongoing">
+              <mat-icon>pregnant_woman</mat-icon>
+              En cours
+            </mat-button-toggle>
+            <mat-button-toggle value="completed">
+              <mat-icon>check_circle</mat-icon>
+              Terminées
+            </mat-button-toggle>
+            <mat-button-toggle value="all">
+              <mat-icon>list</mat-icon>
+              Toutes
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Tableau des grossesses -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <!-- Indicateur de chargement -->
+      <div *ngIf="loading$ | async" class="loading-container">
+        <mat-icon class="loading-spinner">refresh</mat-icon>
+        <span>Chargement des grossesses...</span>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="error$ | async as error" class="error-container">
+        <mat-icon>error</mat-icon>
+        <span>{{ error }}</span>
+        <button mat-button (click)="loadGrossesses()">Réessayer</button>
+      </div>
+
+      <!-- Tableau -->
+      <div class="table-container" *ngIf="!(loading$ | async) && !(error$ | async)">
+        <table mat-table [dataSource]="(filteredGrossesses$ | async) || []" class="grossesses-table">
+          
+          <!-- Colonne Patiente -->
+          <ng-container matColumnDef="patiente">
+            <th mat-header-cell *matHeaderCellDef>Patiente</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="patient-info">
+                <mat-icon class="patient-icon">person</mat-icon>
+                <span>{{ getPatienteName(grossesse) }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Gestation -->
+          <ng-container matColumnDef="gestation">
+            <th mat-header-cell *matHeaderCellDef>G</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <mat-chip class="gestation-chip">{{ grossesse.gestation }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Parité -->
+          <ng-container matColumnDef="parite">
+            <th mat-header-cell *matHeaderCellDef>P</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <mat-chip class="parite-chip">{{ grossesse.parite }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Date dernières règles -->
+          <ng-container matColumnDef="dateDerniereRegle">
+            <th mat-header-cell *matHeaderCellDef>DDR</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="date-info">
+                <mat-icon class="date-icon">event</mat-icon>
+                <span>{{ formatDate(grossesse.dateDerniereRegle) }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Date prévue d'accouchement -->
+          <ng-container matColumnDef="datePrevueAccouchment">
+            <th mat-header-cell *matHeaderCellDef>DPA</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="date-info">
+                <mat-icon class="date-icon">schedule</mat-icon>
+                <span>{{ formatDate(grossesse.datePrevueAccouchment) }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Âge gestationnel -->
+          <ng-container matColumnDef="ageGestationnel">
+            <th mat-header-cell *matHeaderCellDef>Âge gestationnel</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="gestational-age">
+                <span class="weeks">{{ calculateGestationalAge(grossesse.dateDerniereRegle, grossesse) }}</span>
+                <span class="unit">SA</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Statut -->
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <mat-chip 
+                [color]="getGrossesseStatus(grossesse).color"
+                class="status-chip">
+                {{ getGrossesseStatus(grossesse).label }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Accouchement -->
+          <ng-container matColumnDef="accouchement">
+            <th mat-header-cell *matHeaderCellDef>Accouchement</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="accouchement-status">
+                <mat-chip 
+                  [color]="getAccouchementStatus(grossesse).color"
+                  class="accouchement-chip"
+                  [matTooltip]="hasAccouchement(grossesse) ? 'Date: ' + getAccouchementDate(grossesse) : 'Pas encore d\'accouchement'">
+                  <mat-icon class="chip-icon">{{ getAccouchementStatus(grossesse).icon }}</mat-icon>
+                  {{ getAccouchementStatus(grossesse).label }}
+                </mat-chip>
+               
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let grossesse">
+              <div class="actions-container">
+                <button mat-icon-button 
+                        [matMenuTriggerFor]="actionsMenu"
+                        matTooltip="Actions"
+                        class="actions-button">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                
+                <mat-menu #actionsMenu="matMenu">
+                  <button mat-menu-item (click)="onViewDetails(grossesse)">
+                    <mat-icon>visibility</mat-icon>
+                    <span>Voir détails</span>
+                  </button>
+                  
+                  <button mat-menu-item (click)="onViewPatientProfile(grossesse)">
+                    <mat-icon>account_circle</mat-icon>
+                    <span>Voir profil patiente</span>
+                  </button>
+                  
+                  <mat-divider></mat-divider>
+                  
+                  <button mat-menu-item (click)="onEditGrossesse(grossesse)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Modifier</span>
+                  </button>
+                  
+                  <mat-divider></mat-divider>
+                  
+                  <button mat-menu-item (click)="onDeleteGrossesse(grossesse)" class="delete-action">
+                    <mat-icon>delete</mat-icon>
+                    <span>Supprimer</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- En-têtes et lignes -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="grossesse-row"></tr>
+          
+          <!-- Row shown when there is no matching data -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="9">Aucune grossesse trouvée</td>
+          </tr>
+        </table>
+
+        <!-- Pagination -->
+        <mat-paginator 
+          [length]="(pagination$ | async)?.totalElements || 0" 
+          [pageSize]="(pagination$ | async)?.pageSize || 10"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [pageIndex]="(pagination$ | async)?.currentPage || 0"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+
+        <!-- Message si aucune grossesse -->
+        <div *ngIf="(filteredGrossesses$ | async)?.length === 0" class="no-data-container">
+          <mat-icon class="no-data-icon">pregnant_woman</mat-icon>
+          <h3>Aucune grossesse enregistrée</h3>
+          <p>Commencez par ajouter une nouvelle grossesse</p>
+          <button mat-raised-button color="primary" (click)="onNewGrossesse()">
+            <mat-icon>add</mat-icon>
+            Nouvelle Grossesse
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

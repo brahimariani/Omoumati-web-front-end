@@ -1,0 +1,275 @@
+
+  <mat-card class="patient-form-card">
+
+    <mat-card-content class="form-content">
+      <!-- Loader -->
+      <div *ngIf="loading$ | async" class="loading-overlay">
+        <div class="loading-content">
+          <mat-spinner diameter="40" color="primary"></mat-spinner>
+          <p class="loading-text">{{ isEditMode ? 'Chargement des données...' : 'Enregistrement en cours...' }}</p>
+        </div>
+      </div>
+
+      <mat-stepper linear #stepper class="patient-stepper">
+        <!-- Étape 1: Informations personnelles -->
+        <mat-step [stepControl]="personalInfoForm" label="Informations personnelles">
+          <form [formGroup]="personalInfoForm" class="step-form">
+            <div class="step-header">
+              <mat-icon class="step-icon">person</mat-icon>
+              <h3>Informations personnelles</h3>
+              <p>Données d'identité de la patiente</p>
+            </div>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Nom *</mat-label>
+                <input matInput placeholder="Nom de famille" formControlName="nom" required>
+                <mat-icon matPrefix>badge</mat-icon>
+                <mat-error *ngIf="personalInfoForm.get('nom')?.hasError('required')">
+                  Le nom est requis
+                </mat-error>
+                <mat-error *ngIf="personalInfoForm.get('nom')?.hasError('minlength')">
+                  Le nom doit contenir au moins 2 caractères
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Prénom *</mat-label>
+                <input matInput placeholder="Prénom" formControlName="prenom" required>
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error *ngIf="personalInfoForm.get('prenom')?.hasError('required')">
+                  Le prénom est requis
+                </mat-error>
+                <mat-error *ngIf="personalInfoForm.get('prenom')?.hasError('minlength')">
+                  Le prénom doit contenir au moins 2 caractères
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Date de naissance *</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dateNaissance" required>
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="personalInfoForm.get('dateNaissance')?.hasError('required')">
+                  La date de naissance est requise
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>CIN *</mat-label>
+                <input matInput placeholder="Carte d'identité nationale" formControlName="cin" required>
+                <mat-icon matPrefix>credit_card</mat-icon>
+                <mat-error *ngIf="personalInfoForm.get('cin')?.hasError('required')">
+                  Le CIN est requis
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Sexe *</mat-label>
+                <mat-select formControlName="sexe" required>
+                  <mat-option *ngFor="let sexe of sexes" [value]="sexe">
+                    <mat-icon>{{ sexe === 'FEMME' ? 'female' : 'male' }}</mat-icon>
+                    {{ sexe === 'FEMME' ? 'Féminin' : 'Masculin' }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>wc</mat-icon>
+                <mat-error *ngIf="personalInfoForm.get('sexe')?.hasError('required')">
+                  Le sexe est requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Niveau d'instruction *</mat-label>
+                <mat-select formControlName="niveauInstruction" required>
+                  <mat-option *ngFor="let niveau of niveauxInstruction" [value]="niveau">
+                    {{ niveau | titlecase }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>school</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>Profession</mat-label>
+                <input matInput placeholder="Profession de la patiente" formControlName="profession">
+                <mat-icon matPrefix>work</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="step-actions">
+              <button mat-raised-button color="primary" matStepperNext [disabled]="personalInfoForm.invalid">
+                <mat-icon>navigate_next</mat-icon>
+                Suivant
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Étape 2: Coordonnées -->
+        <mat-step [stepControl]="contactInfoForm" label="Coordonnées">
+          <form [formGroup]="contactInfoForm" class="step-form">
+            <div class="step-header">
+              <mat-icon class="step-icon">contact_phone</mat-icon>
+              <h3>Coordonnées</h3>
+              <p>Informations de contact de la patiente</p>
+            </div>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Téléphone *</mat-label>
+                <input matInput placeholder="0612345678" formControlName="telephone" required>
+                <mat-icon matPrefix>phone</mat-icon>
+                <mat-error *ngIf="contactInfoForm.get('telephone')?.hasError('required')">
+                  Le téléphone est requis
+                </mat-error>
+                <mat-error *ngIf="contactInfoForm.get('telephone')?.hasError('pattern')">
+                  Format de téléphone invalide (10 chiffres)
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="exemple@email.com" formControlName="email" type="email">
+                <mat-icon matPrefix>email</mat-icon>
+                <mat-error *ngIf="contactInfoForm.get('email')?.hasError('email')">
+                  Format d'email invalide
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>Adresse *</mat-label>
+                <textarea matInput placeholder="Adresse complète" formControlName="adresse" rows="3" required></textarea>
+                <mat-icon matPrefix>location_on</mat-icon>
+                <mat-error *ngIf="contactInfoForm.get('adresse')?.hasError('required')">
+                  L'adresse est requise
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="step-actions">
+              <button mat-button matStepperPrevious>
+                <mat-icon>navigate_before</mat-icon>
+                Précédent
+              </button>
+              <button mat-raised-button color="primary" matStepperNext [disabled]="contactInfoForm.invalid">
+                <mat-icon>navigate_next</mat-icon>
+                Suivant
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Étape 3: Informations du conjoint -->
+        <mat-step [stepControl]="spouseInfoForm" label="Informations du conjoint">
+          <form [formGroup]="spouseInfoForm" class="step-form">
+            <div class="step-header">
+              <mat-icon class="step-icon">people</mat-icon>
+              <h3>Informations du conjoint</h3>
+              <p>Données relatives au mari/conjoint (optionnel)</p>
+            </div>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Téléphone du mari</mat-label>
+                <input matInput placeholder="0612345678" formControlName="telephoneMari">
+                <mat-icon matPrefix>phone</mat-icon>
+                <mat-error *ngIf="spouseInfoForm.get('telephoneMari')?.hasError('pattern')">
+                  Format de téléphone invalide (10 chiffres)
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Profession du mari</mat-label>
+                <input matInput placeholder="Profession du conjoint" formControlName="professionMari">
+                <mat-icon matPrefix>work_outline</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="step-actions">
+              <button mat-button matStepperPrevious>
+                <mat-icon>navigate_before</mat-icon>
+                Précédent
+              </button>
+              <button mat-raised-button color="primary" matStepperNext>
+                <mat-icon>navigate_next</mat-icon>
+                Suivant
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Étape 4: Informations médicales -->
+        <mat-step [stepControl]="medicalInfoForm" label="Informations médicales">
+          <form [formGroup]="medicalInfoForm" class="step-form">
+            <div class="step-header">
+              <mat-icon class="step-icon">local_hospital</mat-icon>
+              <h3>Informations médicales</h3>
+              <p>Données médicales essentielles</p>
+            </div>
+            
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Groupe sanguin *</mat-label>
+                <mat-select formControlName="groupageSanguin" required>
+                  <mat-option *ngFor="let groupe of groupeSanguins" [value]="groupe">
+                    <mat-icon>bloodtype</mat-icon>
+                    Groupe {{ groupe }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>bloodtype</mat-icon>
+                <mat-error *ngIf="medicalInfoForm.get('groupageSanguin')?.hasError('required')">
+                  Le groupe sanguin est requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="form-field">
+                <mat-label>Rhésus *</mat-label>
+                <mat-select formControlName="rhesus" required>
+                  <mat-option *ngFor="let rh of rhesusOptions" [value]="rh">
+                    <mat-icon>{{ rh === 'POSITIF' ? 'add' : 'remove' }}</mat-icon>
+                    {{ rh === 'POSITIF' ? 'Positif (+)' : 'Négatif (-)' }}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>science</mat-icon>
+                <mat-error *ngIf="medicalInfoForm.get('rhesus')?.hasError('required')">
+                  Le rhésus est requis
+                </mat-error>
+              </mat-form-field>
+
+              <div class="form-field checkbox-field">
+                <mat-checkbox formControlName="consanguinite" color="primary">
+                  <mat-icon>family_restroom</mat-icon>
+                  Consanguinité
+                </mat-checkbox>
+                <mat-hint>Mariage entre personnes apparentées</mat-hint>
+              </div>
+
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>Observations médicales</mat-label>
+                <textarea matInput placeholder="Observations, notes médicales..." formControlName="observation" rows="4"></textarea>
+                <mat-icon matPrefix>note_add</mat-icon>
+                <mat-hint>Informations médicales complémentaires</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="step-actions">
+              <button mat-button matStepperPrevious>
+                <mat-icon>navigate_before</mat-icon>
+                Précédent
+              </button>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="onSubmit()" 
+                [disabled]="personalInfoForm.invalid || contactInfoForm.invalid || medicalInfoForm.invalid || (loading$ | async)"
+                class="submit-button">
+                <mat-icon>{{ isEditMode ? 'save' : 'person_add' }}</mat-icon>
+                {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+              </button>
+            </div>
+          </form>
+        </mat-step>
+      </mat-stepper>
+    </mat-card-content>
+  </mat-card>
+

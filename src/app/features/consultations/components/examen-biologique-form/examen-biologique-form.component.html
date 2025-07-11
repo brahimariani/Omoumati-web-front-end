@@ -1,0 +1,261 @@
+<div class="examen-form-container">
+  
+  <!-- En-tête du formulaire -->
+  <div class="form-header">
+    <div class="header-info">
+      <div class="form-title">
+        <mat-icon class="title-icon">biotech</mat-icon>
+        <h2>{{ isEdit ? 'Modifier' : 'Nouvel' }} examen biologique</h2>
+      </div>
+      <p class="patient-name" *ngIf="patienteName">{{ patienteName }}</p>
+    </div>
+    
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ getNombreActesRenseignes() }}</span>
+        <span class="stat-label">Actes renseignés</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <form [formGroup]="examenForm" (ngSubmit)="onSubmit()" class="examen-form">
+    
+    <!-- Section Actes Biologiques Standards -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>science</mat-icon>
+          Actes biologiques standards
+        </mat-card-title>
+        <mat-card-subtitle>
+          Remplissez les valeurs des actes que vous souhaitez enregistrer
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="actes-grid" formArrayName="actesBiologiques">
+          <div 
+            *ngFor="let acte of getActesFormArray().controls; let i = index; trackBy: trackByIndex"
+            [formGroupName]="i"
+            class="acte-form-group"
+            [class.acte-filled]="acteHasValue(i)"
+            [class.acte-standard]="getActeFormGroup(i).get('isStandard')?.value"
+          >
+            
+            <!-- En-tête de l'acte -->
+            <div class="acte-header">
+              <div class="acte-info">
+                <h4 class="acte-nom">{{ getActeFormGroup(i).get('nom')?.value }}</h4>
+                <span class="acte-type" *ngIf="getActeFormGroup(i).get('isStandard')?.value">Standard</span>
+                <span class="acte-type custom" *ngIf="!getActeFormGroup(i).get('isStandard')?.value">Personnalisé</span>
+              </div>
+              
+              <div class="acte-actions">
+                <button 
+                  type="button"
+                  mat-icon-button
+                  *ngIf="!getActeFormGroup(i).get('isStandard')?.value"
+                  (click)="supprimerActe(i)"
+                  matTooltip="Supprimer cet acte"
+                  class="delete-acte"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button 
+                  type="button"
+                  mat-icon-button
+                  *ngIf="getActeFormGroup(i).get('isStandard')?.value && acteHasValue(i)"
+                  (click)="supprimerActe(i)"
+                  matTooltip="Vider les valeurs"
+                  class="clear-acte"
+                >
+                  <mat-icon>clear</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Champs de saisie -->
+            <div class="acte-fields">
+              
+              <!-- Nom (pour les actes personnalisés) -->
+              <mat-form-field 
+                appearance="outline" 
+                class="field-nom"
+                *ngIf="!getActeFormGroup(i).get('isStandard')?.value"
+              >
+                <mat-label>Nom de l'acte</mat-label>
+                <input 
+                  matInput 
+                  formControlName="nom"
+                  [matAutocomplete]="autoNom"
+                  placeholder="Ex: TSH, Ferritine..."
+                >
+                <mat-autocomplete #autoNom="matAutocomplete">
+                  <mat-option *ngFor="let option of nouveauxActesOptions" [value]="option">
+                    {{ option }}
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="getActeFormGroup(i).get('nom')?.hasError('required')">
+                  Le nom de l'acte est requis
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Valeur -->
+              <mat-form-field appearance="outline" class="field-valeur">
+                <mat-label>Valeur</mat-label>
+                <input 
+                  matInput 
+                  formControlName="valeur"
+                  placeholder="Saisir la valeur..."
+                >
+                <mat-hint *ngIf="getActeFormGroup(i).get('normesRef')?.value">
+                  Normes: {{ getActeFormGroup(i).get('normesRef')?.value }}
+                </mat-hint>
+              </mat-form-field>
+
+              <!-- Unité -->
+              <mat-form-field appearance="outline" class="field-unite">
+                <mat-label>Unité</mat-label>
+                <input 
+                  matInput 
+                  formControlName="unite"
+                  placeholder="g/L, mg/dL..."
+                >
+              </mat-form-field>
+
+              <!-- Normes de référence (pour les actes personnalisés) -->
+              <mat-form-field 
+                appearance="outline" 
+                class="field-normes"
+                *ngIf="!getActeFormGroup(i).get('isStandard')?.value"
+              >
+                <mat-label>Normes de référence</mat-label>
+                <input 
+                  matInput 
+                  formControlName="normesRef"
+                  placeholder="Ex: 12-16 g/L"
+                >
+              </mat-form-field>
+            </div>
+
+            <!-- Analyse automatique -->
+            <div class="acte-analyse" *ngIf="acteHasValue(i) && analyserValeur(i)">
+              <div class="analyse-result" [ngClass]="getAnalyseClass(i)">
+                <mat-icon class="analyse-icon">
+                  {{ getAnalyseClass(i).includes('critique') ? 'error' : 
+                     getAnalyseClass(i).includes('anomalie') ? 'warning' : 
+                     getAnalyseClass(i).includes('normal') ? 'check_circle' : 'info' }}
+                </mat-icon>
+                <span class="analyse-text">{{ analyserValeur(i) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Ajouter un nouvel acte -->
+    <mat-card class="form-section add-acte-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>add_circle</mat-icon>
+          Ajouter un acte personnalisé
+        </mat-card-title>
+        <mat-card-subtitle>
+          Ajoutez des actes biologiques non inclus dans la liste standard
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <button 
+          type="button"
+          mat-raised-button 
+          color="primary"
+          (click)="ajouterNouvelActe()"
+          class="add-acte-btn"
+        >
+          <mat-icon>add</mat-icon>
+          Ajouter un acte
+        </button>
+        
+        <div class="quick-add-buttons">
+          <button 
+            type="button"
+            mat-stroked-button
+            *ngFor="let acte of ['TSH', 'Ferritine', 'Vitamine D', 'CRP']"
+            (click)="ajouterNouvelActe(acte)"
+            class="quick-add-btn"
+          >
+            {{ acte }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Observations -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>note</mat-icon>
+          Observations
+        </mat-card-title>
+        <mat-card-subtitle>
+          Commentaires et observations cliniques
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Observations cliniques</mat-label>
+          <textarea 
+            matInput 
+            formControlName="observation"
+            rows="4"
+            placeholder="Saisir vos observations sur cet examen biologique..."
+          ></textarea>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <div class="actions-left">
+        <div class="form-summary">
+          <mat-icon class="summary-icon">info</mat-icon>
+          <span class="summary-text">
+            {{ getNombreActesRenseignes() }} acte(s) renseigné(s) sur {{ getActesFormArray().length }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="actions-right">
+        <button 
+          type="button" 
+          mat-button 
+          (click)="onCancel()"
+          class="cancel-btn"
+        >
+          Annuler
+        </button>
+        
+        <button 
+          type="submit" 
+          mat-raised-button 
+          color="primary"
+          [disabled]="!examenForm.valid || getNombreActesRenseignes() === 0"
+          class="submit-btn"
+        >
+          <mat-icon>save</mat-icon>
+          {{ isEdit ? 'Modifier' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Indicateur de chargement -->
+  <div class="loading-overlay" *ngIf="loading$ | async">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ isEdit ? 'Modification' : 'Enregistrement' }} en cours...</p>
+  </div>
+</div> 

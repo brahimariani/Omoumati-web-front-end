@@ -1,0 +1,192 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title>Créer un compte</mat-card-title>
+      <mat-card-subtitle>Rejoignez la plateforme Omoumati</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div *ngIf="loading$ | async" class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+      
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Informations personnelles -->
+        <div class="form-section">
+          <h3>Informations personnelles</h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="nom" placeholder="Votre nom">
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-error *ngIf="registerForm.get('nom')?.hasError('required')">
+                Le nom est requis
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('nom')?.hasError('minlength')">
+                Le nom doit contenir au moins 2 caractères
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Prénom</mat-label>
+              <input matInput formControlName="prenom" placeholder="Votre prénom">
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-error *ngIf="registerForm.get('prenom')?.hasError('required')">
+                Le prénom est requis
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('prenom')?.hasError('minlength')">
+                Le prénom doit contenir au moins 2 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="votre@email.com">
+              <mat-icon matPrefix>email</mat-icon>
+              <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
+                L'email est requis
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+                Veuillez saisir une adresse email valide
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Téléphone</mat-label>
+              <input matInput formControlName="telephone" placeholder="0123456789">
+              <mat-icon matPrefix>phone</mat-icon>
+              <mat-error *ngIf="registerForm.get('telephone')?.hasError('pattern')">
+                Le téléphone doit contenir 10 chiffres
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Informations professionnelles -->
+        <div class="form-section">
+          <h3>Informations professionnelles</h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Rôle</mat-label>
+              <mat-select formControlName="role">
+                <mat-option *ngFor="let role of roles" [value]="role.value">
+                  {{ role.label }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>badge</mat-icon>
+              <mat-error *ngIf="registerForm.get('role')?.hasError('required')">
+                Le rôle est requis
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Spécialité</mat-label>
+              <mat-select formControlName="specialty">
+                <mat-option value="">Aucune spécialité</mat-option>
+                <mat-option *ngFor="let specialty of specialties" [value]="specialty">
+                  {{ specialty }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>medical_services</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Établissement</mat-label>
+            <input matInput formControlName="etablissement" placeholder="Nom de votre établissement">
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Sécurité -->
+        <div class="form-section">
+          <h3>Sécurité</h3>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('required')">
+              Le mot de passe est requis
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">
+              Le mot de passe doit contenir au moins 8 caractères
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('password')?.hasError('passwordComplexity')">
+              Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirmer le mot de passe</mat-label>
+            <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button type="button" mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword">
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('required')">
+              La confirmation est requise
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('confirmPassword')?.hasError('passwordMismatch')">
+              Les mots de passe ne correspondent pas
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Indicateur de force du mot de passe -->
+          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+            <h4>Critères du mot de passe :</h4>
+            <div class="strength-criteria">
+              <div class="criterion" [class.valid]="hasMinLength()">
+                <mat-icon>{{ hasMinLength() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Au moins 8 caractères
+              </div>
+              <div class="criterion" [class.valid]="hasUpperCase()">
+                <mat-icon>{{ hasUpperCase() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Au moins une majuscule
+              </div>
+              <div class="criterion" [class.valid]="hasLowerCase()">
+                <mat-icon>{{ hasLowerCase() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Au moins une minuscule
+              </div>
+              <div class="criterion" [class.valid]="hasNumeric()">
+                <mat-icon>{{ hasNumeric() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Au moins un chiffre
+              </div>
+              <div class="criterion" [class.valid]="hasSpecialChar()">
+                <mat-icon>{{ hasSpecialChar() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                Au moins un caractère spécial
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conditions d'utilisation -->
+        <div class="form-section">
+          <mat-checkbox formControlName="acceptTerms" class="terms-checkbox">
+            J'accepte les <a href="#" target="_blank">conditions d'utilisation</a> et la 
+            <a href="#" target="_blank">politique de confidentialité</a>
+          </mat-checkbox>
+          <mat-error *ngIf="registerForm.get('acceptTerms')?.hasError('required') && registerForm.get('acceptTerms')?.touched">
+            Vous devez accepter les conditions d'utilisation
+          </mat-error>
+        </div>
+
+        <div class="button-row">
+          <button mat-button type="button" (click)="navigateToLogin()">
+            <mat-icon>arrow_back</mat-icon> Retour à la connexion
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || (loading$ | async)">
+            <mat-icon>person_add</mat-icon> Créer le compte
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

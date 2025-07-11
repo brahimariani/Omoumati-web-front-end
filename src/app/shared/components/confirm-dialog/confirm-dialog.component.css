@@ -1,0 +1,121 @@
+.confirm-dialog {
+  max-width: 400px;
+  width: 100%;
+}
+
+/* ===== HEADER ===== */
+.dialog-header {
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-md) var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+  margin: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.dialog-icon {
+  font-size: 1.5rem;
+}
+
+.dialog-icon.warning {
+  color: var(--warning);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* ===== CONTENT ===== */
+.dialog-content {
+  padding: var(--spacing-xl);
+}
+
+.dialog-message {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ===== ACTIONS ===== */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+  border-top: 1px solid var(--gray-200);
+  margin: 0;
+}
+
+.cancel-button {
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  border-color: var(--gray-300);
+}
+
+.cancel-button:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+}
+
+.confirm-button {
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .confirm-dialog {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .dialog-header {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
+  }
+
+  .dialog-content {
+    padding: var(--spacing-lg);
+  }
+
+  .dialog-actions {
+    padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+    flex-direction: column-reverse;
+  }
+
+  .dialog-actions button {
+    width: 100%;
+  }
+
+  .dialog-header h2 {
+    font-size: 1.125rem;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+.confirm-dialog {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+.dialog-actions button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+} 

@@ -1,0 +1,231 @@
+<div class="utilisateur-details-container">
+  <!-- Header -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="breadcrumb-nav">
+        <button mat-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Retour aux utilisateurs</span>
+        </button>
+      </div>
+      
+      <!-- Titre et actions -->
+      <div class="title-actions" *ngIf="utilisateur$ | async as utilisateur">
+        <div class="title-section">
+          <div class="user-header">
+            <div class="user-avatar-large">
+              <span>{{ getInitials(utilisateur) }}</span>
+            </div>
+            <div class="user-info">
+              <h1 class="page-title">{{ getFullName(utilisateur) }}</h1>
+              <p class="user-matricule">Matricule: {{ utilisateur.matricule }}</p>
+              <mat-chip-listbox>
+                <mat-chip [color]="getStatutChipColor(utilisateur.statut)" selected>
+                  <mat-icon>{{ getStatutIcon(utilisateur.statut) }}</mat-icon>
+                  {{ getStatutLabel(utilisateur.statut) }}
+                </mat-chip>
+              </mat-chip-listbox>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button mat-button (click)="activateUtilisateur(utilisateur)" *ngIf="utilisateur.statut !== 'ACTIF'">
+            <mat-icon>check_circle</mat-icon>
+            <span>Activer</span>
+          </button>
+          <button mat-button (click)="suspendUtilisateur(utilisateur)" *ngIf="utilisateur.statut === 'ACTIF'">
+            <mat-icon>pause_circle</mat-icon>
+            <span>Suspendre</span>
+          </button>
+          <button mat-raised-button color="primary" (click)="editUtilisateur(utilisateur)">
+            <mat-icon>edit</mat-icon>
+            <span>Modifier</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails de l'utilisateur...</p>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="details-content" *ngIf="utilisateur$ | async as utilisateur; else noData">
+    <!-- Informations principales -->
+    <div class="main-info-section">
+      <div class="info-cards-grid">
+        
+        <!-- Carte informations personnelles -->
+        <mat-card class="info-card personal-info">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>person</mat-icon>
+              Informations personnelles
+            </mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label">Prénom</span>
+                <span class="value">{{ utilisateur.prenom }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="label">Nom</span>
+                <span class="value">{{ utilisateur.nom }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="label">Matricule</span>
+                <span class="value">{{ utilisateur.matricule }}</span>
+              </div>
+              
+              <div class="info-item">
+                <span class="label">Statut</span>
+                <div class="value-with-icon">
+                  <mat-icon [class]="'status-icon-' + utilisateur.statut">{{ getStatutIcon(utilisateur.statut) }}</mat-icon>
+                  <span>{{ getStatutLabel(utilisateur.statut) }}</span>
+                </div>
+              </div>
+              
+              <div class="info-item full-width">
+                <span class="label">Adresse</span>
+                <div class="value-with-action">
+                  <span class="value">{{ utilisateur.adresse }}</span>
+                  <button mat-icon-button (click)="viewLocation(utilisateur.adresse)" matTooltip="Voir sur la carte">
+                    <mat-icon>location_on</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Carte contact -->
+        <mat-card class="info-card contact-info">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>contact_phone</mat-icon>
+              Contact
+            </mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="contact-grid">
+              <div class="contact-item">
+                <div class="contact-label">
+                  <mat-icon>phone</mat-icon>
+                  <span>Téléphone</span>
+                </div>
+                <div class="contact-value">
+                  <span>{{ utilisateur.telephone }}</span>
+                  <button mat-icon-button (click)="callUtilisateur(utilisateur.telephone)" matTooltip="Appeler" class="contact-action">
+                    <mat-icon>call</mat-icon>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <div class="contact-label">
+                  <mat-icon>email</mat-icon>
+                  <span>Email</span>
+                </div>
+                <div class="contact-value">
+                  <span>{{ utilisateur.email }}</span>
+                  <button mat-icon-button (click)="emailUtilisateur(utilisateur.email)" matTooltip="Envoyer un email" class="contact-action">
+                    <mat-icon>mail_outline</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Carte rôle et permissions -->
+        <mat-card class="info-card role-info">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>security</mat-icon>
+              Rôle et permissions
+            </mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="role-details">
+              <div class="role-item">
+                <span class="role-label">Rôle</span>
+                <mat-chip-listbox>
+                  <mat-chip color="accent" selected>
+                    <mat-icon>badge</mat-icon>
+                    {{ utilisateur.role.nom }}
+                  </mat-chip>
+                </mat-chip-listbox>
+              </div>
+              
+              <div class="role-item" *ngIf="utilisateur.role.description">
+                <span class="role-label">Description</span>
+                <span class="role-description">{{ utilisateur.role.description }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Carte statistiques -->
+        <mat-card class="info-card stats-info">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>analytics</mat-icon>
+              Statistiques d'activité
+            </mat-card-title>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Consultations</div>
+                <mat-icon>medical_services</mat-icon>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Patientes</div>
+                <mat-icon>pregnant_woman</mat-icon>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Naissances</div>
+                <mat-icon>child_care</mat-icon>
+              </div>
+              
+              <div class="stat-item">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Connexions</div>
+                <mat-icon>login</mat-icon>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pas de données -->
+  <ng-template #noData>
+    <div class="no-data-container" *ngIf="!(loading$ | async)">
+      <mat-icon>error_outline</mat-icon>
+      <h3>Utilisateur introuvable</h3>
+      <p>L'utilisateur demandé n'existe pas ou n'est plus disponible.</p>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Retour à la liste
+      </button>
+    </div>
+  </ng-template>
+</div> 

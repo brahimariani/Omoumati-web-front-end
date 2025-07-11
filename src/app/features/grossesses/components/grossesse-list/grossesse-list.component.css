@@ -1,0 +1,936 @@
+/* ============================
+   LISTE DES GROSSESSES
+   Utilise le système de design global
+   ============================ */
+
+.grossesse-list-container {
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 30%, var(--gray-50) 100%);
+}
+
+/* ============================
+   EN-TÊTE DE LA LISTE
+   ============================ */
+
+.list-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-primary);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary-50), transparent);
+  opacity: 0.5;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title mat-icon {
+  color: var(--primary-500);
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.add-button {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s ease !important;
+  position: relative;
+  z-index: 1;
+  padding: 0 var(--spacing-xl) !important;
+}
+
+.add-button:hover {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
+}
+
+.add-button mat-icon {
+  margin-right: var(--spacing-sm);
+}
+
+/* ============================
+   SECTION DES FILTRES
+   ============================ */
+
+.filters-container {
+  margin-bottom: var(--spacing-xl);
+}
+
+.filters-card {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.2s ease;
+}
+
+.filters-card:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.status-filter {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-xs) !important;
+  border: 1px solid var(--gray-300) !important;
+}
+
+.status-filter .mat-button-toggle {
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: 0.875rem !important;
+}
+
+.status-filter .mat-button-toggle:not(.mat-button-toggle-checked) {
+  background: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+}
+
+.status-filter .mat-button-toggle:not(.mat-button-toggle-checked):hover {
+  background: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.status-filter .mat-button-toggle.mat-button-toggle-checked {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.status-filter .mat-button-toggle mat-icon {
+  margin-right: var(--spacing-xs);
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ============================
+   CARTE DU TABLEAU
+   ============================ */
+
+.table-card {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.table-card:hover {
+  box-shadow: var(--shadow-xl) !important;
+}
+
+/* ============================
+   ÉTATS DE CHARGEMENT ET ERREUR
+   ============================ */
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  gap: var(--spacing-lg);
+}
+
+.loading-spinner {
+  color: var(--primary-500) !important;
+}
+
+.loading-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  margin: var(--spacing-lg);
+  background: var(--error-light);
+  border: 2px solid var(--error);
+  border-radius: var(--radius-xl);
+  color: var(--error-dark);
+  text-align: center;
+}
+
+.error-container mat-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--error);
+}
+
+.error-container h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--error-dark);
+}
+
+.error-container p {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--error-dark);
+}
+
+.retry-button {
+  background: var(--error) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* ============================
+   TABLEAU DES GROSSESSES
+   ============================ */
+
+.grossesse-table {
+  width: 100%;
+  background: transparent !important;
+}
+
+.grossesse-table .mat-mdc-header-row {
+  background: var(--bg-tertiary) !important;
+  border-bottom: 2px solid var(--primary-200) !important;
+}
+
+.grossesse-table .mat-mdc-header-cell {
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  padding: var(--spacing-lg) var(--spacing-md) !important;
+  border-right: 1px solid var(--gray-200) !important;
+}
+
+.grossesse-table .mat-mdc-header-cell:last-child {
+  border-right: none !important;
+}
+
+.grossesse-table .mat-mdc-row {
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid var(--gray-200) !important;
+}
+
+.grossesse-table .mat-mdc-row:hover {
+  background: var(--primary-50) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.1);
+}
+
+.grossesse-table .mat-mdc-cell {
+  padding: var(--spacing-lg) var(--spacing-md) !important;
+  border-right: 1px solid var(--gray-200) !important;
+  color: var(--text-primary) !important;
+  font-size: 0.875rem !important;
+}
+
+.grossesse-table .mat-mdc-cell:last-child {
+  border-right: none !important;
+}
+
+/* ============================
+   CONTENU DES CELLULES
+   ============================ */
+
+.patient-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.patient-cell mat-icon {
+  color: var(--primary-500);
+  font-size: 1.25rem;
+}
+
+.gp-cell {
+  font-family: 'Courier New', monospace;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  background: var(--gray-100);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  display: inline-block;
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.date-primary {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.date-secondary {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.age-cell {
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Chips pour gestation et parité */
+.gestation-chip,
+.parite-chip {
+  background: var(--primary-100) !important;
+  color: var(--primary-700) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 0.75rem !important;
+  min-width: 32px !important;
+  text-align: center !important;
+}
+
+/* Âge gestationnel */
+.gestational-age {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.weeks {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.unit {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Chips de statut */
+.status-chip {
+  font-weight: var(--font-weight-medium) !important;
+  font-size: 0.75rem !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--spacing-xs) var(--spacing-sm) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Statuts spécifiques */
+.status-chip.trimestre-1 {
+  background: var(--success-light) !important;
+  color: var(--success-dark) !important;
+}
+
+.status-chip.trimestre-2 {
+  background: var(--info-light) !important;
+  color: var(--info-dark) !important;
+}
+
+.status-chip.trimestre-3 {
+  background: var(--warning-light) !important;
+  color: var(--warning-dark) !important;
+}
+
+.status-chip.terme-depasse {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================
+   ACTIONS
+   ============================ */
+
+.actions-cell {
+  text-align: center;
+}
+
+.actions-button {
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.actions-button:hover {
+  color: var(--primary-500) !important;
+  background: var(--primary-50) !important;
+}
+
+/* Menu d'actions */
+.mat-mdc-menu-panel {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: var(--radius-sm) !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: var(--primary-50) !important;
+}
+
+.mat-mdc-menu-item mat-icon {
+  margin-right: var(--spacing-sm);
+  color: var(--primary-500);
+}
+
+.mat-mdc-menu-item.delete-item:hover {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.mat-mdc-menu-item.delete-item:hover mat-icon {
+  color: var(--error-dark) !important;
+}
+
+/* ============================
+   MESSAGE AUCUNE DONNÉE
+   ============================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-lg);
+  border: 2px dashed var(--gray-300);
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  height: 4rem;
+  width: 4rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+  max-width: 400px;
+}
+
+.empty-action-button {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* ============================
+   PAGINATION
+   ============================ */
+
+.mat-mdc-paginator {
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--gray-200) !important;
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl) !important;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+
+@media (max-width: 1200px) {
+  .grossesse-table .mat-column-perimetreC,
+  .grossesse-table .mat-column-dateDepacement {
+    display: none;
+  }
+}
+
+@media (max-width: 968px) {
+  .grossesse-table .mat-column-parite,
+  .grossesse-table .mat-column-datePrevue {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .grossesse-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-card {
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: var(--spacing-sm) var(--spacing-xs) !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Masquer certaines colonnes sur mobile */
+  .mat-column-gestation,
+  .mat-column-parite {
+    display: none;
+  }
+
+  /* Styles responsive pour les filtres */
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+  }
+
+  .filter-label {
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .status-filter {
+    width: 100%;
+  }
+
+  .status-filter .mat-button-toggle {
+    flex: 1;
+    font-size: 0.75rem !important;
+  }
+
+  .status-filter .mat-button-toggle mat-icon {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grossesse-list-container {
+    padding: var(--spacing-sm);
+  }
+
+  .header-content {
+    padding: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .grossesse-table .mat-column-ageGestationnel {
+    display: none;
+  }
+
+  .table-card {
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Masquer plus de colonnes sur très petit écran */
+  .mat-column-dateDerniereRegle,
+  .mat-column-ageGestationnel {
+    display: none;
+  }
+}
+
+/* ============================
+   ANIMATIONS
+   ============================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.header-content {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.grossesse-table .mat-mdc-row {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.grossesse-table .mat-mdc-row:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+.grossesse-table .mat-mdc-row:nth-child(odd) {
+  animation-delay: 0.05s;
+}
+
+/* ============================
+   RÉDUCTION DES ANIMATIONS
+   ============================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .table-card,
+  .header-content,
+  .grossesse-table .mat-mdc-row {
+    animation: none;
+  }
+
+  .grossesse-table .mat-mdc-row:hover {
+    transform: none;
+  }
+
+  .add-button:hover {
+    transform: none;
+  }
+
+  .status-chip.terme-depasse {
+    animation: none;
+  }
+}
+
+/* ============================
+   ACCESSIBILITÉ
+   ============================ */
+
+.add-button:focus,
+.actions-button:focus,
+.retry-button:focus,
+.empty-action-button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* ============================
+   AMÉLIORATION DES CONTRASTES
+   ============================ */
+
+@media (prefers-contrast: high) {
+  .status-chip {
+    border-width: 2px;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .grossesse-table .mat-mdc-header-cell {
+    background: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+  }
+}
+
+/* ===== STYLES POUR LA PAGINATION ===== */
+mat-paginator {
+  margin-top: var(--spacing-lg);
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--gray-200) !important;
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl) !important;
+}
+
+/* ===== AMÉLIORATION DES STYLES EXISTANTS ===== */
+
+/* Message "Aucune grossesse trouvée" */
+.mat-row .mat-cell {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--spacing-xl) !important;
+}
+
+/* Hover effect pour les lignes du tableau */
+tr.mat-row:hover {
+  background-color: var(--bg-secondary);
+  transition: background-color 0.2s ease;
+}
+
+/* ===== AMÉLIORATION DU MENU D'ACTIONS ===== */
+
+/* Menu d'actions */
+.mat-mdc-menu-panel {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: var(--radius-sm) !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: var(--primary-50) !important;
+}
+
+.mat-mdc-menu-item mat-icon {
+  margin-right: var(--spacing-sm);
+  color: var(--primary-500);
+}
+
+.mat-mdc-menu-item.delete-action:hover {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.mat-mdc-menu-item.delete-action:hover mat-icon {
+  color: var(--error-dark) !important;
+}
+
+/* ===== RESPONSIVE DESIGN AMÉLIORÉ ===== */
+
+@media (max-width: 768px) {
+  .grossesse-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-card {
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: var(--spacing-sm) var(--spacing-xs) !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Masquer certaines colonnes sur mobile */
+  .mat-column-gestation,
+  .mat-column-parite {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .grossesse-list-container {
+    padding: var(--spacing-sm);
+  }
+
+  .header-content {
+    padding: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .table-card {
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Masquer plus de colonnes sur très petit écran */
+  .mat-column-dateDerniereRegle,
+  .mat-column-ageGestationnel {
+    display: none;
+  }
+}
+
+/* ===== ANIMATIONS AMÉLIORÉES ===== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.header-content {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* ===== ACCESSIBILITÉ ===== */
+
+.add-button:focus,
+.actions-button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* ===== RÉDUCTION DES ANIMATIONS ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .table-card,
+  .header-content {
+    animation: none;
+  }
+
+  tr.mat-row:hover {
+    transition: none;
+  }
+
+  .add-button:hover {
+    transform: none;
+  }
+}
+
+/* ============================
+   COLONNE ACCOUCHEMENT
+   ============================ */
+
+.accouchement-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.accouchement-chip {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-xs) !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: 0.75rem !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--spacing-xs) var(--spacing-sm) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  transition: all 0.2s ease !important;
+  min-width: 100px !important;
+  justify-content: center !important;
+}
+
+.accouchement-chip .chip-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  margin-right: var(--spacing-xs) !important;
+}
+
+/* Statuts d'accouchement spécifiques */
+.accouchement-chip[color="primary"] {
+  background: var(--primary-100) !important;
+  color: var(--primary-700) !important;
+}
+
+.accouchement-chip[color="warn"] {
+  background: var(--warning-light) !important;
+  color: var(--warning-dark) !important;
+}
+
+.accouchement-chip[color="accent"] {
+  background: var(--success-light) !important;
+  color: var(--success-dark) !important;
+}
+
+.view-accouchement-btn {
+  color: var(--primary-600) !important;
+  background: var(--primary-50) !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  transition: all 0.2s ease !important;
+}
+
+.view-accouchement-btn:hover {
+  background: var(--primary-100) !important;
+  color: var(--primary-700) !important;
+  transform: scale(1.1);
+}
+
+.view-accouchement-btn mat-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+} 

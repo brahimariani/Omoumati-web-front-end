@@ -1,0 +1,228 @@
+<div class="naissance-form-container">
+  <mat-card class="naissance-form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="form-icon">baby_changing_station</mat-icon>
+        {{ isEditMode ? 'Modifier la naissance' : 'Nouvelle naissance' }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ isEditMode ? 'Mettre à jour les informations du nouveau-né' : 'Enregistrer les données du nouveau-né' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="naissanceForm" (ngSubmit)="onSubmit()" class="naissance-form">
+        
+        <!-- Section Identité du bébé -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>person</mat-icon>
+            Identité du nouveau-né
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Sexe</mat-label>
+              <mat-select formControlName="sexe" placeholder="Sélectionner le sexe">
+                <mat-option *ngFor="let option of sexeOptions" [value]="option.value">
+                  <div class="select-option">
+                    <mat-icon [style.color]="option.color">{{ option.icon }}</mat-icon>
+                    <span>{{ option.label }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix [style.color]="getSexeColor(sexe?.value)">
+                {{ getSexeIcon(sexe?.value) }}
+              </mat-icon>
+              <mat-hint>Sexe du nouveau-né</mat-hint>
+              <mat-error *ngIf="sexe?.hasError('required')">
+                Le sexe est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- État vital -->
+          <div class="checkbox-container">
+            <mat-checkbox formControlName="estVivant" class="vital-checkbox">
+              <span class="checkbox-label">Naissance vivante</span>
+              <span class="checkbox-hint">Cochez si le bébé est né vivant</span>
+            </mat-checkbox>
+          </div>
+
+          <!-- Alerte si décès -->
+          <div class="alert-section" *ngIf="estVivant?.value === false">
+            <div class="alert-card error">
+              <mat-icon>sentiment_very_dissatisfied</mat-icon>
+              <div class="alert-content">
+                <h4>Décès périnatal</h4>
+                <p>Nos condoléances. Assurez-vous que toutes les procédures appropriées sont suivies.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Mensurations -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>straighten</mat-icon>
+            Mensurations
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Poids (grammes)</mat-label>
+              <input matInput 
+                     type="number" 
+                     formControlName="poids"
+                     placeholder="Poids en grammes"
+                     min="500" 
+                     max="8000"
+                     step="10">
+              <mat-icon matSuffix>monitor_weight</mat-icon>
+              <mat-hint>Poids à la naissance (500-8000g)</mat-hint>
+              <mat-error *ngIf="poids?.hasError('required')">
+                Le poids est obligatoire
+              </mat-error>
+              <mat-error *ngIf="poids?.hasError('min') || poids?.hasError('max')">
+                Le poids doit être entre 500g et 8000g
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Périmètre crânien (cm)</mat-label>
+              <input matInput 
+                     type="number" 
+                     formControlName="perimetreCranien"
+                     placeholder="Périmètre en cm"
+                     min="25" 
+                     max="45"
+                     step="0.1">
+              <mat-icon matSuffix>radio_button_unchecked</mat-icon>
+              <mat-hint>Périmètre crânien (25-45cm)</mat-hint>
+              <mat-error *ngIf="perimetreCranien?.hasError('required')">
+                Le périmètre crânien est obligatoire
+              </mat-error>
+              <mat-error *ngIf="perimetreCranien?.hasError('min') || perimetreCranien?.hasError('max')">
+                Le périmètre doit être entre 25cm et 45cm
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Section Évaluations médicales -->
+        <div class="form-section evaluation-section" *ngIf="poids?.value && perimetreCranien?.value">
+          <h3 class="section-title">
+            <mat-icon>analytics</mat-icon>
+            Évaluations médicales
+          </h3>
+          
+          <div class="evaluations-grid">
+            <!-- Évaluation du poids -->
+            <div class="evaluation-card">
+              <div class="evaluation-header">
+                <mat-icon [style.color]="getPoidsEvaluation().color">
+                  {{ getPoidsEvaluation().icon }}
+                </mat-icon>
+                <h4>Évaluation du poids</h4>
+              </div>
+              <div class="evaluation-content">
+                <div class="metric-value" [style.color]="getPoidsEvaluation().color">
+                  {{ formatPoids(poids?.value) }}
+                </div>
+                <div class="metric-label" [style.color]="getPoidsEvaluation().color">
+                  {{ getPoidsEvaluation().label }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Évaluation du périmètre crânien -->
+            <div class="evaluation-card">
+              <div class="evaluation-header">
+                <mat-icon [style.color]="isPerimetreCranienNormal() ? '#4caf50' : '#ff9800'">
+                  {{ isPerimetreCranienNormal() ? 'check_circle' : 'info' }}
+                </mat-icon>
+                <h4>Périmètre crânien</h4>
+              </div>
+              <div class="evaluation-content">
+                <div class="metric-value" [style.color]="isPerimetreCranienNormal() ? '#4caf50' : '#ff9800'">
+                  {{ perimetreCranien?.value }} cm
+                </div>
+                <div class="metric-label" [style.color]="isPerimetreCranienNormal() ? '#4caf50' : '#ff9800'">
+                  {{ getPerimetreCranienEvaluation() }}
+                </div>
+              </div>
+            </div>
+
+            <!-- IMC estimé -->
+            <div class="evaluation-card">
+              <div class="evaluation-header">
+                <mat-icon [style.color]="'#2196f3'">calculate</mat-icon>
+                <h4>IMC estimé</h4>
+              </div>
+              <div class="evaluation-content">
+                <div class="metric-value" [style.color]="'#2196f3'">
+                  {{ getIMCEstime().toFixed(1) }}
+                </div>
+                <div class="metric-label" [style.color]="'#2196f3'">
+                  kg/m² (estimation)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alertes médicales -->
+          <div class="alert-section" *ngIf="isPoidsPreoccupant()">
+            <div class="alert-card warning">
+              <mat-icon>warning</mat-icon>
+              <div class="alert-content">
+                <h4>Attention médicale requise</h4>
+                <p>Le poids du nouveau-né nécessite une surveillance médicale particulière.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-section" *ngIf="!isPerimetreCranienNormal()">
+            <div class="alert-card warning">
+              <mat-icon>info</mat-icon>
+              <div class="alert-content">
+                <h4>Périmètre crânien atypique</h4>
+                <p>Le périmètre crânien sort des normes habituelles. Un suivi médical est recommandé.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Félicitations pour naissance normale -->
+          <div class="alert-section" *ngIf="isPoidsNormal() && isPerimetreCranienNormal() && estVivant?.value">
+            <div class="alert-card success">
+              <mat-icon>celebration</mat-icon>
+              <div class="alert-content">
+                <h4>Félicitations !</h4>
+                <p>Toutes les mesures sont dans les normes. Bébé semble en excellente santé !</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button mat-button 
+                  type="button" 
+                  (click)="onCancel()"
+                  class="cancel-button">
+            <mat-icon>close</mat-icon>
+            Annuler
+          </button>
+          
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="!isFormValid()"
+                  class="submit-button">
+            <mat-icon>save</mat-icon>
+            {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

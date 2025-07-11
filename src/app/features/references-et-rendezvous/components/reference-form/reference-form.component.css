@@ -1,0 +1,795 @@
+/* Variables globales pour cohérence avec le design system */
+:host {
+  --primary-color: #2196F3;
+  --accent-color: #4CAF50;
+  --warn-color: #F44336;
+  --background-color: #FAFAFA;
+  --card-background: #FFFFFF;
+  --text-primary: #263238;
+  --text-secondary: #546E7A;
+  --border-color: #E0E0E0;
+  --shadow: 0 2px 4px rgba(0,0,0,0.1);
+  --border-radius: 8px;
+}
+
+/* Container principal */
+.reference-form-container {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Formulaire principal */
+.reference-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sections du formulaire */
+.form-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.section-header mat-icon {
+  color: #666;
+  font-size: 20px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Champs de formulaire */
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: calc(50% - 8px);
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Options de patiente et centre */
+.patient-option, .centre-option {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  gap: 4px;
+}
+
+.patient-main-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.patient-main-info strong {
+  font-weight: 500;
+  color: #333;
+}
+
+.patient-age {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.patient-details {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #666;
+}
+
+.centre-main-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.centre-main-info strong {
+  font-weight: 500;
+  color: #333;
+}
+
+.centre-type {
+  font-size: 11px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 6px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.centre-details {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Actions du formulaire */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  margin-top: auto;
+}
+
+.cancel-btn {
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.reset-btn {
+  color: #ff9800;
+}
+
+.reset-btn:hover {
+  background-color: rgba(255, 152, 0, 0.04);
+}
+
+.submit-btn {
+  min-width: 120px;
+}
+
+/* États de chargement et d'erreur */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-container mat-spinner {
+  margin-bottom: 16px;
+}
+
+.loading-container p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.error-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.error-container mat-icon {
+  font-size: 20px;
+}
+
+.error-container p {
+  margin: 0;
+  color: #c62828;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .half-width {
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+/* Autocomplete personnalisé */
+.mat-mdc-option {
+  min-height: 64px !important;
+  line-height: 1.3 !important;
+}
+
+/* Amélioration visuelle des champs */
+.mat-mdc-form-field {
+  margin-bottom: 8px;
+}
+
+.mat-mdc-form-field-hint-wrapper {
+  padding: 0 16px;
+}
+
+/* Centre d'origine en lecture seule */
+.mat-mdc-form-field input[readonly] {
+  color: #666;
+  background-color: #f5f5f5;
+}
+
+/* Boutons d'action */
+.form-actions .mat-mdc-button,
+.form-actions .mat-mdc-raised-button {
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: none;
+  padding: 0 24px;
+  height: 40px;
+}
+
+.form-actions .mat-mdc-button mat-icon,
+.form-actions .mat-mdc-raised-button mat-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Animation de focus */
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Amélioration de l'espacement */
+.reference-form > :last-child {
+  margin-bottom: 0;
+}
+
+/* En-tête */
+.header-section {
+  margin-bottom: 32px;
+}
+
+.title-section {
+  text-align: center;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 8px 0;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.page-title mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+  color: var(--primary-color);
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Cartes de formulaire */
+.form-card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.form-card mat-card-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-card mat-card-content {
+  padding: 24px;
+}
+
+.form-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.form-card mat-card-title mat-icon {
+  color: var(--primary-color);
+}
+
+/* Layout des formulaires */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.centres-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Champs de formulaire */
+.mat-form-field {
+  width: 100%;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
+.checkbox-field mat-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* États de chargement et d'erreur */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.loading-container p,
+.error-container p {
+  margin: 16px 0 0 0;
+  color: var(--text-secondary);
+}
+
+.error-container mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+/* Section des actions */
+.actions-section {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: 32px;
+}
+
+.action-btn {
+  min-width: 140px;
+  height: 44px;
+  font-weight: 500;
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, var(--primary-color), #1976D2);
+  color: white;
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.4);
+}
+
+.submit-btn:disabled {
+  background: #BDBDBD;
+  color: #FFFFFF;
+  box-shadow: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .reference-form-container {
+    padding: 16px;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .page-title mat-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .form-grid,
+  .centres-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-card mat-card-content {
+    padding: 16px;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .action-btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .reference-form-container {
+    padding: 12px;
+  }
+  
+  .page-title {
+    font-size: 1.25rem;
+  }
+  
+  .form-card mat-card-header {
+    padding: 12px 16px;
+  }
+  
+  .form-card mat-card-content {
+    padding: 12px;
+  }
+  
+  .form-grid {
+    gap: 12px;
+  }
+}
+
+/* Animations */
+.form-card {
+  animation: slideInUp 0.4s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.actions-section {
+  animation: fadeIn 0.6s ease-out 0.2s both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Focus et accessibilité */
+.mat-form-field:focus-within {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Amélioration de l'UX */
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: var(--primary-color);
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--primary-color);
+}
+
+.mat-checkbox-checked .mat-checkbox-background {
+  background-color: var(--warn-color);
+}
+
+/* Styles pour les erreurs */
+.mat-error {
+  font-size: 0.875rem;
+  color: var(--warn-color);
+  margin-top: 4px;
+}
+
+/* Hints */
+.mat-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Amélioration des textareas */
+textarea.mat-input-element {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+/* Autocomplete panel */
+.mat-autocomplete-panel {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.mat-option {
+  line-height: 1.4;
+}
+
+.mat-option:hover {
+  background-color: rgba(33, 150, 243, 0.08);
+}
+
+/* Datepicker */
+.mat-datepicker-popup {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+/* ===============================
+   STYLES POUR LA SÉLECTION DE PATIENTE
+   INSPIRÉS DU GROSSESSE-FORM
+   =============================== */
+
+/* Section subtitle */
+.section-subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+/* Search field */
+.search-field {
+  margin-bottom: 16px !important;
+}
+
+/* Patient selection dans mat-select */
+.patient-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.patient-main-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.patient-main-info mat-icon {
+  color: #2196F3;
+  font-size: 18px !important;
+}
+
+.patient-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.patient-secondary-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: #666;
+  margin-left: 26px; /* Aligner avec l'icône */
+}
+
+.patient-age,
+.patient-contact,
+.patient-cin {
+  white-space: nowrap;
+}
+
+.patient-age::before {
+  content: "📅 ";
+}
+
+.patient-contact::before {
+  content: "📞 ";
+}
+
+.patient-cin::before {
+  content: "🆔 ";
+}
+
+/* Patient info card */
+.patient-info-card {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.patient-info-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.patient-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.patient-info-header mat-icon {
+  color: #2196F3;
+  font-size: 20px !important;
+}
+
+.patient-info-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.patient-info-content {
+  display: grid;
+  gap: 8px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item .label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.info-item .value {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+/* Responsive pour patient info card */
+@media (max-width: 600px) {
+  .patient-secondary-info {
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 26px;
+  }
+
+  .patient-info-card {
+    padding: 12px;
+  }
+
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .info-item .value {
+    text-align: left;
+    font-weight: normal;
+  }
+}
+
+/* ===============================
+   STYLES POUR LE CENTRE DE DESTINATION
+   =============================== */
+
+/* Centre info card */
+.centre-info-card {
+  background: #f0f8ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.centre-info-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.centre-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.centre-info-header mat-icon {
+  color: #1976d2;
+  font-size: 20px !important;
+}
+
+.centre-info-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.centre-info-content {
+  display: grid;
+  gap: 8px;
+}
+
+.centre-type-badge {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  font-weight: 500 !important;
+}
+
+/* Responsive pour centre info card */
+@media (max-width: 600px) {
+  .centre-info-card {
+    padding: 12px;
+  }
+} 

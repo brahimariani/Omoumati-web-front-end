@@ -1,0 +1,10 @@
+<div class="search-container">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Rechercher une patiente...</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Nom, prénom, téléphone...">
+    <button *ngIf="searchControl.value" matSuffix mat-icon-button aria-label="Effacer" (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+</div>

@@ -1,0 +1,176 @@
+<!-- Side Panel Container pour Traitement -->
+<div class="side-panel-content">
+  <!-- Header du formulaire -->
+  <div class="form-header">
+    <div class="header-info">
+      <mat-icon class="form-icon">medication</mat-icon>
+      <div class="header-text">
+        <h3 class="form-title">{{ formTitle }}</h3>
+        <p class="form-subtitle" *ngIf="patienteName">
+          <mat-icon>person</mat-icon>
+          {{ patienteName }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <div class="form-content">
+    <form [formGroup]="traitementForm" (ngSubmit)="onSubmit()" class="traitement-form">
+      
+      <!-- Médicament avec autocomplétion -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>medication</mat-icon>
+          Médicament
+        </h4>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom du médicament</mat-label>
+          <input matInput
+                 formControlName="medicament"
+                 [matAutocomplete]="medicamentAuto"
+                 placeholder="Sélectionnez ou tapez le nom du médicament">
+          <mat-icon matSuffix>search</mat-icon>
+          <mat-autocomplete #medicamentAuto="matAutocomplete" 
+                           (optionSelected)="onMedicamentSelected($event.option.value)">
+            <mat-option *ngFor="let medicament of filteredMedicaments$ | async" [value]="medicament">
+              {{ medicament }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="getFieldError('medicament')">{{ getFieldError('medicament') }}</mat-error>
+          <mat-hint>Commencez à taper pour voir les suggestions</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Posologie -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>schedule</mat-icon>
+          Posologie & Administration
+        </h4>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Posologie</mat-label>
+          <input matInput
+                 formControlName="posologie"
+                 [matAutocomplete]="posologieAuto"
+                 placeholder="Ex: 1 comprimé x 2/jour">
+          <mat-icon matSuffix>schedule</mat-icon>
+          <mat-autocomplete #posologieAuto="matAutocomplete">
+            <mat-option *ngFor="let posologie of filteredPosologies$ | async" [value]="posologie">
+              {{ posologie }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="getFieldError('posologie')">{{ getFieldError('posologie') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Durée du traitement -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>date_range</mat-icon>
+          Période de traitement
+        </h4>
+        
+        <div class="date-range-container">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Date de début</mat-label>
+            <input matInput
+                   [matDatepicker]="startPicker"
+                   formControlName="dateDebut"
+                   readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error *ngIf="getFieldError('dateDebut')">{{ getFieldError('dateDebut') }}</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Date de fin</mat-label>
+            <input matInput
+                   [matDatepicker]="endPicker"
+                   formControlName="dateFin"
+                   readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-error *ngIf="getFieldError('dateFin')">{{ getFieldError('dateFin') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Durées prédéfinies -->
+        <div class="duration-chips">
+          <span class="chips-label">Durées courantes:</span>
+          <div class="chips-container">
+            <mat-chip-set>
+              <mat-chip *ngFor="let duration of availableDurations.slice(0, 6)"
+                        (click)="applyDuration(duration)"
+                        matTooltip="Cliquez pour appliquer cette durée">
+                {{ duration }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observations -->
+      <div class="form-section">
+        <h4 class="section-title">
+          <mat-icon>note</mat-icon>
+          Observations & Instructions
+        </h4>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Observations</mat-label>
+          <textarea matInput
+                    formControlName="observation"
+                    rows="4"
+                    placeholder="Instructions spéciales, contre-indications, surveillance..."></textarea>
+          <mat-icon matSuffix>note</mat-icon>
+          <mat-hint>Ajoutez des instructions spéciales si nécessaire</mat-hint>
+        </mat-form-field>
+
+        <!-- Instructions prédéfinies -->
+        <div class="instructions-chips">
+          <span class="chips-label">Instructions courantes:</span>
+          <div class="chips-container">
+            <mat-chip-set>
+              <mat-chip *ngFor="let instruction of availableInstructions.slice(0, 4)"
+                        (click)="addInstruction(instruction)"
+                        matTooltip="Cliquez pour ajouter cette instruction">
+                {{ instruction }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Actions du formulaire -->
+      <div class="form-actions">
+        <button type="button" 
+                mat-button 
+                class="cancel-button"
+                (click)="cancel()">
+          <mat-icon>close</mat-icon>
+          Annuler
+        </button>
+        
+        <button type="submit" 
+                mat-raised-button 
+                color="primary"
+                class="submit-button"
+                [disabled]="loading$ | async">
+          <span *ngIf="!(loading$ | async)">
+            <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+            {{ isEdit ? 'Mettre à jour' : 'Prescrire' }}
+          </span>
+          <span *ngIf="loading$ | async" class="loading-content">
+            <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            {{ isEdit ? 'Mise à jour...' : 'Prescription...' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

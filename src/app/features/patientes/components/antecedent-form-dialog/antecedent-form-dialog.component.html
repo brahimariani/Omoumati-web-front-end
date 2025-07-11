@@ -1,0 +1,152 @@
+<!-- Contenu du side panel pour les antécédents -->
+<div class="side-panel-content">
+  <!-- Header du formulaire -->
+  <div class="form-header">
+    <div class="header-info">
+      <mat-icon class="form-icon">medical_services</mat-icon>
+      <div class="header-text">
+        <h3 class="form-title">{{ formTitle }}</h3>
+        <p class="form-subtitle" *ngIf="patient">
+          <mat-icon>person</mat-icon>
+          {{ patient.prenom }} {{ patient.nom }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <div class="form-content">
+    <form [formGroup]="antecedentForm" (ngSubmit)="onSubmit()" class="antecedent-form">
+      
+      <!-- Nature de l'antécédent -->
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nature de l'antécédent</mat-label>
+          <input matInput
+                 formControlName="nature"
+                 [matAutocomplete]="natureAuto"
+                 (input)="onNatureChange()"
+                 placeholder="Sélectionnez la nature">
+          <mat-icon matSuffix>category</mat-icon>
+          <mat-autocomplete #natureAuto="matAutocomplete">
+            <mat-option *ngFor="let nature of filteredNatures$ | async" [value]="nature">
+              {{ nature }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="getFieldError('nature')">{{ getFieldError('nature') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Type d'antécédent -->
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Type d'antécédent</mat-label>
+          <input matInput
+                 formControlName="type"
+                 [matAutocomplete]="typeAuto"
+                 placeholder="Sélectionnez le type">
+          <mat-icon matSuffix>label</mat-icon>
+          <mat-autocomplete #typeAuto="matAutocomplete">
+            <mat-option *ngFor="let type of filteredTypes$ | async" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="getFieldError('type')">{{ getFieldError('type') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Date -->
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Date</mat-label>
+          <input matInput
+                 [matDatepicker]="datePicker"
+                 formControlName="date"
+                 placeholder="Sélectionnez la date">
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          <mat-error *ngIf="getFieldError('date')">{{ getFieldError('date') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Lieu (conditionnel) -->
+      <div class="form-group" *ngIf="shouldShowField('lieu')">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ getFieldLabel('lieu') }}</mat-label>
+          <input matInput
+                 formControlName="lieu"
+                 placeholder="Entrez le lieu">
+          <mat-icon matSuffix>location_on</mat-icon>
+          <mat-error *ngIf="getFieldError('lieu')">{{ getFieldError('lieu') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Âge gestationnel (pour obstétrical) -->
+      <div class="form-group" *ngIf="shouldShowField('ageGestationnel')">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ getFieldLabel('ageGestationnel') }}</mat-label>
+          <input matInput
+                 type="number"
+                 formControlName="ageGestationnel"
+                 placeholder="Âge en semaines"
+                 min="0"
+                 max="42">
+          <mat-icon matSuffix>schedule</mat-icon>
+          <mat-hint>Entre 0 et 42 semaines</mat-hint>
+          <mat-error *ngIf="getFieldError('ageGestationnel')">{{ getFieldError('ageGestationnel') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Membre de famille (pour héréditaire) -->
+      <div class="form-group" *ngIf="shouldShowField('membreFamille')">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ getFieldLabel('membreFamille') }}</mat-label>
+          <input matInput
+                 formControlName="membreFamille"
+                 placeholder="Ex: Mère, Père, Grand-mère...">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="getFieldError('membreFamille')">{{ getFieldError('membreFamille') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Observation -->
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Observation</mat-label>
+          <textarea matInput
+                    formControlName="observation"
+                    placeholder="Détails supplémentaires..."
+                    rows="3"
+                    maxlength="500"></textarea>
+          <mat-icon matSuffix>note_add</mat-icon>
+          <mat-hint align="end">{{ antecedentForm.get('observation')?.value?.length || 0 }}/500</mat-hint>
+          <mat-error *ngIf="getFieldError('observation')">{{ getFieldError('observation') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Actions du formulaire -->
+  <div class="form-actions">
+    <button mat-stroked-button
+            type="button"
+            (click)="onCancel()"
+            [disabled]="loading"
+            class="cancel-button">
+      <mat-icon>close</mat-icon>
+      Annuler
+    </button>
+    
+    <button mat-raised-button
+            color="primary"
+            type="submit"
+            (click)="onSubmit()"
+            [disabled]="loading || antecedentForm.invalid"
+            class="submit-button">
+      <mat-spinner *ngIf="loading" diameter="20" class="button-spinner"></mat-spinner>
+      <mat-icon *ngIf="!loading">{{ isEdit ? 'save' : 'add' }}</mat-icon>
+      {{ isEdit ? 'Modifier' : 'Ajouter' }}
+    </button>
+  </div>
+</div> 

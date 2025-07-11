@@ -1,0 +1,665 @@
+/* ==============================
+   LISTE DES EXAMENS CLINIQUES
+   ============================== */
+
+.examens-list-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+}
+
+/* En-tête de la liste */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.title-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.5rem !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+.list-title h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.patient-name {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: var(--gray-100);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.stats-summary {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.stat-chip {
+  background: var(--primary-50) !important;
+  color: var(--primary-700) !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+  height: 24px !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.stat-chip.anomalies {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.stat-chip mat-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+  margin-right: var(--spacing-xs) !important;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* États de chargement et d'erreur */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.loading-container p,
+.error-container p {
+  margin-top: var(--spacing-lg);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.error-icon {
+  color: var(--error) !important;
+  font-size: 3rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  margin-bottom: var(--spacing-lg) !important;
+}
+
+.error-container h4 {
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+/* Contenu principal */
+.examens-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+}
+
+/* État vide */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--gray-300);
+}
+
+.empty-icon mat-icon {
+  font-size: 4rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  color: var(--gray-400) !important;
+  margin-bottom: var(--spacing-lg) !important;
+}
+
+.empty-state h4 {
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xl);
+  max-width: 400px;
+}
+
+/* Grille des examens */
+.examens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.examen-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.examen-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--primary-300);
+}
+
+.examen-card.selected {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 2px var(--primary-100);
+}
+
+.examen-card.has-anomalies {
+  border-left: 4px solid var(--error);
+}
+
+.examen-card.has-anomalies::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent var(--error) transparent transparent;
+}
+
+/* En-tête de carte */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--primary-50), var(--gray-50));
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.examen-info {
+  flex: 1;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.examen-date {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.status-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: var(--spacing-xs) !important;
+  padding: var(--spacing-xs) var(--spacing-sm) !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  height: auto !important;
+  min-height: 24px !important;
+}
+
+.status-chip.status-normal {
+  background: var(--success-light) !important;
+  color: var(--success-dark) !important;
+}
+
+.status-chip.status-anomalie {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.status-chip mat-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.examen-card:hover .card-actions {
+  opacity: 1;
+}
+
+/* Contenu de la carte */
+.card-content {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.measures-section,
+.vitals-section,
+.physical-section,
+.obstetrical-section,
+.gynecological-section,
+.observation-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.section-title mat-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  color: var(--primary-500) !important;
+}
+
+/* Nouvelle grille pour les détails */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+}
+
+.detail-item:hover {
+  border-color: var(--primary-300);
+  box-shadow: var(--shadow-xs);
+}
+
+.detail-item .label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.detail-item .value {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+/* Styles spéciaux pour l'IMC */
+.detail-item .value.imc-maigreur {
+  color: var(--warning-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+.detail-item .value.imc-normal {
+  color: var(--success-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+.detail-item .value.imc-surpoids {
+  color: var(--warning-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+.detail-item .value.imc-obesite {
+  color: var(--error-dark);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Indicateur IMC */
+.imc-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-sm);
+}
+
+.imc-value {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  color: white;
+}
+
+.imc-value.imc-maigreur {
+  background: var(--warning);
+}
+
+.imc-value.imc-normal {
+  background: var(--success);
+}
+
+.imc-value.imc-surpoids {
+  background: var(--warning);
+}
+
+.imc-value.imc-obesite {
+  background: var(--error);
+}
+
+.imc-category {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Détails obstétricaux */
+.obstetrical-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.detail-item .label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+}
+
+.detail-item .value {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+/* Observations */
+.observation-section {
+  margin-top: var(--spacing-md);
+}
+
+.observation-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-500);
+  font-style: italic;
+}
+
+/* Alertes médicales */
+.alerts-section {
+  margin-top: var(--spacing-sm);
+}
+
+.medical-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--error-light);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  animation: pulse 2s infinite;
+}
+
+.alert-icon {
+  color: var(--error) !important;
+  font-size: 1.125rem !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+}
+
+.alert-text {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--error-dark);
+}
+
+/* Pied de carte */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+}
+
+.quick-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.quick-action {
+  min-width: 40px !important;
+  height: 40px !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-action:hover {
+  background: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.quick-action mat-icon {
+  font-size: 1.125rem !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+}
+
+.status-indicator mat-icon {
+  font-size: 1.25rem !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.status-indicator mat-icon.status-normal {
+  color: var(--success) !important;
+}
+
+.status-indicator mat-icon.status-anomalie {
+  color: var(--error) !important;
+}
+
+/* Actions de suppression */
+.delete-action {
+  color: var(--error) !important;
+}
+
+.delete-action mat-icon {
+  color: var(--error) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .examens-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .examens-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .list-header {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: center;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .card-actions {
+    align-self: flex-end;
+  }
+
+  .obstetrical-details {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .imc-indicator {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: flex-start;
+  }
+}
+
+/* Animations */
+.examen-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medical-alert {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+/* Focus et accessibilité */
+.examen-card:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.quick-action:focus,
+.card-actions button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* Scrollbar personnalisée */
+.examens-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.examens-content::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.examens-content::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+.examens-content::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Sections spécialisées */
+.physical-section,
+.gynecological-section {
+  border-top: 1px solid var(--gray-200);
+  padding-top: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.physical-section .section-title mat-icon {
+  color: var(--info) !important;
+}
+
+.gynecological-section .section-title mat-icon {
+  color: var(--warning) !important;
+}
+
+.obstetrical-section .section-title mat-icon {
+  color: var(--primary-600) !important;
+} 

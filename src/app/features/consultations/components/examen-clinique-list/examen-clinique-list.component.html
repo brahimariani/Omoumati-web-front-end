@@ -1,0 +1,262 @@
+<!-- Conteneur principal pour la liste des examens cliniques -->
+<div class="examens-list-container">
+  
+  <!-- En-tête avec actions -->
+  <div class="list-header">
+    <div class="header-info">
+      <div class="list-title">
+        <mat-icon class="title-icon">medical_services</mat-icon>
+        <h3>Examens cliniques</h3>
+        <span class="patient-name" *ngIf="patienteName">{{ patienteName }}</span>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button mat-icon-button (click)="onRefresh()" matTooltip="Actualiser">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" (click)="onAddExamen()">
+        <mat-icon>add</mat-icon>
+        Nouvel examen
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement des examens cliniques...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon class="error-icon">error</mat-icon>
+    <h4>Erreur de chargement</h4>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="onRefresh()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des examens -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="examens-content">
+    
+    <!-- État vide -->
+    <div *ngIf="(examens$ | async)?.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <mat-icon>medical_services</mat-icon>
+      </div>
+      <h4>Aucun examen clinique</h4>
+      <p>Aucun examen clinique n'a été effectué pour cette consultation.</p>
+      <button mat-raised-button color="primary" (click)="onAddExamen()">
+        <mat-icon>add</mat-icon>
+        Créer le premier examen
+      </button>
+    </div>
+
+    <!-- Grille des examens -->
+    <div class="examens-grid" *ngIf="(examens$ | async)?.length! > 0">
+      <div class="examen-card" 
+           *ngFor="let examen of examens$ | async; trackBy: trackByExamenId"
+           [class.selected]="false"
+           [class.has-anomalies]="hasAnomalies(examen)"
+           (click)="onSelectExamen(examen)">
+        
+        <!-- En-tête de la carte -->
+        <div class="card-header">
+          <div class="examen-info">
+            <div class="date-info">
+              <!--<h4 class="examen-date">{{ formatDate(examen.consultation.date) }}</h4>-->
+              <mat-chip [ngClass]="getStatutClass(examen)" class="status-chip">
+                <mat-icon>{{ getStatutIcon(examen) }}</mat-icon>
+                {{ getStatutText(examen) }}
+              </mat-chip>
+            </div>
+          </div>
+          
+          <div class="card-actions" (click)="$event.stopPropagation()">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="onEditExamen(examen)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="onEvaluateSignesVitaux(examen)">
+                <mat-icon>favorite</mat-icon>
+                <span>Évaluer signes vitaux</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="onDeleteExamen(examen)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+
+        <!-- Contenu principal de la carte -->
+        <div class="card-content">
+          
+          <!-- Mesures physiques -->
+          <div class="measures-section">
+            <h5 class="section-title">
+              <mat-icon>monitor_weight</mat-icon>
+              Mesures physiques
+            </h5>
+            <div class="detail-grid">
+              <div class="detail-item" *ngIf="examen.poids">
+                <span class="label">Poids:</span>
+                <span class="value">{{ examen.poids }} kg</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.taille">
+                <span class="label">Taille:</span>
+                <span class="value">{{ examen.taille }} cm</span>
+              </div>
+              <div class="detail-item" *ngIf="calculateIMC(examen) > 0">
+                <span class="label">IMC:</span>
+                <span class="value" [ngClass]="getIMCClass(calculateIMC(examen))">
+                  {{ calculateIMC(examen) | number:'1.1-1' }} - {{ getIMCCategory(calculateIMC(examen)) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Signes vitaux -->
+          <div class="vitals-section">
+            <h5 class="section-title">
+              <mat-icon>favorite</mat-icon>
+              Signes vitaux
+            </h5>
+            <div class="detail-grid">
+              <div class="detail-item" *ngIf="examen.tensionArterielle">
+                <span class="label">Tension artérielle:</span>
+                <span class="value">{{ examen.tensionArterielle }} mmHg</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.temperature">
+                <span class="label">Température:</span>
+                <span class="value">{{ examen.temperature }}°C</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.frequenceCardiaque">
+                <span class="label">Fréquence cardiaque:</span>
+                <span class="value">{{ examen.frequenceCardiaque }} bpm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Examen physique général -->
+          <div class="physical-section" *ngIf="examen.anomalieSquelette || examen.etatConjonctives || examen.etatSeins || examen.oedemes">
+            <h5 class="section-title">
+              <mat-icon>accessibility</mat-icon>
+              Examen physique général
+            </h5>
+            <div class="detail-grid">
+              <div class="detail-item" *ngIf="examen.anomalieSquelette">
+                <span class="label">Squelette:</span>
+                <span class="value">{{ examen.anomalieSquelette }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.etatConjonctives">
+                <span class="label">Conjonctives:</span>
+                <span class="value">{{ examen.etatConjonctives }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.etatSeins">
+                <span class="label">Seins:</span>
+                <span class="value">{{ examen.etatSeins }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.oedemes">
+                <span class="label">Œdèmes:</span>
+                <span class="value">{{ examen.oedemes }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Examen obstétrical -->
+          <div class="obstetrical-section" *ngIf="examen.mouvements || examen.hu || examen.bcf">
+            <h5 class="section-title">
+              <mat-icon>pregnant_woman</mat-icon>
+              Examen obstétrical
+            </h5>
+            <div class="detail-grid">
+              <div class="detail-item" *ngIf="examen.mouvements">
+                <span class="label">Mouvements fœtaux:</span>
+                <span class="value">{{ examen.mouvements }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.hu">
+                <span class="label">Hauteur utérine:</span>
+                <span class="value">{{ examen.hu }} cm</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.bcf">
+                <span class="label">Bruits du cœur fœtal:</span>
+                <span class="value">{{ examen.bcf }} bpm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Examen gynécologique -->
+          <div class="gynecological-section" *ngIf="examen.speculum || examen.toucherVaginalEtatCol || examen.toucherVaginalPresentation || examen.toucherVaginalBassin">
+            <h5 class="section-title">
+              <mat-icon>medical_services</mat-icon>
+              Examen gynécologique
+            </h5>
+            <div class="detail-grid">
+              <div class="detail-item" *ngIf="examen.speculum">
+                <span class="label">Examen au spéculum:</span>
+                <span class="value">{{ examen.speculum }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.toucherVaginalEtatCol">
+                <span class="label">État du col:</span>
+                <span class="value">{{ examen.toucherVaginalEtatCol }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.toucherVaginalPresentation">
+                <span class="label">Présentation:</span>
+                <span class="value">{{ examen.toucherVaginalPresentation }}</span>
+              </div>
+              <div class="detail-item" *ngIf="examen.toucherVaginalBassin">
+                <span class="label">Bassin:</span>
+                <span class="value">{{ examen.toucherVaginalBassin }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Observations -->
+          <div class="observation-section" *ngIf="examen.observation">
+            <h5 class="section-title">
+              <mat-icon>note</mat-icon>
+              Observations
+            </h5>
+            <p class="observation-text">{{ examen.observation }}</p>
+          </div>
+
+          <!-- Alertes médicales -->
+          <div class="alerts-section" *ngIf="hasAnomalies(examen)">
+            <div class="medical-alert">
+              <mat-icon class="alert-icon">warning</mat-icon>
+              <span class="alert-text">Anomalies détectées - Examen approfondi recommandé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="card-footer" (click)="$event.stopPropagation()">
+          <div class="quick-actions">
+            <button mat-button class="quick-action" (click)="onEditExamen(examen)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-button class="quick-action" (click)="onEvaluateSignesVitaux(examen)" matTooltip="Évaluer">
+              <mat-icon>assessment</mat-icon>
+            </button>
+          </div>
+          
+          <div class="status-indicator">
+            <mat-icon [ngClass]="getStatutClass(examen)">
+              {{ getStatutIcon(examen) }}
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

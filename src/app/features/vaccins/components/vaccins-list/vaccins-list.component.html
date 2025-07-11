@@ -1,0 +1,147 @@
+<div class="vaccins-container" [class.mode-naissance]="mode === VaccinMode.NAISSANCE" [class.mode-patiente]="mode === VaccinMode.PATIENTE">
+  
+  <!-- States de chargement et d'erreur -->
+  <div *ngIf="loading$ | async" class="loading-state">
+    <mat-spinner diameter="48" [color]="getModeColor()"></mat-spinner>
+    <p class="loading-message">Chargement des vaccins...</p>
+  </div>
+
+  <div *ngIf="error$ | async as error" class="error-state">
+    <div class="error-content">
+      <mat-icon class="error-icon">warning</mat-icon>
+      <h3 class="error-title">Erreur de chargement</h3>
+      <p class="error-message">{{ error }}</p>
+      <button mat-raised-button [color]="getModeColor()" (click)="loadVaccins()" class="retry-button">
+        <mat-icon>refresh</mat-icon>
+        Réessayer
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="main-content">
+    
+    <!-- En-tête avec statistiques -->
+    <div class="header-section" [class.header-naissance]="mode === VaccinMode.NAISSANCE">
+      <div class="header-content">
+        <div class="title-section">
+          <div class="icon-container" >
+            <mat-icon class="main-icon">{{ getModeIcon() }}</mat-icon>
+          </div>
+          <div class="title-text">
+            <h2 class="section-title">{{ getSectionTitle() }}</h2>
+          </div>
+        </div>
+        
+        
+          </div>
+      
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          [color]="getModeColor()" 
+          (click)="addVaccin()" 
+          class="add-btn"
+          [disabled]="!canAddVaccin()">
+          <mat-icon>add_circle</mat-icon>
+          Nouveau vaccin {{ getModeDisplayText() }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <mat-divider class="main-divider"></mat-divider>
+
+    <!-- Section des vaccins -->
+    <div class="vaccins-section">
+      <div *ngIf="(vaccins$ | async) as vaccins" class="vaccins-content">
+        
+        <!-- Liste avec vaccins -->
+        <div *ngIf="vaccins.length > 0; else emptyState" class="vaccins-list">
+          <div 
+            *ngFor="let vaccin of vaccins; trackBy: trackVaccin" 
+                class="vaccin-item"
+                [attr.data-vaccin-id]="vaccin.id">
+                
+            <div class="vaccin-card" 
+                 [class.patiente-card]="mode === VaccinMode.PATIENTE"
+                 [class.naissance-card]="mode === VaccinMode.NAISSANCE">
+                  <div class="card-content">
+                    <div class="vaccin-info">
+                      <div class="vaccin-icon">
+                    <mat-icon [color]="getModeColor()">{{ getModeIcon() }}</mat-icon>
+                      </div>
+                      <div class="vaccin-details">
+                        <h3 class="vaccin-name">{{ vaccin.nom }}</h3>
+                        <p class="vaccin-date">{{ formatDate(vaccin.date) }}</p>
+                    <div class="vaccin-type-badge" 
+                         [class.patiente-badge]="mode === VaccinMode.PATIENTE"
+                         [class.naissance-badge]="mode === VaccinMode.NAISSANCE">
+                      <mat-icon>{{ getModeIcon() }}</mat-icon>
+                      <span>{{ getSectionTitle() }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="vaccin-actions">
+                      <button 
+                        mat-icon-button 
+                        (click)="editVaccin(vaccin)" 
+                        matTooltip="Modifier ce vaccin"
+                        class="action-btn edit-btn">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      
+                      <button 
+                        mat-icon-button 
+                        color="warn"
+                        (click)="deleteVaccin(vaccin)" 
+                        matTooltip="Supprimer ce vaccin"
+                        class="action-btn delete-btn">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        <!-- État vide -->
+        <ng-template #emptyState>
+              <div class="empty-state">
+                <div class="empty-content">
+                  <div class="empty-illustration">
+                <mat-icon class="empty-icon">{{ getModeIcon() }}</mat-icon>
+                <div class="empty-circle" [class.circle-naissance]="mode === VaccinMode.NAISSANCE"></div>
+                  </div>
+                  
+                  <div class="empty-text">
+                <h3 class="empty-title">Aucun vaccin {{ getModeDisplayText() }}</h3>
+                    <p class="empty-description">
+                  <span *ngIf="mode === VaccinMode.PATIENTE">
+                    Commencez par ajouter le premier vaccin pour cette patiente
+                  </span>
+                  <span *ngIf="mode === VaccinMode.NAISSANCE">
+                    Commencez par ajouter le premier vaccin pour cet enfant
+                  </span>
+                    </p>
+                  </div>
+                  
+                  <div class="empty-actions">
+                    <button 
+                      mat-raised-button 
+                      [color]="getModeColor()" 
+                      (click)="addVaccin()"
+                      class="empty-cta"
+                      [disabled]="!canAddVaccin()">
+                      <mat-icon>add_circle</mat-icon>
+                      Ajouter le premier vaccin
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+  </div>
+</div> 

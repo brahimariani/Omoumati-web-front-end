@@ -1,0 +1,161 @@
+<div class="consultation-details-container">
+  <!-- En-tête avec informations principales -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="consultation-info">
+        <div class="consultation-avatar">
+          <mat-icon>medical_services</mat-icon>
+        </div>
+        <div class="consultation-details" *ngIf="consultation$ | async as consultation">
+          <h1 class="consultation-title">
+            Consultation du {{ formatDate(consultation.date) }}
+          </h1>
+          <p class="patient-info" *ngIf="patienteName">
+            Patiente: {{ patienteName }}
+          </p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onEditConsultation()" *ngIf="consultation$ | async">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+        <button mat-button (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Retour
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon>error</mat-icon>
+    <h3>Erreur de chargement</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadConsultationDetails()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="details-content">
+    
+    <!-- Section 1: Informations de la consultation -->
+    <mat-card class="details-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>info</mat-icon>
+          Informations de la Consultation
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content *ngIf="consultation$ | async as consultation">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Date</label>
+            <span>{{ formatDateTime(consultation.date) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Type</label>
+            <mat-chip color="primary">Consultation prénatale</mat-chip>
+          </div>
+          <div class="detail-item full-width">
+            <label>Observations</label>
+            <p class="observation-text">{{ consultation.observation }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 2: Examens avec onglets -->
+    <mat-card class="examens-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>assignment</mat-icon>
+          Examens Complémentaires
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-tab-group class="examens-tabs" animationDuration="300ms">
+          
+          <!-- Onglet Examens Biologiques -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>biotech</mat-icon>
+              Examens Biologiques
+              <mat-chip class="tab-count">{{ (examensBiologiques$ | async)?.length || 0 }}</mat-chip>
+            </ng-template>
+            
+            <div class="tab-content">
+              <app-examen-biologique-list 
+                [consultationId]="consultationId"
+                [patienteName]="patienteName"
+                (examenSelected)="onExamenBiologiqueSelected($event)">
+              </app-examen-biologique-list>
+            </div>
+          </mat-tab>
+
+          <!-- Onglet Examens Cliniques -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>medical_services</mat-icon>
+              Examens Cliniques
+              <mat-chip class="tab-count">{{ (examensCliniques$ | async)?.length || 0 }}</mat-chip>
+            </ng-template>
+            
+            <div class="tab-content">
+              <app-examen-clinique-list 
+                [consultationId]="consultationId"
+                [patienteName]="patienteName"
+                (examenSelected)="onExamenCliniqueSelected($event)">
+              </app-examen-clinique-list>
+            </div>
+          </mat-tab>
+
+          <!-- Onglet Examens Échographiques -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>monitor_heart</mat-icon>
+              Examens Échographiques
+              <mat-chip class="tab-count">{{ (examensEchographiques$ | async)?.length || 0 }}</mat-chip>
+            </ng-template>
+            
+            <div class="tab-content">
+              <!-- Utilisation du composant dédié -->
+              <app-examen-echographique-list
+                [consultationId]="consultationId"
+                [patienteName]="patienteName"
+                (examenSelected)="onExamenEchographiqueSelected($event)">
+              </app-examen-echographique-list>
+            </div>
+          </mat-tab>
+
+          <!-- Onglet Traitements Médicamenteux -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>medication</mat-icon>
+              Traitements
+              <mat-chip class="tab-count">{{ (traitements$ | async)?.length || 0 }}</mat-chip>
+            </ng-template>
+            
+            <div class="tab-content">
+              <app-traitement-list 
+                [consultationId]="consultationId"
+                [patienteName]="patienteName"
+                (traitementSelected)="onTraitementSelected($event)">
+              </app-traitement-list>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div> 

@@ -1,0 +1,468 @@
+/* ==========================
+   FORMULAIRE EXAMEN ÉCHOGRAPHIQUE
+   ========================== */
+
+.examen-form-container {
+  padding: var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--bg-secondary);
+}
+
+/* En-tête du formulaire */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.header-info {
+  flex: 1;
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.title-icon {
+  color: var(--primary-600);
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.form-title h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 1.75rem;
+}
+
+.patient-name {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+}
+
+.header-stats {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--spacing-md);
+  background: var(--primary-50);
+  border-radius: var(--radius-lg);
+  min-width: 80px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-600);
+  line-height: 1.2;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-top: var(--spacing-xs);
+}
+
+/* Formulaire principal */
+.examen-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.form-section {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  overflow: hidden !important;
+}
+
+.form-section .mat-mdc-card-header {
+  background: var(--bg-tertiary);
+  padding: var(--spacing-xl) !important;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.form-section .mat-mdc-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 1.25rem !important;
+  margin: 0 !important;
+}
+
+.form-section .mat-mdc-card-title mat-icon {
+  color: var(--primary-600);
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.form-section .mat-mdc-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+  margin: var(--spacing-sm) 0 0 0 !important;
+  line-height: 1.4;
+}
+
+.form-section .mat-mdc-card-content {
+  padding: var(--spacing-xl) !important;
+}
+
+/* Lignes et grilles de formulaire */
+.form-row {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.mesures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Champs de formulaire spécialisés */
+.field-nb-embryons {
+  max-width: 200px;
+}
+
+.field-observation {
+  width: 100%;
+}
+
+.field-observation textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Section Images */
+.existing-images {
+  margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-title h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.view-images-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.image-upload {
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  background: var(--gray-50);
+  transition: all 0.2s ease;
+}
+
+.image-upload:hover {
+  border-color: var(--primary-400);
+  background: var(--primary-50);
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.selected-images {
+  margin-top: var(--spacing-lg);
+}
+
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.image-preview {
+  position: relative;
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.image-name {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--error);
+  color: white;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+}
+
+.remove-image-btn:hover {
+  background: var(--error-dark);
+}
+
+.images-count {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: left;
+}
+
+/* Actions du formulaire */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  margin-top: var(--spacing-xl);
+}
+
+.actions-left {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.actions-right {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.analyse-btn {
+  background: linear-gradient(135deg, var(--info), var(--info-dark)) !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.analyse-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--info-dark), var(--info)) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md) !important;
+}
+
+.analyse-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  color: var(--text-secondary) !important;
+  border-color: var(--gray-300) !important;
+}
+
+.cancel-btn:hover {
+  background: var(--gray-50) !important;
+  border-color: var(--gray-400) !important;
+}
+
+.submit-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 160px;
+  justify-content: center;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submit-spinner {
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .examen-form-container {
+    padding: var(--spacing-md);
+  }
+
+  .form-header {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+  }
+
+  .header-stats {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .form-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .mesures-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+  }
+
+  .actions-left,
+  .actions-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+
+  .images-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .title-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .form-title h2 {
+    font-size: 1.25rem;
+  }
+
+  .stat-item {
+    min-width: 60px;
+    padding: var(--spacing-sm);
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.625rem;
+  }
+}
+
+/* Animations */
+.form-section {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.image-preview {
+  transition: all 0.2s ease;
+}
+
+.image-preview:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* États de focus */
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  border-color: var(--primary-500) !important;
+  border-width: 2px !important;
+}
+
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-form-field-outline {
+  border-color: var(--error) !important;
+}
+
+/* Amélioration des hints et erreurs */
+.mat-mdc-form-field .mat-mdc-form-field-hint {
+  color: var(--text-tertiary) !important;
+  font-size: 0.75rem !important;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-error {
+  color: var(--error) !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* Sélecteurs Material */
+.mat-mdc-select-value {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-select-placeholder {
+  color: var(--text-tertiary) !important;
+} 

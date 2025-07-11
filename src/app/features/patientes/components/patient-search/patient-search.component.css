@@ -1,0 +1,16 @@
+.search-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+mat-form-field {
+  font-size: 14px;
+}
+
+input {
+  height: 40px;
+}

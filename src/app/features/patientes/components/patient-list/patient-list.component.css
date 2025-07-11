@@ -1,0 +1,467 @@
+.patient-list-container {
+  padding: var(--spacing-lg);
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 30%, var(--gray-50) 100%);
+}
+
+/* ============================
+   EN-TÊTE DE LA LISTE
+   ============================ */
+
+.list-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-primary);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary-50), transparent);
+  opacity: 0.5;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title mat-icon {
+  color: var(--primary-500);
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ============================
+   ACTIONS DE L'EN-TÊTE
+   ============================ */
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.add-patient-button {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-xl) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  box-shadow: var(--shadow-lg) !important;
+  transition: all 0.3s ease !important;
+  padding: var(--spacing-md) var(--spacing-xl) !important;
+  border: none !important;
+  position: relative;
+  overflow: hidden;
+  text-transform: none !important;
+}
+
+.add-patient-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-patient-button:hover::before {
+  left: 100%;
+}
+
+.add-patient-button:hover {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3) !important;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.add-patient-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--shadow-md) !important;
+}
+
+.add-patient-button mat-icon {
+  margin-right: var(--spacing-sm);
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.add-patient-button:hover mat-icon {
+  transform: rotate(180deg);
+}
+
+.add-patient-button span {
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.add-patient-button:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3), var(--shadow-lg) !important;
+}
+
+.add-patient-button:disabled {
+  background: var(--gray-300) !important;
+  color: var(--gray-500) !important;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.add-patient-button:disabled mat-icon {
+  transform: none !important;
+}
+
+/* Animation d'apparition pour le bouton */
+@keyframes buttonFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.add-patient-button {
+  animation: buttonFadeIn 0.5s ease-out;
+}
+
+/* ============================
+   CARTE DU TABLEAU
+   ============================ */
+
+.table-card {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.table-card:hover {
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.table-container {
+  position: relative;
+  min-height: 200px;
+  overflow: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  background: transparent !important;
+}
+
+.mat-mdc-header-row {
+  background: var(--bg-tertiary) !important;
+  border-bottom: 2px solid var(--primary-200) !important;
+}
+
+.mat-mdc-header-cell {
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.025em !important;
+  padding: var(--spacing-lg) var(--spacing-md) !important;
+  border-right: 1px solid var(--gray-200) !important;
+}
+
+.mat-mdc-header-cell:last-child {
+  border-right: none !important;
+}
+
+.mat-mdc-row {
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid var(--gray-200) !important;
+}
+
+.mat-mdc-row:hover {
+  background: var(--primary-50) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.1);
+}
+
+.mat-mdc-cell {
+  padding: var(--spacing-lg) var(--spacing-md) !important;
+  border-right: 1px solid var(--gray-200) !important;
+  color: var(--text-primary) !important;
+  font-size: 0.875rem !important;
+}
+
+.mat-mdc-cell:last-child {
+  border-right: none !important;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+mat-paginator {
+  margin-top: var(--spacing-lg);
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--gray-200) !important;
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl) !important;
+}
+
+tr.mat-row:hover {
+  background-color: var(--bg-secondary);
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  background-color: var(--error-light);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  color: var(--error-dark);
+  text-align: center;
+}
+
+.error-container mat-icon {
+  font-size: 3rem;
+  height: 3rem;
+  width: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.error-container p {
+  margin-bottom: var(--spacing-md);
+  font-size: 1rem;
+}
+
+.error-container button {
+  margin-top: var(--spacing-sm);
+}
+
+/* ============================
+   MENU D'ACTIONS
+   ============================ */
+
+.actions-container {
+  text-align: center;
+}
+
+.actions-button {
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.actions-button:hover {
+  color: var(--primary-500) !important;
+  background: var(--primary-50) !important;
+}
+
+/* Menu d'actions */
+.mat-mdc-menu-panel {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: var(--radius-sm) !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.875rem !important;
+}
+
+.mat-mdc-menu-item:hover {
+  background: var(--primary-50) !important;
+}
+
+.mat-mdc-menu-item mat-icon {
+  margin-right: var(--spacing-sm);
+  color: var(--primary-500);
+}
+
+.mat-mdc-menu-item.delete-action:hover {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.mat-mdc-menu-item.delete-action:hover mat-icon {
+  color: var(--error-dark) !important;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+
+@media (max-width: 768px) {
+  .patient-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .add-patient-button {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-lg) var(--spacing-xl) !important;
+    font-size: 1rem;
+  }
+
+  .add-patient-button mat-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .table-card {
+    border-radius: var(--radius-lg) !important;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: var(--spacing-sm) !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-list-container {
+    padding: var(--spacing-sm);
+  }
+
+  .header-content {
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .add-patient-button {
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+    font-size: 0.9rem;
+  }
+
+  .add-patient-button span {
+    font-size: 0.9rem;
+  }
+
+  .table-card {
+    border-radius: var(--radius-md) !important;
+    margin: var(--spacing-sm) 0;
+  }
+}
+
+/* ============================
+   ANIMATIONS
+   ============================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.table-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.header-content {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* ============================
+   RÉDUCTION DES ANIMATIONS
+   ============================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .table-card,
+  .header-content {
+    animation: none;
+  }
+
+  .mat-mdc-row:hover {
+    transform: none;
+  }
+
+  .add-patient-button:hover {
+    transform: none;
+  }
+}
+
+/* ============================
+   ACCESSIBILITÉ
+   ============================ */
+
+.add-patient-button:focus,
+.actions-button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}

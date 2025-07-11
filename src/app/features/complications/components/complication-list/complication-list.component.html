@@ -1,0 +1,137 @@
+<!-- Container principal -->
+<div class="complications-container">
+  
+  <!-- Header avec titre et actions -->
+  <mat-toolbar class="complications-header">
+    <h2 class="header-title">{{ title }}</h2>
+    <span class="header-subtitle" *ngIf="complications.length > 0">
+      {{ complications.length }} complication{{ complications.length > 1 ? 's' : '' }}
+    </span>
+    <span class="spacer"></span>
+    
+    <button 
+      *ngIf="canAdd" 
+      mat-raised-button 
+      color="primary" 
+      (click)="openAddForm()"
+      class="add-btn">
+      <mat-icon>add</mat-icon>
+      Ajouter une complication
+    </button>
+  </mat-toolbar>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p class="loading-text">Chargement des complications...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <mat-card *ngIf="error$ | async as error" class="error-card">
+    <mat-card-content>
+      <div class="error-content">
+        <mat-icon color="warn">error</mat-icon>
+        <p class="error-message">{{ error }}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Liste des complications -->
+  <div *ngIf="hasComplications" class="complications-list">
+    <mat-card 
+      *ngFor="let complication of complications; trackBy: trackByComplicationId" 
+      class="complication-card"
+      [class.urgent]="getNatureChipColor(complication.nature) === 'warn'"
+      [class.moderate]="getNatureChipColor(complication.nature) === 'accent'">
+      
+      <mat-card-header>
+        <mat-icon mat-card-avatar [color]="getNatureChipColor(complication.nature)">
+          warning
+        </mat-icon>
+        <mat-card-title>{{ complication.nature }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-icon class="subtitle-icon">{{ getLieuIcon(complication.lieu) }}</mat-icon>
+          {{ complication.lieu }} • {{ formatDate(complication.date) }}
+        </mat-card-subtitle>
+        
+        <!-- Menu d'actions -->
+        <div class="card-actions" *ngIf="canEdit || canDelete">
+          <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #actionMenu="matMenu">
+            <button *ngIf="canEdit" mat-menu-item (click)="openEditForm(complication)">
+              <mat-icon>edit</mat-icon>
+              Modifier
+            </button>
+            <button *ngIf="canDelete" mat-menu-item (click)="deleteComplication(complication)">
+              <mat-icon color="warn">delete</mat-icon>
+              Supprimer
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Chip de nature -->
+        <div class="chips-container">
+          <mat-chip-set>
+            <mat-chip [color]="getNatureChipColor(complication.nature)">
+              <mat-icon matChipAvatar>{{ getLieuIcon(complication.lieu) }}</mat-icon>
+              {{ complication.lieu }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <!-- Observation -->
+        <div class="observation-section">
+          <h4 class="observation-title">Observations</h4>
+          <p class="observation-text">{{ truncateText(complication.observation) }}</p>
+          
+          <button 
+            *ngIf="complication.observation.length > 150" 
+            mat-button 
+            color="primary" 
+            class="expand-btn">
+            Voir plus
+          </button>
+        </div>
+      </mat-card-content>
+
+      <!-- Footer avec métadonnées -->
+      <mat-card-actions class="card-footer">
+        <div class="metadata">
+          <span class="metadata-item">
+            <mat-icon class="metadata-icon">schedule</mat-icon>
+            {{ formatDate(complication.date) }}
+          </span>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- État vide -->
+  <div *ngIf="!hasComplications && !(loading$ | async)" class="empty-state">
+    <mat-card class="empty-card">
+      <mat-card-content>
+        <div class="empty-content">
+          <mat-icon class="empty-icon">health_and_safety</mat-icon>
+          <h3 class="empty-title">{{ emptyStateMessage }}</h3>
+          <p class="empty-subtitle">
+            {{ contextData ? 'Aucune complication n\'a été signalée pour ce contexte.' : 'Commencez par ajouter une complication.' }}
+          </p>
+          <button 
+            *ngIf="canAdd" 
+            mat-raised-button 
+            color="primary" 
+            (click)="openAddForm()"
+            class="empty-action-btn">
+            <mat-icon>add</mat-icon>
+            Ajouter une complication
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div> 

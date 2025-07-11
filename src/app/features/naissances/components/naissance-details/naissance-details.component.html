@@ -1,0 +1,141 @@
+<div class="naissance-details-container">
+  
+  <!-- En-tête avec informations générales -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <mat-icon class="main-icon">child_care</mat-icon>
+      </div>
+      <div class="header-info">
+        <h2 class="naissance-title">
+          Détails de la naissance
+          <mat-chip 
+            [color]="getNaissanceStatusColor()" 
+            class="status-chip">
+            <mat-icon>{{ getNaissanceStatusLabel() === 'Vivant' ? 'health_and_safety' : 'dangerous' }}</mat-icon>
+            {{ getNaissanceStatusLabel() }}
+          </mat-chip>
+        </h2>
+        <div class="naissance-metadata">
+          <div class="metadata-item">
+            <mat-icon>{{ getSexeIcon() }}</mat-icon>
+            <span>{{ getSexeLabel() }}</span>
+          </div>
+          <div class="metadata-item" *ngIf="naissance?.poids">
+            <mat-icon>monitor_weight</mat-icon>
+            <span>{{ naissance.poids }}g</span>
+            <mat-chip 
+              *ngIf="getPoidsEvaluation().status" 
+              [color]="getPoidsEvaluation().color"
+              class="evaluation-chip">
+              {{ getPoidsEvaluation().status }}
+            </mat-chip>
+          </div>
+          <div class="metadata-item" *ngIf="naissance?.perimetreCranien">
+            <mat-icon>psychology</mat-icon>
+            <span>{{ naissance.perimetreCranien }}cm (PC)</span>
+            <mat-chip 
+              *ngIf="getPerimetreEvaluation().status" 
+              [color]="getPerimetreEvaluation().color"
+              class="evaluation-chip">
+              {{ getPerimetreEvaluation().status }}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-actions" *ngIf="showActions">
+      <button 
+        mat-icon-button 
+        [matMenuTriggerFor]="actionsMenu"
+        class="actions-menu-btn">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      
+      <mat-menu #actionsMenu="matMenu">
+        <button mat-menu-item (click)="onEditNaissance()">
+          <mat-icon>edit</mat-icon>
+          <span>Modifier</span>
+        </button>
+        <button mat-menu-item (click)="onViewFullNaissance()">
+          <mat-icon>visibility</mat-icon>
+          <span>Voir détails complets</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- Alertes médicales -->
+  <div *ngIf="medicalAlerts.length > 0" class="medical-alerts">
+    <h3 class="alerts-title">
+      <mat-icon>health_and_safety</mat-icon>
+      Alertes médicales
+    </h3>
+    <div class="alerts-list">
+      <div 
+        *ngFor="let alert of medicalAlerts" 
+        class="alert" 
+        [class.alert-warning]="alert.type === 'warning'"
+        [class.alert-error]="alert.type === 'error'"
+        [class.alert-info]="alert.type === 'info'">
+        <mat-icon class="alert-icon">{{ alert.icon }}</mat-icon>
+        <div class="alert-content">
+          <h4 class="alert-title">{{ alert.title }}</h4>
+          <p class="alert-message">{{ alert.message }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <mat-divider class="main-divider"></mat-divider>
+
+  <!-- Onglets pour vaccins et complications -->
+  <div class="tabs-section">
+    <mat-tab-group class="details-tabs" animationDuration="300ms">
+      
+      <!-- Onglet Vaccins -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">vaccines</mat-icon>
+          <span class="tab-label">Vaccins de naissance</span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <app-vaccins-list 
+            [mode]="VaccinMode.NAISSANCE"
+            [naissanceId]="naissance.id">
+          </app-vaccins-list>
+          
+          
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Complications -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">warning</mat-icon>
+          <span class="tab-label">Complications</span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div class="tab-description">
+            <mat-icon>info</mat-icon>
+            <span>Complications néonatales et interventions médicales spécialisées</span>
+          </div>
+          
+          <app-complication-list
+            [contextData]="(complicationContextData$ | async) || undefined"
+            (complicationAdded)="onComplicationAdded($event)"
+            (complicationUpdated)="onComplicationUpdated($event)"
+            (complicationDeleted)="onComplicationDeleted($event)">
+          </app-complication-list>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+
+</div> 

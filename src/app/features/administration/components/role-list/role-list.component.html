@@ -1,0 +1,149 @@
+<div class="roles-list-container">
+  <!-- En-tête avec bouton d'ajout -->
+  <div class="list-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon>admin_panel_settings</mat-icon>
+        Gestion des Rôles
+      </h1>
+      <div class="header-actions">
+        <button mat-raised-button (click)="addRole()" class="create-button">
+          <mat-icon>add_circle</mat-icon>
+          <span>Nouveau Rôle</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des rôles -->
+  <mat-card class="table-card">
+    <mat-card-content>
+      <!-- Filtres -->
+      <div class="search-filters">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Rechercher un rôle</mat-label>
+          <input matInput 
+                 placeholder="Nom ou description..." 
+                 (input)="onSearch($event)"
+                 [value]="searchTerm">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Loader -->
+      <div class="loading-container" *ngIf="(loading$ | async) && !(error$ | async)">
+        <mat-spinner></mat-spinner>
+        <p>Chargement des rôles...</p>
+      </div>
+      
+      <!-- Message d'erreur -->
+      <div class="error-state" *ngIf="error$ | async as error">
+        <div class="error-content">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <h3>Erreur de chargement</h3>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="refreshRoles()">
+            <mat-icon>refresh</mat-icon>
+            Réessayer
+          </button>
+        </div>
+      </div>
+      
+      <!-- Contenu normal quand pas d'erreur -->
+      <div *ngIf="!(error$ | async)">
+        <div class="table-container">
+          <table mat-table 
+                 [dataSource]="dataSource" 
+                 matSort 
+                 (matSortChange)="onSortChange($event)">
+            
+            <!-- Nom Column -->
+            <ng-container matColumnDef="nom">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="nom">Nom</th>
+              <td mat-cell *matCellDef="let role">
+                <div class="cell-content">
+                  <div class="role-info">
+                    <div class="role-name">{{ role.nom }}</div>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="description">Description</th>
+              <td mat-cell *matCellDef="let role">
+                <span class="description-text">{{ role.description || 'Aucune description' }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let role">
+                <div class="actions-container">
+                  <button mat-icon-button 
+                          [matMenuTriggerFor]="actionsMenu"
+                          matTooltip="Actions"
+                          class="actions-button">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  
+                  <mat-menu #actionsMenu="matMenu">
+                    <button mat-menu-item (click)="viewRole(role.id)">
+                      <mat-icon>visibility</mat-icon>
+                      <span>Voir les détails</span>
+                    </button>
+                    
+                    <button mat-menu-item (click)="editRole(role.id)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Modifier</span>
+                    </button>
+                    
+                    <button mat-menu-item (click)="duplicateRole(role)">
+                      <mat-icon>content_copy</mat-icon>
+                      <span>Dupliquer</span>
+                    </button>
+                    
+                    <button mat-menu-item (click)="viewUsers(role)">
+                      <mat-icon>people</mat-icon>
+                      <span>Voir les utilisateurs</span>
+                    </button>
+                    
+                    <mat-divider></mat-divider>
+                    
+                    <button mat-menu-item (click)="deleteRole(role)" class="delete-action">
+                      <mat-icon>delete</mat-icon>
+                      <span>Supprimer</span>
+                    </button>
+                  </mat-menu>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="role-row"></tr>
+            
+            <!-- Row shown when there is no matching data -->
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="3">
+                <div class="no-data-message">
+                  <mat-icon>admin_panel_settings</mat-icon>
+                  <p>Aucun rôle trouvé</p>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <mat-paginator 
+          [length]="(totalElements$ | async) || 0" 
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [pageIndex]="pageIndex"
+          (page)="onPageChange($event)">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

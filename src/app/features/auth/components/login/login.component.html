@@ -1,0 +1,162 @@
+<div class="login-container">
+  <!-- Background decorative elements -->
+  <div class="background-decoration">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+  </div>
+
+  <div class="login-wrapper">
+    <!-- Compact Branding Section -->
+    <div class="branding-section">
+      <div class="logo-container">
+        <div class="logo-wrapper">
+          <img src="assets/images/logo.png" alt="Omoumati Logo" class="app-logo">
+        </div>
+        <div class="brand-text">
+          <h1 class="app-title">Omoumati</h1>
+          <p class="app-tagline">Santé Maternelle</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modern Login Card -->
+    <div class="login-card">
+      <!-- Card Header with gradient -->
+      <div class="card-header">
+        <div class="header-content">
+          <div class="header-icon-wrapper">
+            <mat-icon class="header-icon">lock_person</mat-icon>
+          </div>
+          <h2 class="card-title">Connexion</h2>
+          <p class="card-subtitle">Accédez à votre espace professionnel</p>
+        </div>
+        <div class="header-decoration"></div>
+      </div>
+      
+      <div class="card-content">
+        <!-- Loading Overlay -->
+        <div *ngIf="loading$ | async" class="loading-overlay">
+          <div class="loading-content">
+            <div class="loading-spinner">
+              <mat-spinner diameter="32" color="primary"></mat-spinner>
+            </div>
+            <p class="loading-text">Connexion en cours...</p>
+          </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div *ngIf="error$ | async as error" class="error-alert">
+          <div class="error-content">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <div class="error-text">
+              <span class="error-title">Erreur de connexion</span>
+              <span class="error-message">{{ error }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Enhanced Login Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Email Field with modern styling -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Adresse email</mat-label>
+              <input 
+                matInput 
+                type="email" 
+                formControlName="email" 
+                placeholder="votre.email@hopital.ma"
+                autocomplete="email"
+                required>
+              <mat-icon matPrefix class="field-icon">alternate_email</mat-icon>
+              <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+                L'adresse email est requise
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+                Veuillez saisir une adresse email valide
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <!-- Password Field with enhanced security -->
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Mot de passe</mat-label>
+              <input 
+                matInput 
+                [type]="hidePassword ? 'password' : 'text'" 
+                formControlName="password" 
+                placeholder="Entrez votre mot de passe"
+                autocomplete="current-password"
+                required>
+              <mat-icon matPrefix class="field-icon">lock</mat-icon>
+              <button 
+                type="button" 
+                mat-icon-button 
+                matSuffix 
+                (click)="hidePassword = !hidePassword"
+                [attr.aria-label]="'Afficher le mot de passe'"
+                class="password-toggle">
+                <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                Le mot de passe est requis
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+                Le mot de passe doit comporter au moins 6 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Additional Options -->
+           <!--
+          <div class="form-options">
+            <div class="remember-section">
+              <mat-checkbox formControlName="rememberMe" class="remember-checkbox">
+                Se souvenir de moi
+              </mat-checkbox>
+            </div>
+            <a href="#" class="forgot-link" (click)="navigateToForgotPassword()">
+              Mot de passe oublié ?
+            </a>
+          </div>
+          -->
+          
+          <!-- Enhanced Submit Button -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit" 
+            class="login-button"
+            [disabled]="loginForm.invalid || (loading$ | async)">
+            <mat-icon class="button-icon">login</mat-icon>
+            <span>Se connecter</span>
+            <div class="button-ripple"></div>
+          </button>
+        </form>
+
+        <!-- Registration Link -->
+         <!--
+        <div class="register-section">
+          <p class="register-text">
+            Pas encore de compte ?
+            <a href="#" class="register-link" (click)="navigateToRegister()">
+              Créer un compte
+            </a>
+          </p>
+        </div>
+        -->
+      </div>
+    </div>
+
+    <!-- Compact Footer -->
+    <div class="footer-section">
+      <div class="security-badge">
+        <mat-icon class="security-icon">verified_user</mat-icon>
+        <span class="security-text">Connexion sécurisée SSL</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,182 @@
+<div class="examens-list-container">
+  <!-- En-tête de la liste -->
+  <div class="list-header">
+    <div class="header-info">
+      <div class="list-title">
+        <mat-icon class="title-icon">biotech</mat-icon>
+        <h3>Examens biologiques</h3>
+      </div>
+      <p class="patient-name" *ngIf="patienteName">{{ patienteName }}</p>
+    </div>
+
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="onAddExamen()">
+        <mat-icon>add</mat-icon>
+        Nouvel examen
+      </button>
+      <button mat-icon-button (click)="onRefresh()" matTooltip="Actualiser">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- États de chargement et d'erreur -->
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement des examens biologiques...</p>
+  </div>
+
+  <div class="error-container" *ngIf="error$ | async as error">
+    <mat-icon class="error-icon">error</mat-icon>
+    <h4>Erreur de chargement</h4>
+    <p>{{ error }}</p>
+    <button mat-button color="primary" (click)="onRefresh()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="examens-content" *ngIf="!(loading$ | async) && !(error$ | async)">
+    
+    <!-- État vide -->
+    <div class="empty-state" *ngIf="(examens$ | async)?.length === 0">
+      <mat-icon class="empty-icon">biotech</mat-icon>
+      <h4>Aucun examen biologique</h4>
+      <p>Commencez par ajouter un examen biologique pour cette consultation.</p>
+      <button mat-raised-button color="primary" (click)="onAddExamen()">
+        <mat-icon>add</mat-icon>
+        Ajouter un examen
+      </button>
+    </div>
+
+    <!-- Grille des examens -->
+    <div class="examens-grid" *ngIf="(examens$ | async)?.length! > 0">
+      <div 
+        class="examen-card"
+        [class.has-anomalies]="hasAnomalies(examen)"
+        *ngFor="let examen of examens$ | async; trackBy: trackByExamenId"
+        (click)="onSelectExamen(examen)"
+      >
+        
+        <!-- En-tête de la carte -->
+        <div class="card-header">
+          <div class="examen-info">
+            <div class="date-info">
+              <mat-chip [ngClass]="getStatutClass(examen)" class="status-chip">
+                <mat-icon>{{ getStatutIcon(examen) }}</mat-icon>
+                {{ getStatutText(examen) }}
+              </mat-chip>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onEditExamen(examen)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button mat-menu-item (click)="analyserValeurs(examen)">
+                <mat-icon>analytics</mat-icon>
+                <span>Analyser</span>
+              </button>
+              <button mat-menu-item (click)="onDeleteExamen(examen)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+
+        <!-- Contenu principal de la carte -->
+        <div class="card-content">
+          
+          <!-- Actes biologiques -->
+          <div class="actes-section">
+            <h5 class="section-title">
+              <mat-icon>science</mat-icon>
+              Actes biologiques
+            </h5>
+            <div class="actes-grid">
+              <div 
+                class="acte-item" 
+                *ngFor="let acte of examen.actesBiologiques" 
+                [class.acte-anomalie]="getActesAvecAnomalies(examen).includes(acte)"
+                [class.acte-critique]="getActesCritiques(examen).includes(acte)"
+              >
+                <div class="acte-header">
+                  <span class="acte-nom">{{ acte.nom }}</span>
+                  <mat-icon 
+                    *ngIf="getActesCritiques(examen).includes(acte)" 
+                    class="acte-status-icon critical"
+                    matTooltip="Valeur critique"
+                  >
+                    error
+                  </mat-icon>
+                  <mat-icon 
+                    *ngIf="getActesAvecAnomalies(examen).includes(acte) && !getActesCritiques(examen).includes(acte)" 
+                    class="acte-status-icon anomalie"
+                    matTooltip="Valeur anormale"
+                  >
+                    warning
+                  </mat-icon>
+                </div>
+                <div class="acte-valeur" *ngIf="acte.valeur && acte.valeur.trim() !== ''">
+                  <span class="valeur">{{ acte.valeur }}</span>
+                  <span class="unite" *ngIf="acte.unite">{{ acte.unite }}</span>
+                </div>
+                <div class="acte-normes" *ngIf="acte.normesRef">
+                  <small>Normes: {{ acte.normesRef }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Observations -->
+          <div class="observation-section" *ngIf="examen.observation">
+            <h5 class="section-title">
+              <mat-icon>note</mat-icon>
+              Observations
+            </h5>
+            <p class="observation-text">{{ examen.observation }}</p>
+          </div>
+
+          <!-- Alertes médicales -->
+          <div class="alerts-section" *ngIf="hasAnomalies(examen)">
+            <div class="medical-alert" *ngIf="getActesCritiques(examen).length > 0">
+              <mat-icon class="alert-icon critical">error</mat-icon>
+              <span class="alert-text">
+                {{ getActesCritiques(examen).length }} valeur(s) critique(s) - Intervention urgente recommandée
+              </span>
+            </div>
+            <div class="medical-alert" *ngIf="getActesAvecAnomalies(examen).length > 0 && getActesCritiques(examen).length === 0">
+              <mat-icon class="alert-icon warning">warning</mat-icon>
+              <span class="alert-text">
+                {{ getActesAvecAnomalies(examen).length }} anomalie(s) détectée(s) - Suivi recommandé
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pied de carte -->
+        <div class="card-footer">
+          <div class="quick-actions">
+            <button mat-icon-button class="quick-action" (click)="onEditExamen(examen); $event.stopPropagation()" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="quick-action" (click)="analyserValeurs(examen); $event.stopPropagation()" matTooltip="Analyser">
+              <mat-icon>analytics</mat-icon>
+            </button>
+          </div>
+          
+          <div class="status-indicator">
+            <mat-icon [ngClass]="getStatutClass(examen)">{{ getStatutIcon(examen) }}</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

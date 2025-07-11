@@ -1,0 +1,340 @@
+<div class="examen-form-container">
+  
+  <!-- En-tête du formulaire -->
+  <div class="form-header">
+    <div class="header-info">
+      <div class="form-title">
+        <mat-icon class="title-icon">monitor_heart</mat-icon>
+        <h2>{{ isEdit ? 'Modifier' : 'Nouvel' }} examen échographique</h2>
+      </div>
+      <p class="patient-name" *ngIf="patienteName">{{ patienteName }}</p>
+    </div>
+    
+    <div class="header-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ getNombreMesuresRenseignees() }}</span>
+        <span class="stat-label">Mesures renseignées</span>
+      </div>
+      <div class="stat-item" *ngIf="data.examen?.images && data.examen!.images.length > 0">
+        <span class="stat-value">{{ data.examen?.images?.length || 0 }}</span>
+        <span class="stat-label">Images</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire principal -->
+  <form [formGroup]="examenForm" (ngSubmit)="onSubmit()" class="examen-form">
+    
+    <!-- Section Informations générales -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>info</mat-icon>
+          Informations générales
+        </mat-card-title>
+        <mat-card-subtitle>
+          Informations de base sur l'examen échographique
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="field-nb-embryons">
+            <mat-label>Nombre d'embryons</mat-label>
+            <input 
+              matInput 
+              type="number"
+              formControlName="nbEmbryons"
+              min="0"
+              max="10"
+              placeholder="1"
+            >
+            <mat-error *ngIf="examenForm.get('nbEmbryons')?.hasError('required')">
+              Le nombre d'embryons est requis
+            </mat-error>
+            <mat-error *ngIf="examenForm.get('nbEmbryons')?.hasError('min')">
+              Le nombre doit être positif
+            </mat-error>
+            <mat-error *ngIf="examenForm.get('nbEmbryons')?.hasError('max')">
+              Nombre maximum dépassé
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Mesures biométriques -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>straighten</mat-icon>
+          Mesures biométriques
+        </mat-card-title>
+        <mat-card-subtitle>
+          Saisir les différentes mesures effectuées lors de l'échographie
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="mesures-grid">
+          
+          <!-- LCC -->
+          <mat-form-field appearance="outline" class="field-lcc">
+            <mat-label>LCC (Longueur Cranio-Caudale)</mat-label>
+            <input 
+              matInput 
+              formControlName="lcc"
+              placeholder="Ex: 45mm"
+            >
+            <mat-hint>Mesure en premier trimestre</mat-hint>
+          </mat-form-field>
+
+          <!-- CN -->
+          <mat-form-field appearance="outline" class="field-cn">
+            <mat-label>CN (Clarté Nucale)</mat-label>
+            <input 
+              matInput 
+              formControlName="cn"
+              placeholder="Ex: 1.2mm"
+            >
+            <mat-hint>Mesure de dépistage (11-14 SA)</mat-hint>
+          </mat-form-field>
+
+          <!-- BIP -->
+          <mat-form-field appearance="outline" class="field-bip">
+            <mat-label>BIP (Diamètre Bipariétal)</mat-label>
+            <input 
+              matInput 
+              formControlName="bip"
+              placeholder="Ex: 95mm"
+            >
+            <mat-hint>Diamètre de la tête du fœtus</mat-hint>
+          </mat-form-field>
+
+          <!-- DAT -->
+          <mat-form-field appearance="outline" class="field-dat">
+            <mat-label>DAT (Diamètre Abdominal Transverse)</mat-label>
+            <input 
+              matInput 
+              formControlName="dat"
+              placeholder="Ex: 85mm"
+            >
+            <mat-hint>Diamètre du ventre du fœtus</mat-hint>
+          </mat-form-field>
+
+          <!-- Longueur fémorale -->
+          <mat-form-field appearance="outline" class="field-longueur-femoral">
+            <mat-label>Longueur fémorale</mat-label>
+            <input 
+              matInput 
+              type="number"
+              formControlName="longueurFemoral"
+              min="0"
+              placeholder="0"
+            >
+            <mat-hint>Longueur de l'os de la cuisse (mm)</mat-hint>
+            <mat-error *ngIf="examenForm.get('longueurFemoral')?.hasError('min')">
+              La valeur doit être positive
+            </mat-error>
+          </mat-form-field>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Évaluation annexielle -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>visibility</mat-icon>
+          Évaluation annexielle
+        </mat-card-title>
+        <mat-card-subtitle>
+          Évaluation du placenta et du liquide amniotique
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="form-row">
+          
+          <!-- Placenta -->
+          <mat-form-field appearance="outline" class="field-placenta">
+            <mat-label>Placenta</mat-label>
+            <mat-select formControlName="placenta">
+              <mat-option value="">-- Sélectionner --</mat-option>
+              <mat-option *ngFor="let option of placentaOptions" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Position et aspect du placenta</mat-hint>
+          </mat-form-field>
+
+          <!-- Liquide amniotique -->
+          <mat-form-field appearance="outline" class="field-liquide">
+            <mat-label>Liquide amniotique</mat-label>
+            <mat-select formControlName="liquideAmniotique">
+              <mat-option value="">-- Sélectionner --</mat-option>
+              <mat-option *ngFor="let option of liquideAmniotiqueOptions" [value]="option">
+                {{ option }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Quantité de liquide amniotique</mat-hint>
+          </mat-form-field>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Images échographiques -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>image</mat-icon>
+          Images échographiques
+        </mat-card-title>
+        <mat-card-subtitle>
+          Ajout et visualisation des images d'échographie
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        
+        <!-- Images existantes (mode édition) -->
+        <div class="existing-images" *ngIf="isEdit && data.examen?.images && data.examen!.images.length > 0">
+          <div class="section-title">
+            <h4>Images existantes ({{ data.examen?.images?.length || 0 }})</h4>
+            <button 
+              type="button"
+              mat-stroked-button
+              (click)="viewExistingImages()"
+              class="view-images-btn"
+            >
+              <mat-icon>photo_library</mat-icon>
+              Voir les images
+            </button>
+          </div>
+        </div>
+
+        <!-- Sélection de nouvelles images -->
+        <div class="image-upload">
+          <input 
+            type="file" 
+            #fileInput
+            multiple
+            accept="image/*"
+            (change)="onImageSelected($event)"
+            style="display: none;"
+          >
+          
+          <button 
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="fileInput.click()"
+            class="upload-btn"
+          >
+            <mat-icon>add_a_photo</mat-icon>
+            Ajouter des images
+          </button>
+
+          <!-- Aperçu des images sélectionnées -->
+          <div class="selected-images" *ngIf="selectedImages.length > 0">
+            <div class="images-grid">
+              <div 
+                *ngFor="let image of selectedImages; let i = index"
+                class="image-preview"
+              >
+                <button 
+                  type="button"
+                  mat-icon-button
+                  (click)="removeSelectedImage(i)"
+                  class="remove-image-btn"
+                  matTooltip="Supprimer cette image"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+                <span class="image-name">{{ image.name }}</span>
+              </div>
+            </div>
+            <p class="images-count">{{ selectedImages.length }} image(s) sélectionnée(s)</p>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section Observations -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>note</mat-icon>
+          Observations et commentaires
+        </mat-card-title>
+        <mat-card-subtitle>
+          Notes et observations particulières sur l'examen
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="field-observation">
+          <mat-label>Observations</mat-label>
+          <textarea 
+            matInput 
+            formControlName="observation"
+            rows="4"
+            placeholder="Saisir vos observations et commentaires..."
+          ></textarea>
+          <mat-hint>Observations médicales, anomalies détectées, recommandations...</mat-hint>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <div class="actions-left">
+        <button 
+          type="button"
+          mat-raised-button
+          *ngIf="isEdit && data.examen"
+          (click)="analyserMesures()"
+          class="analyse-btn"
+          [disabled]="!hasValidData()"
+        >
+          <mat-icon>analytics</mat-icon>
+          Analyser les mesures
+        </button>
+      </div>
+
+      <div class="actions-right">
+        <button 
+          type="button"
+          mat-stroked-button
+          (click)="onCancel()"
+          class="cancel-btn"
+        >
+          Annuler
+        </button>
+        
+        <button 
+          type="submit"
+          mat-raised-button 
+          color="primary"
+          [disabled]="!examenForm.valid || (loading$ | async)"
+          class="submit-btn"
+        >
+          <mat-spinner 
+            *ngIf="loading$ | async" 
+            diameter="20"
+            class="submit-spinner"
+          ></mat-spinner>
+          <mat-icon *ngIf="!(loading$ | async)">
+            {{ isEdit ? 'save' : 'add' }}
+          </mat-icon>
+          {{ isEdit ? 'Mettre à jour' : 'Créer' }} l'examen
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+</div> 

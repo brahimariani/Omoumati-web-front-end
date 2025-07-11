@@ -1,0 +1,453 @@
+/* ====================
+   LAYOUT PRINCIPAL
+   ==================== */
+
+.centre-form-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-secondary);
+  position: relative;
+}
+
+/* ====================
+   HEADER DU FORMULAIRE
+   ==================== */
+
+.form-header {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.form-title mat-icon {
+  color: var(--primary-500);
+  font-size: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.close-button {
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.close-button:hover {
+  color: var(--error) !important;
+  background: var(--error-light) !important;
+}
+
+/* ====================
+   OVERLAY DE CHARGEMENT
+   ==================== */
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  gap: var(--spacing-lg);
+}
+
+.loading-overlay p {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
+
+/* ====================
+   FORMULAIRE
+   ==================== */
+
+.centre-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.form-content {
+  flex: 1;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  overflow-y: auto;
+}
+
+/* ====================
+   SECTIONS DU FORMULAIRE
+   ==================== */
+
+.form-section {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-section:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.form-section .mat-mdc-card-header {
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg) var(--spacing-xl) !important;
+}
+
+.form-section .mat-mdc-card-content {
+  padding: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl) !important;
+}
+
+.form-section .mat-mdc-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-md) !important;
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 1.125rem !important;
+  margin: 0 !important;
+}
+
+.form-section .mat-mdc-card-title mat-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.25rem !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.form-section .mat-mdc-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+  margin: var(--spacing-xs) 0 0 0 !important;
+}
+
+/* ====================
+   RANGÉES DE FORMULAIRE
+   ==================== */ 
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-row.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+/* ====================
+   CHAMPS DE FORMULAIRE
+   ==================== */
+
+.mat-mdc-form-field {
+  font-family: var(--font-family) !important;
+}
+
+.mat-mdc-form-field.full-width {
+  width: 100%;
+}
+
+.mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-lg) !important;
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gray-300) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--primary-500) !important;
+}
+
+.mat-mdc-form-field.error .mat-mdc-form-field-outline {
+  color: var(--error) !important;
+}
+
+.mat-mdc-form-field-label {
+  color: var(--text-secondary) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--primary-500) !important;
+}
+
+.mat-mdc-input-element,
+.mat-mdc-select-value {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-input-element::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* Icônes des champs */
+.mat-mdc-form-field .mat-mdc-form-field-icon-suffix mat-icon {
+  color: var(--text-secondary) !important;
+  transition: color 0.2s ease !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-suffix mat-icon {
+  color: var(--primary-500) !important;
+}
+
+.mat-mdc-form-field.error .mat-mdc-form-field-icon-suffix mat-icon {
+  color: var(--error) !important;
+}
+
+/* Messages d'erreur */
+.mat-mdc-form-field-error {
+  color: var(--error) !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* Messages d'aide */
+.mat-mdc-form-field-hint {
+  color: var(--text-tertiary) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Sélecteurs */
+.mat-mdc-select-panel {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.mat-mdc-option {
+  color: var(--text-primary) !important;
+}
+
+.mat-mdc-option:hover {
+  background: var(--primary-50) !important;
+}
+
+.mat-mdc-option.mat-mdc-option-active {
+  background: var(--primary-100) !important;
+  color: var(--primary-700) !important;
+}
+
+/* ====================
+   ACTIONS DU FORMULAIRE
+   ==================== */
+
+.form-actions {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--gray-200);
+  padding: var(--spacing-xl);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.actions-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+}
+
+.primary-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.cancel-button {
+  color: var(--text-secondary) !important;
+  font-weight: var(--font-weight-medium) !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-button:hover {
+  background: var(--gray-100) !important;
+  color: var(--text-primary) !important;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  padding: 0 var(--spacing-xl) !important;
+  height: 44px !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s ease !important;
+}
+
+.submit-button:hover:not([disabled]) {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+.submit-button:disabled {
+  background: var(--gray-300) !important;
+  color: var(--gray-500) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+.submit-button mat-icon {
+  margin-right: var(--spacing-sm) !important;
+}
+
+/* ====================
+   CARTE RÉSUMÉ
+   ==================== */
+
+.summary-card {
+  background: var(--info-light) !important;
+  border: 1px solid var(--info) !important;
+  border-radius: var(--radius-xl) !important;
+  margin: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl) !important;
+}
+
+.summary-card .mat-mdc-card-header {
+  padding: var(--spacing-lg) var(--spacing-xl) 0 var(--spacing-xl) !important;
+}
+
+.summary-card .mat-mdc-card-content {
+  padding: var(--spacing-md) var(--spacing-xl) var(--spacing-lg) var(--spacing-xl) !important;
+}
+
+.summary-card .mat-mdc-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-sm) !important;
+  color: var(--info-dark) !important;
+  font-size: 1rem !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin: 0 !important;
+}
+
+.summary-card .mat-mdc-card-title mat-icon {
+  color: var(--info) !important;
+  font-size: 1.125rem !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.summary-item .label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--info-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.summary-item .value {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ====================
+   RESPONSIVE
+   ==================== */
+
+@media (max-width: 768px) {
+  .centre-form-container {
+    height: 100vh;
+  }
+
+  .header-content {
+    padding: var(--spacing-md);
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+  }
+
+  .form-content {
+    padding: var(--spacing-md);
+    gap: var(--spacing-lg);
+  }
+
+  .form-section .mat-mdc-card-header {
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md) var(--spacing-md) !important;
+  }
+
+  .form-section .mat-mdc-card-content {
+    padding: 0 var(--spacing-md) var(--spacing-lg) var(--spacing-md) !important;
+  }
+
+  .form-row.two-columns {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .form-actions {
+    padding: var(--spacing-md);
+  }
+
+  .actions-content {
+    flex-direction: column-reverse;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .primary-actions {
+    justify-content: center;
+  }
+
+  .summary-card {
+    margin: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md) !important;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title mat-icon {
+    display: none;
+  }
+
+  .submit-button span {
+    font-size: 0.875rem;
+  }
+} 

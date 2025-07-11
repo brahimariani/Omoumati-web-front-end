@@ -1,0 +1,292 @@
+<div class="examens-list-container">
+
+  <!-- En-tête avec actions -->
+  <div class="list-header">
+    <div class="header-info">
+      <div class="title-section">
+        <div class="title-icon">
+          <mat-icon class="header-icon">monitor_heart</mat-icon>
+        </div>
+        <div class="title-content">
+          <h3>Examens échographiques</h3>
+          <p class="patient-info" *ngIf="patienteName">{{ patienteName }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button 
+        mat-icon-button
+        (click)="onRefresh()"
+        matTooltip="Actualiser la liste"
+        class="refresh-btn"
+        [disabled]="loading$ | async"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+      
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="onAddExamen()"
+        class="add-btn"
+      >
+        <mat-icon>add</mat-icon>
+        Nouvel examen
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement des examens échographiques...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div class="error-container" *ngIf="error$ | async as error">
+    <mat-icon class="error-icon">error</mat-icon>
+    <div class="error-content">
+      <h4>Erreur lors du chargement</h4>
+      <p>{{ error }}</p>
+      <button mat-stroked-button (click)="onRefresh()" class="retry-btn">
+        <mat-icon>refresh</mat-icon>
+        Réessayer
+      </button>
+    </div>
+  </div>
+
+  <!-- Liste des examens -->
+  <div class="examens-grid" *ngIf="!(loading$ | async) && !(error$ | async)">
+    
+    <!-- Message si aucun examen -->
+    <div class="empty-state" *ngIf="(examens$ | async)?.length === 0">
+      <div class="empty-icon-container">
+        <mat-icon class="empty-icon">image_not_supported</mat-icon>
+      </div>
+      <h4>Aucun examen échographique</h4>
+      <p>Créez le premier examen échographique pour cette consultation.</p>
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="onAddExamen()"
+        class="empty-action-btn"
+      >
+        <mat-icon>add</mat-icon>
+        Créer un examen
+      </button>
+    </div>
+
+    <!-- Cartes des examens améliorées -->
+    <div 
+      *ngFor="let examen of examens$ | async; trackBy: trackByExamenId"
+      class="examen-card-wrapper"
+      (click)="onSelectExamen(examen)"
+    >
+      <div class="examen-card" [class]="getStatutClass(examen)">
+        
+        <!-- Barre de statut -->
+        <div class="status-bar" [class]="getStatutClass(examen)"></div>
+        
+        <!-- En-tête de la carte -->
+        <div class="card-header">
+          <div class="header-main">
+            <div class="exam-type">
+              <mat-icon class="exam-icon">monitor_heart</mat-icon>
+              <span class="exam-label">Échographie</span>
+            </div>
+            
+          </div>
+
+          <div class="header-status">
+            <div class="status-indicator" [class]="getStatutClass(examen)">
+              <mat-icon [matTooltip]="getStatutText(examen)">
+                {{ getStatutIcon(examen) }}
+              </mat-icon>
+            </div>
+            
+            <!-- Menu d'actions -->
+            <button 
+              mat-icon-button 
+              [matMenuTriggerFor]="examensMenu"
+              (click)="$event.stopPropagation()"
+              class="menu-btn"
+              matTooltip="Actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #examensMenu="matMenu">
+              <button mat-menu-item (click)="onEditExamen(examen)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <button 
+                mat-menu-item 
+                (click)="onViewImages(examen)"
+                *ngIf="examen.images && examen.images.length > 0"
+              >
+                <mat-icon>image</mat-icon>
+                <span>Voir les images</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="onDeleteExamen(examen)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Supprimer</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="card-content">
+          
+          <!-- Métriques principales -->
+          <div class="metrics-row">
+            
+            <!-- Nombre d'embryons -->
+            <div class="metric-card embryons" *ngIf="examen.nbEmbryons > 0">
+              <div class="metric-icon">
+                <mat-icon>child_care</mat-icon>
+              </div>
+              <div class="metric-content">
+                <span class="metric-value">{{ examen.nbEmbryons }}</span>
+                <span class="metric-label">Embryon{{ examen.nbEmbryons > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+
+            <!-- Nombre de mesures -->
+            <div class="metric-card mesures">
+              <div class="metric-icon">
+                <mat-icon>straighten</mat-icon>
+              </div>
+              <div class="metric-content">
+                <span class="metric-value">{{ getNombreMesures(examen) }}</span>
+                <span class="metric-label">Mesure{{ getNombreMesures(examen) > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+
+            <!-- Nombre d'images -->
+            <div class="metric-card images" *ngIf="examen.images && examen.images.length > 0">
+              <div class="metric-icon">
+                <mat-icon>image</mat-icon>
+              </div>
+              <div class="metric-content">
+                <span class="metric-value">{{ examen.images.length }}</span>
+                <span class="metric-label">Image{{ examen.images.length > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Mesures détaillées -->
+          <div class="details-section" *ngIf="formatMesuresPrincipales(examen) !== 'Aucune mesure'">
+            <div class="section-header">
+              <mat-icon class="section-icon">straighten</mat-icon>
+              <h5 class="section-title">Mesures biométriques</h5>
+            </div>
+            <div class="measures-grid">
+              <div class="measure-item" *ngIf="examen.lcc && examen.lcc.trim()">
+                <span class="measure-label">LCC</span>
+                <span class="measure-value">{{ examen.lcc }}</span>
+              </div>
+              <div class="measure-item" *ngIf="examen.cn && examen.cn.trim()">
+                <span class="measure-label">CN</span>
+                <span class="measure-value">{{ examen.cn }}</span>
+              </div>
+              <div class="measure-item" *ngIf="examen.bip && examen.bip.trim()">
+                <span class="measure-label">BIP</span>
+                <span class="measure-value">{{ examen.bip }}</span>
+              </div>
+              <div class="measure-item" *ngIf="examen.dat && examen.dat.trim()">
+                <span class="measure-label">DAT</span>
+                <span class="measure-value">{{ examen.dat }}</span>
+              </div>
+              <div class="measure-item" *ngIf="examen.longueurFemoral > 0">
+                <span class="measure-label">LF</span>
+                <span class="measure-value">{{ examen.longueurFemoral }} mm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Évaluation annexielle -->
+          <div class="details-section" *ngIf="examen.placenta || examen.liquideAmniotique">
+            <div class="section-header">
+              <mat-icon class="section-icon">visibility</mat-icon>
+              <h5 class="section-title">Évaluation annexielle</h5>
+            </div>
+            <div class="annexes-grid">
+              <div class="annexe-item" *ngIf="examen.placenta">
+                <div class="annexe-label">
+                  <mat-icon>favorite</mat-icon>
+                  <span>Placenta</span>
+                </div>
+                <span class="annexe-value">{{ examen.placenta }}</span>
+              </div>
+              <div class="annexe-item" *ngIf="examen.liquideAmniotique">
+                <div class="annexe-label">
+                  <mat-icon>water_drop</mat-icon>
+                  <span>Liquide amniotique</span>
+                </div>
+                <span class="annexe-value">{{ examen.liquideAmniotique }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anomalies détectées -->
+          <div class="details-section anomalies" *ngIf="hasAnomalies(examen)">
+            <div class="section-header">
+              <mat-icon class="section-icon warning">warning</mat-icon>
+              <h5 class="section-title">Anomalies détectées</h5>
+            </div>
+            <div class="anomalies-list">
+              <div 
+                *ngFor="let anomalie of getMesuresAvecAnomalies(examen)"
+                class="anomalie-tag"
+              >
+                <mat-icon>warning</mat-icon>
+                <span>{{ anomalie }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Observations -->
+          <div class="details-section" *ngIf="examen.observation && examen.observation.trim()">
+            <div class="section-header">
+              <mat-icon class="section-icon">note</mat-icon>
+              <h5 class="section-title">Observations</h5>
+            </div>
+            <p class="observations-text">{{ examen.observation }}</p>
+          </div>
+
+        </div>
+
+        <!-- Actions de la carte -->
+        <div class="card-actions">
+          <button 
+            mat-stroked-button
+            (click)="onEditExamen(examen); $event.stopPropagation()"
+            class="action-btn primary"
+          >
+            <mat-icon>edit</mat-icon>
+            Modifier
+          </button>
+
+          <button 
+            mat-stroked-button
+            *ngIf="examen.images && examen.images.length > 0"
+            (click)="onViewImages(examen); $event.stopPropagation()"
+            class="action-btn secondary"
+          >
+            <mat-icon>image</mat-icon>
+            Images
+          </button>
+
+          
+
+      </div>
+    </div>
+
+  </div>
+
+</div> 

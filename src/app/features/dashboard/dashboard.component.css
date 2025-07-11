@@ -1,0 +1,600 @@
+/* ===============================
+   DASHBOARD MODERNE - THÈME ROSE
+   =============================== */
+
+.dashboard-container {
+  padding: 25px;
+  background: transparent;
+  min-height: 100vh;
+}
+
+/* En-tête du dashboard */
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 50%, var(--primary-700) 100%);
+  color: white;
+  padding: var(--spacing-2xl);
+  margin: calc(-1 * var(--spacing-xl)) calc(-1 * var(--spacing-xl)) var(--spacing-xl) calc(-1 * var(--spacing-xl));
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="90" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="70" r="1.2" fill="rgba(255,255,255,0.1)"/></svg>');
+  opacity: 0.4;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.header-text h1 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-text p {
+  margin: 0;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: var(--font-weight-normal);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.header-actions button {
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  padding: var(--spacing-md) var(--spacing-xl) !important;
+  transition: all 0.3s ease !important;
+}
+
+.header-actions .mat-mdc-raised-button {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.header-actions .mat-mdc-outlined-button {
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  color: white !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.header-actions button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Grille des métriques */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.metric-card {
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-400), var(--primary-600));
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl) 0 var(--spacing-xl);
+}
+
+.metric-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.metric-icon.primary {
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+  color: white;
+}
+
+.metric-icon.success {
+  background: linear-gradient(135deg, var(--success), var(--success-dark));
+  color: white;
+}
+
+.metric-icon.warning {
+  background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+  color: white;
+}
+
+.metric-icon.info {
+  background: linear-gradient(135deg, var(--info), var(--info-dark));
+  color: white;
+}
+
+.metric-icon mat-icon {
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.metric-menu button {
+  color: var(--text-tertiary) !important;
+}
+
+.metric-content {
+  padding: var(--spacing-md) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+}
+
+.metric-value {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.2;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin: 0 0 var(--spacing-sm) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.metric-change {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.metric-change.positive {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.metric-change.negative {
+  background: var(--error-light);
+  color: var(--error);
+}
+
+.metric-change mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Grille principale du dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--spacing-xl);
+}
+
+.chart-card {
+  grid-column: span 8;
+}
+
+.tasks-card {
+  grid-column: span 4;
+}
+
+.performance-card {
+  grid-column: span 6;
+}
+
+.patients-card {
+  grid-column: span 6;
+}
+
+/* Cartes communes */
+.dashboard-grid mat-card {
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.3s ease !important;
+}
+
+.dashboard-grid mat-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dashboard-grid mat-card-header {
+  padding: var(--spacing-xl) !important;
+  border-bottom: 1px solid var(--gray-200) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.dashboard-grid mat-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-sm) !important;
+  font-size: 1.25rem !important;
+  font-weight: var(--font-weight-semibold) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+.dashboard-grid mat-card-title mat-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.5rem !important;
+}
+
+.dashboard-grid mat-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+  margin: var(--spacing-xs) 0 0 0 !important;
+}
+
+.dashboard-grid mat-card-content {
+  padding: var(--spacing-xl) !important;
+}
+
+/* Graphique placeholder */
+.chart-placeholder {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  height: 200px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.bar {
+  background: linear-gradient(180deg, var(--primary-400), var(--primary-600));
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 20px;
+  flex: 1;
+  animation: growUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.bar:nth-child(odd) {
+  background: linear-gradient(180deg, var(--primary-300), var(--primary-500));
+}
+
+@keyframes growUp {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--height, 50%);
+  }
+}
+
+.chart-note {
+  color: var(--text-secondary);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Liste des tâches */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all 0.3s ease;
+}
+
+.task-item:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary-200);
+  transform: translateX(4px);
+}
+
+.task-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
+.task-content {
+  flex: 1;
+}
+
+.task-content h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.task-content p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.task-status {
+  flex-shrink: 0;
+}
+
+/* Statistiques de performance */
+.performance-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.stat-progress {
+  flex-shrink: 0;
+}
+
+.progress-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary-500) 0deg, var(--primary-500) 306deg, var(--gray-200) 306deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.progress-circle.success {
+  background: conic-gradient(var(--success) 0deg, var(--success) 331deg, var(--gray-200) 331deg);
+}
+
+.progress-circle.warning {
+  background: conic-gradient(var(--warning) 0deg, var(--warning) 281deg, var(--gray-200) 281deg);
+}
+
+.progress-circle::before {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+}
+
+.progress-circle span {
+  position: relative;
+  z-index: 1;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.stat-details h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.stat-details p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Liste des patientes */
+.patient-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.patient-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all 0.3s ease;
+}
+
+.patient-item:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary-200);
+  transform: translateX(4px);
+}
+
+.patient-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.875rem;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.patient-info {
+  flex: 1;
+}
+
+.patient-info h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.patient-info p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.patient-actions {
+  flex-shrink: 0;
+}
+
+.card-footer {
+  border-top: 1px solid var(--gray-200);
+  padding-top: var(--spacing-lg);
+  text-align: center;
+}
+
+.view-all-btn {
+  font-weight: var(--font-weight-medium) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .chart-card {
+    grid-column: span 12;
+  }
+
+  .tasks-card {
+    grid-column: span 12;
+  }
+
+  .performance-card {
+    grid-column: span 12;
+  }
+
+  .patients-card {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    margin: calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) var(--spacing-lg) calc(-1 * var(--spacing-lg));
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .header-text h1 {
+    font-size: 2rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .chart-card,
+  .tasks-card,
+  .performance-card,
+  .patients-card {
+    grid-column: span 1;
+  }
+
+  .performance-stats {
+    gap: var(--spacing-lg);
+  }
+
+  .stat-item {
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .header-text h1 {
+    font-size: 1.75rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-value {
+    font-size: 1.875rem;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .header-actions button {
+    width: 100% !important;
+  }
+}

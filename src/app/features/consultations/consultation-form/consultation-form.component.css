@@ -1,0 +1,354 @@
+/* ===== CONTENEUR PRINCIPAL ===== */
+.consultation-form-container {
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  font-family: var(--font-family);
+}
+
+/* ===== EN-TÊTE DU FORMULAIRE ===== */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--gray-200);
+  min-height: 80px;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.form-title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.patient-info {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.close-button {
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.close-button:hover {
+  color: var(--text-primary) !important;
+  background: var(--gray-100) !important;
+  transform: scale(1.05) !important;
+}
+
+/* ===== OVERLAY DE CHARGEMENT ===== */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.loading-overlay p {
+  margin: var(--spacing-md) 0 0 0;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== MESSAGE D'ERREUR ===== */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: var(--error-light);
+  color: var(--error);
+  border-left: 4px solid var(--error);
+  margin: var(--spacing-md) 0;
+}
+
+.error-message mat-icon {
+  color: var(--error) !important;
+}
+
+/* ===== FORMULAIRE ===== */
+.consultation-form {
+  flex: 1;
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+}
+
+.form-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.section-title mat-icon {
+  color: var(--primary-500);
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ===== CHAMPS DE FORMULAIRE ===== */
+.full-width {
+  width: 100% !important;
+}
+
+.mat-mdc-form-field {
+  margin-bottom: var(--spacing-lg) !important;
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gray-300) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--primary-500) !important;
+  border-width: 2px !important;
+}
+
+.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-lg) !important;
+}
+
+/* ===== SECTION MODÈLES PRÉDÉFINIS ===== */
+.predefined-section {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.predefined-section h4 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.chips-container {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.predefined-chip {
+  margin: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) 0 !important;
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--gray-300) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+.predefined-chip:hover {
+  background: var(--primary-50) !important;
+  border-color: var(--primary-500) !important;
+  color: var(--primary-600) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* ===== ACTIONS DU FORMULAIRE ===== */
+.form-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg) var(--spacing-xl);
+  border-top: 1px solid var(--gray-200);
+  background: var(--bg-secondary);
+  margin: var(--spacing-xl) calc(-1 * var(--spacing-xl)) 0 calc(-1 * var(--spacing-xl));
+}
+
+.form-actions button {
+  min-width: 120px !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* ===== SECTION D'AIDE ===== */
+.help-section {
+  background: var(--info-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+  border-left: 4px solid var(--info);
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.help-section mat-icon {
+  color: var(--info) !important;
+  margin-top: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.help-content h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--info);
+}
+
+.help-content ul {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  color: var(--info-dark);
+}
+
+.help-content li {
+  font-size: 0.75rem;
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+}
+
+/* ===== HINT AVEC AVERTISSEMENT ===== */
+.warn-color {
+  color: var(--warning) !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+/* ===== STYLES MATERIAL CUSTOMISÉS ===== */
+.mat-mdc-raised-button.mat-primary {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+.mat-mdc-raised-button:disabled {
+  background: var(--gray-300) !important;
+  color: var(--gray-500) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.mat-mdc-button {
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-mdc-button:hover:not(:disabled) {
+  background: var(--gray-100) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ===== DATEPICKER CUSTOMISÉ ===== */
+.mat-datepicker-toggle {
+  color: var(--primary-500) !important;
+}
+
+.mat-datepicker-toggle:hover {
+  background: var(--primary-50) !important;
+}
+
+/* ===== TEXTAREA CUSTOMISÉ ===== */
+textarea.mat-mdc-input-element {
+  resize: vertical !important;
+  min-height: 120px !important;
+  line-height: 1.5 !important;
+  font-family: var(--font-family) !important;
+}
+
+/* ===== SCROLLBAR POUR LA SECTION DES CHIPS ===== */
+.chips-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chips-container::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: 2px;
+}
+
+.chips-container::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 2px;
+}
+
+.chips-container::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .form-header {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    min-height: auto;
+  }
+
+  .close-button {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+
+  .consultation-form {
+    padding: var(--spacing-md);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    padding: var(--spacing-md);
+    margin: var(--spacing-lg) calc(-1 * var(--spacing-md)) 0 calc(-1 * var(--spacing-md));
+  }
+
+  .form-actions button {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+
+  .help-section {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+
+  .predefined-section {
+    padding: var(--spacing-md);
+  }
+
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+  }
+} 

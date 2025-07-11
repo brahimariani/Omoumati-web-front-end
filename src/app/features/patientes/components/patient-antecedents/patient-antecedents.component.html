@@ -1,0 +1,220 @@
+<div class="antecedents-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="40" color="primary"></mat-spinner>
+    <p class="loading-text">Chargement des antécédents...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p class="error-text">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadAntecedents()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error" class="antecedents-content">
+    <!-- Header avec bouton d'ajout global -->
+    <div class="section-header">
+      <div class="header-info">
+        <mat-icon class="section-icon">medical_services</mat-icon>
+        <div>
+          <h3>Antécédents Médicaux</h3>
+          <p class="section-subtitle">Historique médical complet de la patiente</p>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" (click)="addAntecedent()" class="add-button">
+        <mat-icon>add</mat-icon>
+        Nouvel Antécédent
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Antécédents par catégories -->
+    <div class="antecedents-categories">
+      
+      <!-- Antécédents de la Femme -->
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-title">
+            <mat-icon class="category-icon">person</mat-icon>
+            <h4>Antécédents de la Femme</h4>
+            <mat-chip class="count-chip">{{ antecedentsFemme.length }}</mat-chip>
+          </div>
+          <button mat-stroked-button color="primary" (click)="addAntecedent('Femme')" class="category-add-btn">
+            <mat-icon>add</mat-icon>
+            Ajouter
+          </button>
+        </div>
+
+        <div class="antecedents-grid" *ngIf="antecedentsFemme.length > 0; else emptyFemme">
+          <mat-card *ngFor="let antecedent of antecedentsFemme" class="antecedent-card femme">
+            <mat-card-header>
+              <mat-icon mat-card-avatar class="card-avatar femme">person</mat-icon>
+              <mat-card-title>{{ antecedent.type }}</mat-card-title>
+              <mat-card-subtitle>{{ formatDate(antecedent.date) }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="observation" *ngIf="antecedent.observation">{{ antecedent.observation }}</p>
+              <div class="antecedent-details" *ngIf="antecedent.lieu">
+                <mat-icon class="detail-icon">location_on</mat-icon>
+                <span>{{ antecedent.lieu }}</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-icon-button (click)="editAntecedent(antecedent)" matTooltip="Modifier">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteAntecedent(antecedent)" matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <ng-template #emptyFemme>
+          <div class="empty-category">
+            <mat-icon class="empty-icon">person_outline</mat-icon>
+            <p>Aucun antécédent de la femme enregistré</p>
+            <button mat-stroked-button color="primary" (click)="addAntecedent('Femme')">
+              <mat-icon>add</mat-icon>
+              Ajouter le premier
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Antécédents Héréditaires -->
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-title">
+            <mat-icon class="category-icon">family_restroom</mat-icon>
+            <h4>Antécédents Héréditaires</h4>
+            <mat-chip class="count-chip">{{ antecedentsHereditaire.length }}</mat-chip>
+          </div>
+          <button mat-stroked-button color="accent" (click)="addAntecedent('Héréditaire')" class="category-add-btn">
+            <mat-icon>add</mat-icon>
+            Ajouter
+          </button>
+        </div>
+
+        <div class="antecedents-grid" *ngIf="antecedentsHereditaire.length > 0; else emptyHereditaire">
+          <mat-card *ngFor="let antecedent of antecedentsHereditaire" class="antecedent-card hereditaire">
+            <mat-card-header>
+              <mat-icon mat-card-avatar class="card-avatar hereditaire">family_restroom</mat-icon>
+              <mat-card-title>{{ antecedent.type }}</mat-card-title>
+              <mat-card-subtitle>{{ formatDate(antecedent.date) }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="observation" *ngIf="antecedent.observation">{{ antecedent.observation }}</p>
+              <div class="antecedent-details" *ngIf="antecedent.membreFamille">
+                <mat-icon class="detail-icon">person</mat-icon>
+                <span>{{ antecedent.membreFamille }}</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-icon-button (click)="editAntecedent(antecedent)" matTooltip="Modifier">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteAntecedent(antecedent)" matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <ng-template #emptyHereditaire>
+          <div class="empty-category">
+            <mat-icon class="empty-icon">family_restroom</mat-icon>
+            <p>Aucun antécédent héréditaire enregistré</p>
+            <button mat-stroked-button color="accent" (click)="addAntecedent('Héréditaire')">
+              <mat-icon>add</mat-icon>
+              Ajouter le premier
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Antécédents Obstétricaux -->
+      <div class="category-section">
+        <div class="category-header">
+          <div class="category-title">
+            <mat-icon class="category-icon">pregnant_woman</mat-icon>
+            <h4>Antécédents Obstétricaux</h4>
+            <mat-chip class="count-chip">{{ antecedentsObstetrical.length }}</mat-chip>
+          </div>
+          <button mat-stroked-button color="warn" (click)="addAntecedent('Obstetrical')" class="category-add-btn">
+            <mat-icon>add</mat-icon>
+            Ajouter
+          </button>
+        </div>
+
+        <div class="antecedents-grid" *ngIf="antecedentsObstetrical.length > 0; else emptyObstetrical">
+          <mat-card *ngFor="let antecedent of antecedentsObstetrical" class="antecedent-card obstetrical">
+            <mat-card-header>
+              <mat-icon mat-card-avatar class="card-avatar obstetrical">pregnant_woman</mat-icon>
+              <mat-card-title>{{ antecedent.type }}</mat-card-title>
+              <mat-card-subtitle>{{ formatDate(antecedent.date) }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="observation" *ngIf="antecedent.observation">{{ antecedent.observation }}</p>
+              <div class="antecedent-details" *ngIf="antecedent.ageGestationnel">
+                <mat-icon class="detail-icon">schedule</mat-icon>
+                <span>{{ antecedent.ageGestationnel }} semaines</span>
+              </div>
+              <div class="antecedent-details" *ngIf="antecedent.lieu">
+                <mat-icon class="detail-icon">location_on</mat-icon>
+                <span>{{ antecedent.lieu }}</span>
+              </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-icon-button (click)="editAntecedent(antecedent)" matTooltip="Modifier">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteAntecedent(antecedent)" matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <ng-template #emptyObstetrical>
+          <div class="empty-category">
+            <mat-icon class="empty-icon">pregnant_woman</mat-icon>
+            <p>Aucun antécédent obstétrical enregistré</p>
+            <button mat-stroked-button color="warn" (click)="addAntecedent('Obstetrical')">
+              <mat-icon>add</mat-icon>
+              Ajouter le premier
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <!-- État vide global -->
+    <div *ngIf="antecedents.length === 0" class="global-empty-state">
+      <mat-icon class="global-empty-icon">medical_services</mat-icon>
+      <h4>Aucun antécédent médical</h4>
+      <p>Commencez par ajouter les antécédents médicaux de la patiente pour un suivi complet.</p>
+      <div class="empty-actions">
+        <button mat-raised-button color="primary" (click)="addAntecedent('Femme')">
+          <mat-icon>person</mat-icon>
+          Antécédents de la Femme
+        </button>
+        <button mat-raised-button color="accent" (click)="addAntecedent('Héréditaire')">
+          <mat-icon>family_restroom</mat-icon>
+          Antécédents Héréditaires
+        </button>
+        <button mat-raised-button color="warn" (click)="addAntecedent('Obstetrical')">
+          <mat-icon>pregnant_woman</mat-icon>
+          Antécédents Obstétricaux
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,1 @@
+export { CentreFormComponent } from './centre-form.component'; 

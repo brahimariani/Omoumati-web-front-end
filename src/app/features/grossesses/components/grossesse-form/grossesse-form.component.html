@@ -1,0 +1,287 @@
+<!-- Side Panel Container pour Grossesse -->
+<div class="side-panel-form grossesse-form-side-panel">
+  
+
+  <!-- Contenu du formulaire -->
+  <div class="side-panel-content">
+    <!-- Indicateur de chargement global -->
+    <div *ngIf="loading$ | async" class="overlay-spinner">
+      <mat-spinner diameter="32"></mat-spinner>
+      <span class="spinner-text">{{ isEdit ? 'Mise à jour...' : 'Enregistrement...' }}</span>
+    </div>
+
+    <mat-stepper linear #stepper class="grossesse-stepper">
+      <!-- Étape 1: Sélection de la patiente -->
+      <mat-step [stepControl]="patientSelectionForm" label="Sélection patiente">
+        <form [formGroup]="patientSelectionForm" class="step-form">
+          <div class="step-header">
+            <mat-icon class="step-icon">person_search</mat-icon>
+            <h3>Sélection de la patiente</h3>
+            <p>Choisissez la patiente pour cette grossesse</p>
+          </div>
+          
+          <div class="form-grid">
+            <!-- Champ de recherche pour filtrer les patientes -->
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Rechercher une patiente</mat-label>
+              <input matInput 
+                     placeholder="Nom, prénom, CIN ou téléphone..."
+                     (input)="filterPatients(searchInput.value)"
+                     #searchInput>
+              <mat-icon matPrefix>search</mat-icon>
+              <mat-hint>Tapez pour filtrer la liste des patientes</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Patiente *</mat-label>
+              <mat-select formControlName="idPatient" required>
+                <mat-option value="" disabled>-- Sélectionnez une patiente --</mat-option>
+                <mat-option *ngFor="let patient of filteredPatients$ | async" [value]="patient.id">
+                  <div class="patient-option">
+                    <div class="patient-main-info">
+                      <mat-icon>person</mat-icon>
+                      <span class="patient-name">{{ patient.prenom }} {{ patient.nom }}</span>
+                    </div>
+                    <div class="patient-secondary-info">
+                      <span class="patient-age">{{ calculatePatientAge(patient.dateNaissance) }} ans</span>
+                      <span class="patient-contact">{{ patient.telephone }}</span>
+                      <span class="patient-cin">{{ patient.cin }}</span>
+                    </div>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>person</mat-icon>
+              <mat-hint>Sélectionnez la patiente concernée par cette grossesse</mat-hint>
+              <mat-error *ngIf="patientSelectionForm.get('idPatient')?.hasError('required')">
+                La sélection d'une patiente est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Informations de la patiente sélectionnée -->
+          <div class="patient-info-card" *ngIf="getSelectedPatient() as patient">
+            <div class="patient-info-header">
+              <mat-icon>info</mat-icon>
+              <h4>Informations de la patiente sélectionnée</h4>
+            </div>
+            <div class="patient-info-content">
+              <div class="info-item">
+                <span class="label">Nom complet:</span>
+                <span class="value">{{ patient.prenom }} {{ patient.nom }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Âge:</span>
+                <span class="value">{{ calculatePatientAge(patient.dateNaissance) }} ans</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Téléphone:</span>
+                <span class="value">{{ patient.telephone }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Groupe sanguin:</span>
+                <span class="value">{{ patient.groupageSanguin }} {{ patient.rhesus === 'POSITIF' ? '+' : '-' }}</span>
+              </div>
+            </div>
+            
+            <!-- Avertissement de vérification de grossesse active -->
+            <div class="pregnancy-check-warning">
+              <mat-icon>info_outline</mat-icon>
+              <span>Le système vérifiera automatiquement si cette patiente a déjà une grossesse active en cours.</span>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button mat-button matStepperNext [disabled]="patientSelectionForm.invalid">
+              <mat-icon>arrow_forward</mat-icon>
+              Suivant
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Étape 2: Informations de grossesse -->
+      <mat-step [stepControl]="pregnancyInfoForm" label="Informations grossesse">
+        <form [formGroup]="pregnancyInfoForm" class="step-form">
+          <div class="step-header">
+            <mat-icon class="step-icon">pregnant_woman</mat-icon>
+            <h3>Informations de grossesse</h3>
+            <p>Données obstétricales et dates importantes</p>
+          </div>
+          
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Gestation (G) *</mat-label>
+              <mat-select formControlName="gestation" required>
+                <mat-option *ngFor="let g of gestationOptions" [value]="g">
+                  <mat-icon>looks_{{ g <= 9 ? g : 'one' }}</mat-icon>
+                  G{{ g }} - {{ g === 1 ? 'Primigeste' : (g + 'ème grossesse') }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>looks_one</mat-icon>
+              <mat-hint>Nombre total de grossesses</mat-hint>
+              <mat-error *ngIf="pregnancyInfoForm.get('gestation')?.hasError('required')">
+                La gestation est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Parité (P) *</mat-label>
+              <mat-select formControlName="parite" required>
+                <mat-option *ngFor="let p of pariteOptions" [value]="p">
+                  <mat-icon>{{ p === 0 ? 'looks_one' : 'looks_' + (p <= 6 ? p : 'one') }}</mat-icon>
+                  P{{ p }} - {{ p === 0 ? 'Nullipare' : (p + ' accouchement' + (p > 1 ? 's' : '')) }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>looks_two</mat-icon>
+              <mat-hint>Nombre d'accouchements antérieurs</mat-hint>
+              <mat-error *ngIf="pregnancyInfoForm.get('parite')?.hasError('required')">
+                La parité est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Date des dernières règles (DDR) *</mat-label>
+              <input matInput [matDatepicker]="ddrPicker" formControlName="dateDerniereRegle" required>
+              <mat-icon matPrefix>event</mat-icon>
+              <mat-datepicker-toggle matSuffix [for]="ddrPicker"></mat-datepicker-toggle>
+              <mat-datepicker #ddrPicker></mat-datepicker>
+              <mat-hint>Date du premier jour des dernières règles</mat-hint>
+              <mat-error *ngIf="pregnancyInfoForm.get('dateDerniereRegle')?.hasError('required')">
+                La DDR est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Âge gestationnel calculé -->
+            <div class="calculated-info" *ngIf="pregnancyInfoForm.get('dateDerniereRegle')?.value">
+              <div class="info-card">
+                <mat-icon>schedule</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Âge gestationnel actuel</span>
+                  <span class="info-value">{{ calculateGestationalAge() }} SA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statut de la grossesse -->
+          <div class="checkbox-section">
+            <h4>Statut de la grossesse</h4>
+            <mat-checkbox formControlName="estDesiree" class="desire-checkbox">
+              <span class="checkbox-label">Grossesse désirée</span>
+              <span class="checkbox-hint">Cochez si la grossesse est planifiée et désirée</span>
+            </mat-checkbox>
+          </div>
+
+          <div class="step-actions">
+            <button mat-button matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon>
+              Précédent
+            </button>
+            <button mat-button matStepperNext [disabled]="pregnancyInfoForm.invalid">
+              <mat-icon>arrow_forward</mat-icon>
+              Suivant
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Étape 3: Informations médicales -->
+      <mat-step [stepControl]="medicalInfoForm" label="Informations médicales">
+        <form [formGroup]="medicalInfoForm" class="step-form">
+          <div class="step-header">
+            <mat-icon class="step-icon">medical_services</mat-icon>
+            <h3>Informations médicales</h3>
+            <p>Dates prévisionnelles et observations</p>
+          </div>
+          
+          <div class="form-grid">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Date prévue d'accouchement (DPA)</mat-label>
+              <input matInput [matDatepicker]="dpaPicker" formControlName="datePrevueAccouchment" readonly>
+              <mat-icon matPrefix>event_available</mat-icon>
+              <mat-datepicker-toggle matSuffix [for]="dpaPicker"></mat-datepicker-toggle>
+              <mat-datepicker #dpaPicker></mat-datepicker>
+              <mat-hint>Calculée automatiquement (DDR + 280 jours)</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Date de dépassement de terme</mat-label>
+              <input matInput [matDatepicker]="depPicker" formControlName="dateDepacementTerme">
+              <mat-icon matPrefix>event_busy</mat-icon>
+              <mat-datepicker-toggle matSuffix [for]="depPicker"></mat-datepicker-toggle>
+              <mat-datepicker #depPicker></mat-datepicker>
+              <mat-hint>Date limite pour déclenchement (optionnel)</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <!-- Observations -->
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Observations médicales</mat-label>
+            <textarea matInput 
+                      formControlName="observation"
+                      placeholder="Notes, antécédents spécifiques, facteurs de risque..."
+                      rows="4"
+                      maxlength="1000"></textarea>
+            <mat-icon matPrefix>note_add</mat-icon>
+            <mat-hint align="end">{{ medicalInfoForm.get('observation')?.value?.length || 0 }}/1000</mat-hint>
+          </mat-form-field>
+
+          <!-- Résumé des informations -->
+          <div class="summary-section">
+            <h4>Résumé de la grossesse</h4>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <mat-icon>person</mat-icon>
+                <span class="summary-label">Patiente:</span>
+                <span class="summary-value">{{ getSelectedPatient()?.prenom }} {{ getSelectedPatient()?.nom }}</span>
+              </div>
+              <div class="summary-item">
+                <mat-icon>looks_one</mat-icon>
+                <span class="summary-label">G/P:</span>
+                <span class="summary-value">G{{ pregnancyInfoForm.get('gestation')?.value }}P{{ pregnancyInfoForm.get('parite')?.value }}</span>
+              </div>
+              <div class="summary-item">
+                <mat-icon>event</mat-icon>
+                <span class="summary-label">DDR:</span>
+                <span class="summary-value">{{ pregnancyInfoForm.get('dateDerniereRegle')?.value | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="summary-item">
+                <mat-icon>event_available</mat-icon>
+                <span class="summary-label">DPA:</span>
+                <span class="summary-value">{{ medicalInfoForm.get('datePrevueAccouchment')?.value | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="summary-item">
+                <mat-icon>schedule</mat-icon>
+                <span class="summary-label">Âge gestationnel:</span>
+                <span class="summary-value">{{ calculateGestationalAge() }} SA</span>
+              </div>
+              <div class="summary-item">
+                <mat-icon>{{ pregnancyInfoForm.get('estDesiree')?.value ? 'favorite' : 'heart_broken' }}</mat-icon>
+                <span class="summary-label">Statut:</span>
+                <span class="summary-value">{{ pregnancyInfoForm.get('estDesiree')?.value ? 'Désirée' : 'Non désirée' }}</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="side-panel-footer">
+    <div class="footer-actions">
+      <button mat-button (click)="cancel()" class="cancel-button">
+        <mat-icon>close</mat-icon>
+        Annuler
+      </button>
+      <button mat-raised-button 
+              color="primary" 
+              (click)="onSubmit()"
+              [disabled]="!canSubmit"
+              class="submit-button">
+        <mat-icon>save</mat-icon>
+        {{ isEdit ? 'Mettre à jour' : 'Enregistrer' }}
+      </button>
+    </div>
+  </div>
+</div> 

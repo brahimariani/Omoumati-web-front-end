@@ -1,0 +1,203 @@
+<div class="centre-form-container">
+  <!-- Header du formulaire -->
+  <!--<div class="form-header">
+    <div class="header-content">
+      <h2 class="form-title">
+        <mat-icon>{{ isEditMode ? 'edit' : 'add_business' }}</mat-icon>
+        {{ formTitle }}
+      </h2>
+      <button mat-icon-button (click)="cancel()" class="close-button" matTooltip="Fermer">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+  </div>-->
+
+  <!-- Loader global -->
+  <div class="loading-overlay" *ngIf="loading$ | async">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ isEditMode ? 'Mise à jour...' : 'Création...' }}</p>
+  </div>
+
+  <!-- Contenu du formulaire -->
+  <form [formGroup]="centreForm" (ngSubmit)="onSubmit()" class="centre-form">
+    <div class="form-content">
+      
+      <!-- Section Informations générales -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon>
+            Informations générales
+          </mat-card-title>
+          <mat-card-subtitle>
+            Informations de base du centre médical
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row">
+            <!-- Nom du centre -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nom du centre</mat-label>
+              <input matInput 
+                     formControlName="nom"
+                     placeholder="Ex: Centre de Santé Urbain Nord"
+                     [class.error]="hasFieldError('nom')">
+              <mat-icon matSuffix>business</mat-icon>
+              <mat-error *ngIf="hasFieldError('nom')">
+                {{ getFieldErrorMessage('nom') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <!-- Type de centre -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Type de centre</mat-label>
+              <mat-select formControlName="type" [class.error]="hasFieldError('type')">
+                <mat-option *ngFor="let type of typesCentres" [value]="type">
+                  {{ getTypeLabel(type) }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>category</mat-icon>
+              <mat-error *ngIf="hasFieldError('type')">
+                {{ getFieldErrorMessage('type') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <!-- Adresse -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Adresse complète</mat-label>
+              <textarea matInput 
+                        formControlName="adresse"
+                        placeholder="Rue, quartier, ville, code postal"
+                        rows="3"
+                        [class.error]="hasFieldError('adresse')">
+              </textarea>
+              <mat-icon matSuffix>location_on</mat-icon>
+              <mat-error *ngIf="hasFieldError('adresse')">
+                {{ getFieldErrorMessage('adresse') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Section Contact -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>contact_phone</mat-icon>
+            Informations de contact
+          </mat-card-title>
+          <mat-card-subtitle>
+            Moyens de communication avec le centre
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="form-row two-columns">
+            <!-- Téléphone -->
+            <mat-form-field appearance="outline">
+              <mat-label>Téléphone</mat-label>
+              <input matInput 
+                     formControlName="telephone"
+                     placeholder="Ex: +212 6 12 34 56 78"
+                     [class.error]="hasFieldError('telephone')">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="hasFieldError('telephone')">
+                {{ getFieldErrorMessage('telephone') }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Email -->
+            <mat-form-field appearance="outline">
+              <mat-label>Adresse email</mat-label>
+              <input matInput 
+                     type="email"
+                     formControlName="email"
+                     placeholder="centre@example.com"
+                     [class.error]="hasFieldError('email')">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="hasFieldError('email')">
+                {{ getFieldErrorMessage('email') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <!-- Site web -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Site web (optionnel)</mat-label>
+              <input matInput 
+                     formControlName="siteWeb"
+                     placeholder="https://www.centre-exemple.com"
+                     [class.error]="hasFieldError('siteWeb')">
+              <mat-icon matSuffix>language</mat-icon>
+              <mat-hint>Format: http:// ou https://</mat-hint>
+              <mat-error *ngIf="hasFieldError('siteWeb')">
+                {{ getFieldErrorMessage('siteWeb') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <!-- Actions du formulaire -->
+    <div class="form-actions">
+      <div class="actions-content">
+        <button type="button" 
+                mat-button 
+                (click)="cancel()"
+                class="cancel-button">
+          <mat-icon>cancel</mat-icon>
+          Annuler
+        </button>
+
+        <div class="primary-actions">
+          <button type="submit" 
+                  mat-raised-button 
+                  color="primary"
+                  [disabled]="!centreForm.valid || (loading$ | async)"
+                  class="submit-button">
+            <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+            <span>{{ isEditMode ? 'Mettre à jour' : 'Créer le centre' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Résumé des informations (mode édition) -->
+  <mat-card class="summary-card" *ngIf="isEditMode && centre">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>summarize</mat-icon>
+        Résumé du centre
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="label">Nom:</span>
+          <span class="value">{{ centre.nom }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Type:</span>
+          <span class="value">{{ getTypeLabel(centre.type) }}</span>
+        </div>
+        
+        <div class="summary-item">
+          <span class="label">Adresse:</span>
+          <span class="value">{{ centre.adresse }}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

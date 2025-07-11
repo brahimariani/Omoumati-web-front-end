@@ -1,0 +1,170 @@
+<div class="rendez-vous-form-container">
+  
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ isEditMode ? 'Chargement du rendez-vous...' : 'Traitement en cours...' }}</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error.message || 'Une erreur est survenue' }}</p>
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="rendezVousForm" (ngSubmit)="onSubmit()" *ngIf="!(loading$ | async)" class="rendez-vous-form">
+    
+    <!-- Section Patient -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>person</mat-icon>
+        <h3>Sélection de la patiente</h3>
+        <p class="section-subtitle">Choisissez la patiente pour ce rendez-vous</p>
+      </div>
+
+      <!-- Champ de recherche pour filtrer les patientes -->
+      <mat-form-field appearance="outline" class="full-width search-field">
+        <mat-label>Rechercher une patiente</mat-label>
+        <input matInput 
+               placeholder="Nom, prénom, CIN ou téléphone..."
+               (input)="filterPatients(searchInput.value)"
+               #searchInput>
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-hint>Tapez pour filtrer la liste des patientes</mat-hint>
+      </mat-form-field>
+
+      <!-- Sélection de la patiente -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Patiente *</mat-label>
+        <input matInput
+               formControlName="patienteSearch"
+               placeholder="Sélectionnez une patiente..."
+               [matAutocomplete]="patienteAuto">
+        <mat-autocomplete #patienteAuto="matAutocomplete" 
+                          [displayWith]="displayPatiente"
+                          (optionSelected)="onPatienteSelected($event.option.value)">
+          <mat-option *ngFor="let patiente of filteredPatients$ | async" [value]="patiente">
+            <div class="patient-option">
+              <div class="patient-main-info">
+                <strong>{{ patiente.prenom }} {{ patiente.nom }}</strong>
+              </div>
+              <div class="patient-details">
+                <span *ngIf="patiente.cin">CIN: {{ patiente.cin }}</span>
+                <span *ngIf="patiente.telephone">Tél: {{ patiente.telephone }}</span>
+              </div>
+            </div>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="patienteError">{{ patienteError }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Section Rendez-vous -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>event</mat-icon>
+        <h3>Informations du rendez-vous</h3>
+      </div>
+
+      <!-- Motif du rendez-vous -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Motif du rendez-vous *</mat-label>
+        <textarea matInput 
+                  formControlName="motif"
+                  rows="3"
+                  placeholder="Décrivez le motif du rendez-vous..."></textarea>
+        <mat-hint>{{ rendezVousForm.get('motif')?.value?.length || 0 }}/500 caractères</mat-hint>
+        <mat-error *ngIf="motifError">{{ motifError }}</mat-error>
+      </mat-form-field>
+
+      <!-- Date et heure -->
+      <div class="form-row">
+        <!-- Date du rendez-vous -->
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Date du rendez-vous *</mat-label>
+          <input matInput 
+                 [matDatepicker]="datePickerRendezVous"
+                 formControlName="dateRendezVous"
+                 (dateChange)="checkConflicts()"
+                 readonly>
+          <mat-datepicker-toggle matSuffix [for]="datePickerRendezVous"></mat-datepicker-toggle>
+          <mat-datepicker #datePickerRendezVous></mat-datepicker>
+          <mat-error *ngIf="dateError">{{ dateError }}</mat-error>
+        </mat-form-field>
+
+        <!-- Heure du rendez-vous -->
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Heure du rendez-vous *</mat-label>
+          <mat-select formControlName="heure" (selectionChange)="checkConflicts()">
+            <mat-option *ngFor="let heure of heuresDisponibles" [value]="heure">
+              {{ heure }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="heureError">{{ heureError }}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section Centre -->
+    <div class="form-section">
+      <div class="section-header">
+        <mat-icon>local_hospital</mat-icon>
+        <h3>Centre médical</h3>
+      </div>
+
+      <!-- Centre (lecture seule pour l'utilisateur courant) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Centre du rendez-vous</mat-label>
+        <input matInput 
+               [value]="centreUserName$ | async"
+               readonly>
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-hint>Votre centre d'affectation</mat-hint>
+      </mat-form-field>
+    </div>
+
+
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" 
+              mat-button 
+              (click)="onCancel()"
+              class="cancel-btn">
+        <mat-icon>close</mat-icon>
+        Annuler
+      </button>
+
+      <button type="button" 
+              mat-button 
+              (click)="onReset()"
+              class="reset-btn"
+              *ngIf="!viewOnly">
+        <mat-icon>refresh</mat-icon>
+        Réinitialiser
+      </button>
+
+      <button type="button" 
+              mat-button 
+              color="accent"
+              (click)="checkConflicts()"
+              class="check-btn"
+              *ngIf="!viewOnly">
+        <mat-icon>schedule</mat-icon>
+        Vérifier les conflits
+      </button>
+
+      <button type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="!rendezVousForm.valid || (loading$ | async)"
+              class="submit-btn"
+              *ngIf="!viewOnly">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </button>
+    </div>
+  </form>
+</div> 

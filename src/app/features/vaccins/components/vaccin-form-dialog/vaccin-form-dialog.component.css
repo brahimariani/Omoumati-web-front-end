@@ -1,0 +1,537 @@
+/* =============================
+   DIALOG FORMULAIRE VACCIN
+   DESIGN MODERNE ET RESPONSIVE
+   ============================= */
+
+.vaccin-dialog-container {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ========================
+   HEADER DU DIALOG
+   ======================== */
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.header-icon {
+  font-size: 2rem;
+  color: var(--primary-500);
+  padding: var(--spacing-md);
+  background: var(--primary-50);
+  border-radius: var(--radius-lg);
+}
+
+.header-text h2 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.dialog-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: var(--spacing-xs) 0 0 0;
+  font-weight: var(--font-weight-medium);
+}
+
+.close-button {
+  border-radius: var(--radius-md) !important;
+  transition: all 0.2s ease !important;
+}
+
+.close-button:hover {
+  background: var(--error-light) !important;
+  color: var(--error) !important;
+}
+
+/* ========================
+   CONTENU DU DIALOG
+   ======================== */
+
+.dialog-content {
+  padding: var(--spacing-xl);
+  background: var(--bg-secondary);
+  position: relative;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.loading-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ========================
+   FORMULAIRE
+   ======================== */
+
+.vaccin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.form-section {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.section-icon {
+  font-size: 1.5rem;
+  color: var(--primary-500);
+  padding: var(--spacing-sm);
+  background: var(--primary-50);
+  border-radius: var(--radius-md);
+}
+
+.section-header h3 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.form-fields {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-field {
+  width: 100%;
+}
+
+/* ========================
+   AUTOCOMPLÉTION
+   ======================== */
+
+.mat-mdc-option {
+  height: auto !important;
+  min-height: 48px !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+}
+
+.option-icon {
+  color: var(--primary-500);
+  margin-right: var(--spacing-md);
+  font-size: 1.125rem;
+}
+
+.option-text {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.mat-mdc-option:hover {
+  background: var(--primary-50) !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected {
+  background: var(--primary-100) !important;
+}
+
+/* ========================
+   CARTE D'INFORMATION
+   ======================== */
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  background: var(--info-light);
+  border: 1px solid var(--info);
+  border-radius: var(--radius-lg);
+  margin: var(--spacing-xl);
+}
+
+.info-icon {
+  font-size: 2rem;
+  color: var(--info);
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+}
+
+.info-content h4 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1rem;
+}
+
+.info-content p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* ========================
+   SUGGESTIONS
+   ======================== */
+
+.suggestions-container {
+  padding: var(--spacing-xl);
+}
+
+.suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.suggestion-chip {
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: 0.875rem !important;
+  border: 2px solid var(--gray-300) !important;
+  color: var(--text-primary) !important;
+  background: var(--bg-primary) !important;
+  transition: all 0.2s ease !important;
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+.suggestion-chip:hover {
+  border-color: var(--primary-500) !important;
+  background: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.suggestion-chip mat-icon {
+  font-size: 1rem;
+  margin-right: var(--spacing-xs);
+  color: currentColor;
+}
+
+/* ========================
+   ACTIONS DU DIALOG
+   ======================== */
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-top: 1px solid var(--gray-200);
+}
+
+.cancel-button {
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-button:hover {
+  background: var(--gray-100) !important;
+  color: var(--text-primary) !important;
+}
+
+.submit-button {
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all 0.2s ease !important;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.submit-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ========================
+   CHAMPS DE FORMULAIRE
+   ======================== */
+
+.mat-mdc-form-field {
+  font-family: var(--font-family) !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-lg) !important;
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gray-300) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--primary-500) !important;
+}
+
+.mat-mdc-form-field-error {
+  color: var(--error) !important;
+  font-size: 0.75rem !important;
+}
+
+.mat-mdc-form-field-hint {
+  color: var(--text-tertiary) !important;
+  font-size: 0.75rem !important;
+}
+
+/* ========================
+   RESPONSIVE DESIGN
+   ======================== */
+
+@media (max-width: 768px) {
+  .vaccin-dialog-container {
+    max-width: 100%;
+  }
+
+  .dialog-header {
+    padding: var(--spacing-lg);
+  }
+
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+
+  .dialog-content {
+    padding: var(--spacing-lg);
+  }
+
+  .form-fields {
+    padding: var(--spacing-lg);
+  }
+
+  .suggestions-list {
+    justify-content: center;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: var(--spacing-sm);
+  }
+
+  .dialog-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-icon {
+    font-size: 1.5rem;
+    padding: var(--spacing-sm);
+  }
+
+  .header-text h2 {
+    font-size: 1.25rem;
+  }
+
+  .section-icon {
+    font-size: 1.25rem;
+  }
+
+  .section-header h3 {
+    font-size: 1rem;
+  }
+
+  .suggestion-chip {
+    font-size: 0.75rem !important;
+    height: 32px !important;
+    min-height: 32px !important;
+  }
+}
+
+/* ========================
+   ANIMATIONS
+   ======================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-section {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.suggestion-chip {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* ========================
+   SCROLLBAR PERSONNALISÉE
+   ======================== */
+
+.dialog-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dialog-content::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: 3px;
+}
+
+.dialog-content::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+.dialog-content::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-top: var(--spacing-sm);
+}
+
+.patiente-type {
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-600);
+  border: 1px solid var(--primary-200);
+}
+
+.naissance-type {
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-600);
+  border: 1px solid var(--accent-200);
+}
+
+.type-badge mat-icon {
+  font-size: 0.875rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* ========================
+   SUGGESTIONS DE VACCINS
+   ======================== */
+
+.suggestions-section {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.suggestions-title {
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.suggestions-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.suggestion-chip {
+  transition: all 0.2s ease !important;
+  border-radius: var(--radius-md) !important;
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-medium) !important;
+  cursor: pointer !important;
+}
+
+.suggestion-chip:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.suggestion-chip mat-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+/* ========================
+   CARTES D'INFORMATION PAR TYPE
+   ======================== */
+
+.patiente-card {
+  background: var(--primary-50);
+  border: 1px solid var(--primary-200);
+}
+
+.patiente-card .info-icon {
+  color: var(--primary-600);
+}
+
+.naissance-card {
+  background: var(--accent-50);
+  border: 1px solid var(--accent-200);
+}
+
+.naissance-card .info-icon {
+  color: var(--accent-600);
+} 

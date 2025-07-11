@@ -1,0 +1,166 @@
+<!-- Conteneur principal pour la liste des traitements -->
+<div class="traitement-list-container">
+  
+  <!-- En-tête avec actions -->
+  <div class="list-header">
+    <div class="header-info">
+      <div class="list-title">
+        <mat-icon class="title-icon">medication</mat-icon>
+        <h3>Traitements médicamenteux</h3>
+        <span class="patient-name" *ngIf="patienteName">{{ patienteName }}</span>
+      </div>
+      <div class="stats-summary" *ngIf="stats$ | async as stats">
+        <mat-chip class="stat-chip">
+          <mat-icon>medication</mat-icon>
+          {{ stats.totalTraitements }} traitement(s)
+        </mat-chip>
+        <mat-chip class="stat-chip active" *ngIf="stats.traitementsActifs > 0">
+          <mat-icon>play_circle</mat-icon>
+          {{ stats.traitementsActifs }} en cours
+        </mat-chip>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button mat-icon-button (click)="onRefresh()" matTooltip="Actualiser">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" (click)="onAddTraitement()">
+        <mat-icon>add</mat-icon>
+        Nouveau traitement
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement des traitements...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon class="error-icon">error</mat-icon>
+    <h4>Erreur de chargement</h4>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="onRefresh()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des traitements -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="traitements-content">
+    
+    <!-- État vide -->
+    <div *ngIf="(traitements$ | async)?.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <mat-icon>medication</mat-icon>
+      </div>
+      <h4>Aucun traitement prescrit</h4>
+      <p>Aucun traitement médicamenteux n'a été prescrit pour cette consultation.</p>
+      <button mat-raised-button color="primary" (click)="onAddTraitement()">
+        <mat-icon>add</mat-icon>
+        Prescrire le premier traitement
+      </button>
+    </div>
+
+    <!-- Grille des traitements -->
+    <div class="traitements-grid" *ngIf="(traitements$ | async)?.length! > 0">
+      <div class="traitement-card" 
+           *ngFor="let traitement of traitements$ | async; trackBy: trackByTraitementId"
+           [class.selected]="false"
+           (click)="onSelectTraitement(traitement)">
+        
+        <!-- En-tête de la carte -->
+        <div class="card-header">
+          <div class="traitement-info">
+            <div class="medicament-info">
+              <h4 class="medicament-name">{{ traitement.medicament }}</h4>
+              <mat-chip [ngClass]="getStatutClass(traitement)" class="status-chip">
+                <mat-icon>{{ getStatutIcon(traitement) }}</mat-icon>
+                {{ getStatutText(traitement) }}
+              </mat-chip>
+            </div>
+          </div>
+          
+          <div class="card-actions" (click)="$event.stopPropagation()">
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu" matTooltip="Actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="onEditTraitement(traitement)">
+                <mat-icon>edit</mat-icon>
+                Modifier
+              </button>              
+              <mat-divider></mat-divider>
+              
+              <button mat-menu-item (click)="onDeleteTraitement(traitement)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                Supprimer
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+
+        <!-- Contenu principal de la carte -->
+        <div class="card-content">
+          
+          <!-- Posologie -->
+          <div class="detail-row">
+            <mat-icon class="detail-icon">schedule</mat-icon>
+            <div class="detail-content">
+              <span class="label">Posologie:</span>
+              <span class="value">{{ traitement.posologie }}</span>
+            </div>
+          </div>
+
+          <!-- Période de traitement -->
+          <div class="detail-row">
+            <mat-icon class="detail-icon">date_range</mat-icon>
+            <div class="detail-content">
+              <span class="label">Période:</span>
+              <span class="value">
+                Du {{ formatDate(traitement.dateDebut) }} au {{ formatDate(traitement.dateFin) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Durée -->
+          <div class="detail-row">
+            <mat-icon class="detail-icon">timer</mat-icon>
+            <div class="detail-content">
+              <span class="label">Durée:</span>
+              <span class="value">{{ calculateDuree(traitement) }}</span>
+            </div>
+          </div>
+
+          <!-- Observations -->
+          <div class="detail-row" *ngIf="traitement.observation">
+            <mat-icon class="detail-icon">note</mat-icon>
+            <div class="detail-content">
+              <span class="label">Observations:</span>
+              <p class="observation-text">{{ traitement.observation }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="card-footer" (click)="$event.stopPropagation()">
+          <div class="quick-actions">
+            <button mat-button class="quick-action" (click)="onEditTraitement(traitement)" matTooltip="Modifier">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+          
+          <div class="status-indicator">
+            <mat-icon [ngClass]="getStatutClass(traitement)">
+              {{ getStatutIcon(traitement) }}
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

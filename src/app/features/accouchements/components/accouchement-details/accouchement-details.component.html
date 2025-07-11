@@ -1,0 +1,250 @@
+<div class="accouchement-details-container">
+  <!-- En-tête avec informations principales -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="accouchement-info">
+        <div class="accouchement-avatar">
+          <mat-icon>child_care</mat-icon>
+        </div>
+        <div class="accouchement-details">
+          <h1 class="accouchement-title" *ngIf="accouchement$ | async as accouchement">
+            Accouchement - {{ formatDateOnly(accouchement.date) }}
+          </h1>
+          <p class="accouchement-subtitle" *ngIf="accouchement$ | async as accouchement">
+            {{ accouchement.modaliteExtraction }} • {{ accouchement.lieu }}
+          </p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onEditAccouchement()" *ngIf="accouchement$ | async as accouchement">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+        <button mat-button (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Retour
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails de l'accouchement...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon>error</mat-icon>
+    <h3>Erreur de chargement</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="onRetry()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="details-content">
+    
+    <!-- Section 1: Détails de l'accouchement -->
+    <mat-card class="details-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>info</mat-icon>
+          Détails de l'Accouchement
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content *ngIf="accouchement$ | async as accouchement">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Date et heure</label>
+            <span>{{ formatDate(accouchement.date) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Modalité d'extraction</label>
+            <mat-chip [color]="getModaliteChipColor(accouchement.modaliteExtraction)">
+              <mat-icon matChipAvatar>{{ getModaliteIcon(accouchement.modaliteExtraction) }}</mat-icon>
+              {{ accouchement.modaliteExtraction }}
+            </mat-chip>
+          </div>
+          <div class="detail-item">
+            <label>Lieu</label>
+            <span>{{ accouchement.lieu }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Assistance qualifiée</label>
+            <mat-chip [color]="accouchement.assisstanceQualifiee ? 'primary' : 'warn'">
+              <mat-icon matChipAvatar>{{ accouchement.assisstanceQualifiee ? 'check_circle' : 'warning' }}</mat-icon>
+              {{ accouchement.assisstanceQualifiee ? 'Oui' : 'Non' }}
+            </mat-chip>
+          </div>
+          <div class="detail-item full-width" *ngIf="accouchement.observation">
+            <label>Observations</label>
+            <span>{{ accouchement.observation }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Alertes automatiques -->
+    <div *ngIf="accouchement$ | async as accouchement">
+      <div *ngIf="naissances$ | async as naissances">
+        <mat-card class="automatic-alerts" *ngIf="getAutomaticAlerts(accouchement, naissances) as alerts">
+          <div *ngIf="alerts.length > 0" class="alerts-container">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon color="warn">notification_important</mat-icon>
+                Alertes Médicales
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngFor="let alert of alerts" class="alert-item" [ngClass]="'alert-' + alert.severity">
+                <mat-icon>{{ alert.icon }}</mat-icon>
+                <div class="alert-content">
+                  <strong>{{ alert.title }}</strong>
+                  <p>{{ alert.message }}</p>
+                </div>
+              </div>
+            </mat-card-content>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Onglets pour naissances et complications -->
+    <mat-tab-group class="content-tabs" animationDuration="300ms">
+      
+      <!-- Onglet Naissances -->
+      <mat-tab label="Naissances">
+        <ng-template matTabContent>
+          <div class="tab-content">
+            
+            <!-- En-tête avec actions -->
+            <div class="section-header">
+              <h3 class="section-title">
+                <mat-icon>child_friendly</mat-icon>
+                Naissances
+              </h3>
+              <div class="section-actions" *ngIf="accouchement$ | async as accouchement">
+                <button mat-raised-button color="primary" (click)="onAddNaissance(accouchement)">
+                  <mat-icon>add</mat-icon>
+                  Ajouter une naissance
+                </button>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <mat-divider class="section-divider"></mat-divider>
+
+            <!-- Liste des naissances avec détails intégrés -->
+            <div *ngIf="naissances$ | async as naissances; else noNaissances" class="naissances-container">
+              
+              <!-- Intégration du composant naissance-details pour chaque naissance -->
+              <div *ngFor="let naissance of naissances; trackBy: trackByNaissanceId" class="naissance-wrapper">
+                
+                <!-- Header pour chaque naissance -->
+                <div class="naissance-header">
+                  <div class="naissance-info">
+                    <mat-icon [color]="getNaissanceStatusColor(naissance.estVivant)">
+                      {{ getSexeIcon(naissance.sexe) }}
+                    </mat-icon>
+                    <span class="naissance-title">
+                      Naissance {{ getSexeLabel(naissance.sexe) }}
+                      <mat-chip [color]="getNaissanceStatusColor(naissance.estVivant)" class="status-chip">
+                        {{ getNaissanceStatusLabel(naissance.estVivant) }}
+                      </mat-chip>
+                    </span>
+                  </div>
+                  
+                  <div class="naissance-actions" *ngIf="accouchement$ | async as accouchement">
+                    <button mat-icon-button [matMenuTriggerFor]="naissanceMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #naissanceMenu="matMenu">
+                      <button mat-menu-item (click)="onEditNaissance(naissance, accouchement)">
+                        <mat-icon>edit</mat-icon>
+                        Modifier
+                      </button>
+                      <button mat-menu-item (click)="onViewNaissance(naissance.id)">
+                        <mat-icon>visibility</mat-icon>
+                        Voir détails complets
+                      </button>
+                      <button mat-menu-item (click)="onDeleteNaissance(naissance.id)">
+                        <mat-icon color="warn">delete</mat-icon>
+                        Supprimer
+                      </button>
+                    </mat-menu>
+                  </div>
+                </div>
+
+                <!-- Composant de détails de naissance intégré -->
+                <div class="naissance-details-wrapper">
+                  <app-naissance-details
+                    [naissance]="naissance"
+                    [showActions]="false">
+                  </app-naissance-details>
+                </div>
+
+                <!-- Separator entre naissances -->
+                <mat-divider class="naissance-separator" *ngIf="naissances.length > 1"></mat-divider>
+              </div>
+
+            </div>
+
+            <!-- État vide pour naissances -->
+            <ng-template #noNaissances>
+              <div class="empty-state" *ngIf="accouchement$ | async as accouchement">
+                <mat-card class="empty-card">
+                  <mat-card-content>
+                    <div class="empty-content">
+                      <mat-icon class="empty-icon">child_friendly</mat-icon>
+                      <h3 class="empty-title">Aucune naissance enregistrée</h3>
+                      <p class="empty-subtitle">
+                        Commencez par ajouter les naissances liées à cet accouchement.
+                      </p>
+                      <button 
+                        mat-raised-button 
+                        color="primary" 
+                        (click)="onAddNaissance(accouchement)"
+                        class="empty-action-btn">
+                        <mat-icon>add</mat-icon>
+                        Ajouter une naissance
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </ng-template>
+
+          </div>
+        </ng-template>
+      </mat-tab>
+
+      <!-- Onglet Complications -->
+      <mat-tab label="Complications">
+        <ng-template matTabContent>
+          <div class="tab-content">
+            
+            <!-- Composant de complications intégré -->
+            <app-complication-list
+              [complications]="(complications$ | async) ?? []"
+              [contextData]="(complicationContextData$ | async) ?? undefined"
+              [title]="'Complications d\'Accouchement'"
+              [canAdd]="true"
+              [canEdit]="true"
+              [canDelete]="true"
+              (complicationAdded)="onComplicationAdded($event)"
+              (complicationUpdated)="onComplicationUpdated($event)"
+              (complicationDeleted)="onComplicationDeleted($event)">
+            </app-complication-list>
+
+          </div>
+        </ng-template>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </div>
+</div> 

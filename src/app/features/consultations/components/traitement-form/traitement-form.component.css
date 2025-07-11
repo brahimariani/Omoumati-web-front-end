@@ -1,0 +1,324 @@
+/* ============================
+   SIDE PANEL TRAITEMENT FORM
+   ============================ */
+
+.side-panel-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+.form-header {
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--bg-primary);
+  flex-shrink: 0;
+}
+
+.header-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.form-icon {
+  font-size: 1.75rem;
+  color: var(--primary-500);
+  margin-top: var(--spacing-xs);
+}
+
+.header-text {
+  flex: 1;
+}
+
+.form-title {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.form-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.form-subtitle mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--primary-500);
+}
+
+/* ===== CONTENT ===== */
+.form-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+  background: var(--bg-secondary);
+}
+
+.traitement-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* ===== SECTIONS DU FORMULAIRE ===== */
+.form-section {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--primary-100);
+}
+
+.section-title mat-icon {
+  font-size: 1.25rem;
+  color: var(--primary-500);
+}
+
+/* ===== CHAMPS DE FORMULAIRE ===== */
+.full-width {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-family: var(--font-family);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+}
+
+.mat-mdc-form-field.mat-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--gray-300);
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--primary-500);
+}
+
+.mat-mdc-form-field-label {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== DATES ===== */
+.date-range-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.date-field {
+  width: 100%;
+}
+
+/* ===== CHIPS POUR DURÉES ET INSTRUCTIONS ===== */
+.duration-chips,
+.instructions-chips {
+  margin-top: var(--spacing-md);
+}
+
+.chips-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.mat-mdc-chip {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--gray-300);
+}
+
+.mat-mdc-chip:hover {
+  background: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+  border-color: var(--primary-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===== ACTIONS DU FORMULAIRE ===== */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-top: 1px solid var(--gray-200);
+  margin: 0 calc(-1 * var(--spacing-xl));
+  margin-top: var(--spacing-2xl);
+}
+
+.cancel-button {
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--gray-300) !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  padding: 0 var(--spacing-lg) !important;
+}
+
+.cancel-button:hover {
+  background: var(--gray-100) !important;
+  border-color: var(--gray-400) !important;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+  padding: 0 var(--spacing-xl) !important;
+  min-width: 140px !important;
+}
+
+.submit-button:hover:not([disabled]) {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
+}
+
+.submit-button[disabled] {
+  background: var(--gray-300) !important;
+  color: var(--text-tertiary) !important;
+  cursor: not-allowed;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.button-spinner {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .form-header {
+    padding: var(--spacing-lg);
+  }
+
+  .form-content {
+    padding: var(--spacing-lg);
+  }
+
+  .date-range-container {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+  }
+
+  .submit-button,
+  .cancel-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chips-container {
+    justify-content: center;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-section {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.form-section:nth-child(1) { animation-delay: 0ms; }
+.form-section:nth-child(2) { animation-delay: 100ms; }
+.form-section:nth-child(3) { animation-delay: 200ms; }
+.form-section:nth-child(4) { animation-delay: 300ms; }
+
+/* ===== ÉTATS DE VALIDATION ===== */
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-form-field-outline {
+  color: var(--error) !important;
+}
+
+.mat-mdc-form-field-error {
+  color: var(--error) !important;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== AUTOCOMPLÉTION ===== */
+.mat-mdc-autocomplete-panel {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.mat-mdc-option {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.mat-mdc-option:hover {
+  background: var(--primary-50) !important;
+  color: var(--primary-600) !important;
+}
+
+.mat-mdc-option.mat-mdc-option-active {
+  background: var(--primary-100) !important;
+  color: var(--primary-700) !important;
+}
+
+/* ===== DIVIDER ===== */
+.mat-mdc-divider {
+  border-color: var(--gray-200);
+  margin: var(--spacing-lg) 0;
+} 

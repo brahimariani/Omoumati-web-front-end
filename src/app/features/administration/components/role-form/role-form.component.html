@@ -1,0 +1,84 @@
+<div class="role-form-container">
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="loading$ | async">
+    <mat-progress-spinner diameter="40"></mat-progress-spinner>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Formulaire principal -->
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" *ngIf="!(loading$ | async)">
+    
+    <!-- Informations de base -->
+    <div class="form-section">
+      <h3 class="section-title">
+        <mat-icon>info</mat-icon>
+        Informations générales
+      </h3>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom du rôle</mat-label>
+          <input matInput 
+                 formControlName="nom"
+                 placeholder="Ex: Administrateur, Médecin..."
+                 maxlength="50">
+          <mat-icon matSuffix>badge</mat-icon>
+          <mat-error *ngIf="hasFieldError('nom')">
+            {{ getFieldErrorMessage('nom') }}
+          </mat-error>
+          <mat-hint>Le nom du rôle doit être unique</mat-hint>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput 
+                    formControlName="description"
+                    placeholder="Décrivez les responsabilités de ce rôle..."
+                    rows="4"
+                    maxlength="255">
+          </textarea>
+          <mat-icon matSuffix>description</mat-icon>
+          <mat-error *ngIf="hasFieldError('description')">
+            {{ getFieldErrorMessage('description') }}
+          </mat-error>
+          <mat-hint>Description détaillée du rôle et de ses permissions</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button mat-button 
+              type="button" 
+              (click)="cancel()"
+              class="cancel-button">
+        <mat-icon>close</mat-icon>
+        Annuler
+      </button>
+      
+      <button mat-raised-button 
+              color="primary" 
+              type="submit"
+              [disabled]="roleForm.invalid || (loading$ | async)"
+              class="submit-button">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Mettre à jour' : 'Créer le rôle' }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Error state -->
+  <div class="error-container" *ngIf="error$ | async as error">
+    <mat-icon class="error-icon">error</mat-icon>
+    <h3>Erreur</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      Fermer
+    </button>
+  </div>
+</div> 

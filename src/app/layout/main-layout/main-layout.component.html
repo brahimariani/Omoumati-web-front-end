@@ -1,0 +1,24 @@
+<div class="app-container">
+  <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+  
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav 
+      mode="side"
+      [opened]="isSidebarOpen"
+      [fixedInViewport]="true"
+      [fixedTopGap]="64"
+      class="sidenav">
+      <app-sidebar [isOpen]="isSidebarOpen"></app-sidebar>
+    </mat-sidenav>
+    
+    <mat-sidenav-content [class.content-with-sidebar]="isSidebarOpen" [class.content-without-sidebar]="!isSidebarOpen">
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+      <!-- <app-footer></app-footer> -->
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  
+  <!-- Side Panel Overlay -->
+  <app-side-panel></app-side-panel>
+</div> 

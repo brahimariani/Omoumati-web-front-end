@@ -1,0 +1,493 @@
+/* ============================
+   FORMULAIRE D'ACCOUCHEMENT
+   Utilise le système de design global
+   ============================ */
+
+.accouchement-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.accouchement-form-card {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+  overflow: hidden;
+}
+
+/* En-tête du formulaire */
+.accouchement-form-card .mat-mdc-card-header {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
+  border-bottom: 1px solid #2196f3 !important;
+  padding: var(--spacing-2xl) !important;
+}
+
+.form-icon {
+  color: #1976d2 !important;
+  margin-right: var(--spacing-sm) !important;
+  vertical-align: middle;
+}
+
+.mat-mdc-card-title {
+  display: flex !important;
+  align-items: center !important;
+  color: #1565c0 !important;
+  font-size: 1.5rem !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin: 0 !important;
+}
+
+.mat-mdc-card-subtitle {
+  color: #1976d2 !important;
+  font-size: 0.875rem !important;
+  margin-top: var(--spacing-sm) !important;
+}
+
+/* Contenu du formulaire */
+.accouchement-form {
+  padding: var(--spacing-xl) 0;
+}
+
+/* Sections du formulaire */
+.form-section {
+  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+}
+
+.form-section:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: #2196f3;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-lg) 0;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid #2196f3;
+}
+
+.section-title mat-icon {
+  color: #1976d2;
+  margin-right: var(--spacing-sm);
+  font-size: 1.25rem;
+}
+
+/* Lignes de formulaire */
+.form-row {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Champs de formulaire */
+.form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-field.full-width {
+  flex: 1 1 100%;
+}
+
+/* Options de sélection avec icônes */
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+.option-content mat-icon {
+  color: #1976d2 !important;
+  font-size: 1.125rem !important;
+  width: 1.125rem !important;
+  height: 1.125rem !important;
+  margin-right: var(--spacing-sm);
+}
+
+.option-content span {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  flex: 1;
+}
+
+/* Style pour les options sélectionnées */
+.mat-mdc-option.mdc-list-item--selected .option-content mat-icon {
+  color: #1565c0 !important;
+}
+
+.mat-mdc-option:hover .option-content mat-icon {
+  color: #1976d2 !important;
+}
+
+/* Checkbox personnalisée */
+.checkbox-container {
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  transition: all 0.2s ease;
+}
+
+.checkbox-container:hover {
+  border-color: #2196f3;
+  background: #e3f2fd;
+}
+
+.assistance-checkbox {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.checkbox-label {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.checkbox-hint {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-left: var(--spacing-xl);
+}
+
+/* ============================
+   SYSTÈME D'ALERTES
+   ============================ */
+
+.alert-section {
+  margin-top: var(--spacing-lg);
+}
+
+.alert-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 2px solid;
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+  animation: slideInAlert 0.3s ease-out;
+}
+
+.alert-card mat-icon {
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+
+.alert-content h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.alert-content p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Types d'alertes */
+.alert-card.success {
+  border-color: var(--success);
+  background: var(--success-light);
+}
+
+.alert-card.success mat-icon {
+  color: var(--success-dark);
+}
+
+.alert-card.success .alert-content h4 {
+  color: var(--success-dark);
+}
+
+.alert-card.success .alert-content p {
+  color: var(--success);
+}
+
+.alert-card.warning {
+  border-color: var(--warning);
+  background: var(--warning-light);
+}
+
+.alert-card.warning mat-icon {
+  color: var(--warning-dark);
+}
+
+.alert-card.warning .alert-content h4 {
+  color: var(--warning-dark);
+}
+
+.alert-card.warning .alert-content p {
+  color: var(--warning);
+}
+
+.alert-card.error {
+  border-color: var(--error);
+  background: var(--error-light);
+}
+
+.alert-card.error mat-icon {
+  color: var(--error-dark);
+}
+
+.alert-card.error .alert-content h4 {
+  color: var(--error-dark);
+}
+
+.alert-card.error .alert-content p {
+  color: var(--error);
+}
+
+/* Actions du formulaire */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) 0 0 0;
+  border-top: 1px solid var(--gray-200);
+  margin-top: var(--spacing-2xl);
+}
+
+.cancel-button {
+  color: var(--text-secondary) !important;
+  border: 2px solid var(--gray-300) !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  padding: 0 var(--spacing-xl) !important;
+  transition: all 0.2s ease !important;
+}
+
+.cancel-button:hover {
+  border-color: var(--error) !important;
+  color: var(--error) !important;
+  background: var(--error-light) !important;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-medium) !important;
+  box-shadow: var(--shadow-sm) !important;
+  padding: 0 var(--spacing-2xl) !important;
+  transition: all 0.2s ease !important;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1976d2, #1565c0) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+.submit-button:disabled {
+  background: var(--gray-300) !important;
+  color: var(--gray-500) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .accouchement-form-container {
+    padding: var(--spacing-lg);
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .form-section {
+    padding: var(--spacing-lg);
+  }
+
+  .accouchement-form-card .mat-mdc-card-header {
+    padding: var(--spacing-xl) !important;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.25rem !important;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: var(--spacing-md);
+  }
+
+  .cancel-button,
+  .submit-button {
+    width: 100% !important;
+  }
+
+  .alert-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .alert-card mat-icon {
+    align-self: center;
+    margin-top: 0;
+  }
+}
+
+/* Animations */
+@keyframes slideInAlert {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-section {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.form-section:nth-child(2) { animation-delay: 0.1s; }
+.form-section:nth-child(3) { animation-delay: 0.2s; }
+.form-section:nth-child(4) { animation-delay: 0.3s; }
+.form-section:nth-child(5) { animation-delay: 0.4s; }
+.form-section:nth-child(6) { animation-delay: 0.5s; }
+
+/* États de focus améliorés */
+.mat-mdc-form-field.mat-focused {
+  transform: scale(1.01);
+  transition: transform 0.2s ease;
+}
+
+.checkbox-container:focus-within {
+  border-color: #2196f3;
+  background: #e3f2fd;
+  box-shadow: 0 0 0 3px #bbdefb;
+}
+
+/* Amélioration de l'accessibilité */
+.form-field:focus-within {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
+  border-radius: var(--radius-lg);
+}
+
+/* Styles spécifiques aux sélecteurs */
+.mat-mdc-select-panel {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--gray-200) !important;
+  max-height: 300px !important;
+}
+
+.mat-mdc-option {
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+  min-height: 48px !important;
+  border-bottom: 1px solid var(--gray-100) !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-mdc-option:last-child {
+  border-bottom: none !important;
+}
+
+.mat-mdc-option:hover {
+  background: #e3f2fd !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected {
+  background: #bbdefb !important;
+  color: #1565c0 !important;
+}
+
+/* Correction spécifique pour les icônes Material Icons */
+.mat-mdc-option .option-content mat-icon {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 1.125rem !important;
+  line-height: 1 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  direction: ltr !important;
+  -webkit-font-feature-settings: 'liga' !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-feature-settings: 'liga' !important;
+  color: #1976d2 !important;
+  margin-right: var(--spacing-sm) !important;
+  vertical-align: middle !important;
+}
+
+/* Forcer l'affichage des icônes spécifiques */
+.mat-mdc-option .option-content mat-icon[data-mat-icon-name="medical_services"]::before {
+  content: "medical_services" !important;
+}
+
+.mat-mdc-option .option-content mat-icon[data-mat-icon-name="child_care"]::before {
+  content: "child_care" !important;
+}
+
+.mat-mdc-option .option-content mat-icon[data-mat-icon-name="local_hospital"]::before {
+  content: "local_hospital" !important;
+}
+
+.mat-mdc-option .option-content mat-icon[data-mat-icon-name="pregnant_woman"]::before {
+  content: "pregnant_woman" !important;
+}
+
+/* Styles pour les icônes dans les champs de formulaire */
+.mat-mdc-form-field mat-icon {
+  color: #1976d2 !important;
+  font-family: 'Material Icons' !important;
+}
+
+/* Styles pour les icônes dans les titres de section */
+.section-title mat-icon {
+  color: #1976d2 !important;
+  margin-right: var(--spacing-sm) !important;
+  font-size: 1.25rem !important;
+  vertical-align: middle !important;
+  font-family: 'Material Icons' !important;
+}
+
+/* Textarea spécifique */
+.mat-mdc-form-field textarea {
+  resize: vertical !important;
+  min-height: 80px !important;
+  font-family: var(--font-family) !important;
+  line-height: 1.5 !important;
+} 

@@ -1,0 +1,293 @@
+<div class="rendez-vous-list-container">
+  <!-- En-tête avec titre et actions -->
+  <div class="header-section">
+    <div class="title-section">
+      <h2 class="page-title">
+        <mat-icon>schedule</mat-icon>
+        Gestion des Rendez-vous
+      </h2>
+      <p class="page-subtitle">Gérez les rendez-vous médicaux du centre</p>
+    </div>
+    
+    <div class="actions-section">
+      <button mat-raised-button color="primary" (click)="createRendezVous()" class="create-btn">
+        <mat-icon>add</mat-icon>
+        Nouveau Rendez-vous
+      </button>
+      
+      <button mat-icon-button matTooltip="Actualiser" (click)="refreshData()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      
+      <button mat-icon-button matTooltip="Exporter" (click)="exportRendezVous()">
+        <mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Section de filtres -->
+  <mat-card class="filters-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>filter_list</mat-icon>
+        Filtres de recherche
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="filters-row">
+        <!-- Recherche globale -->
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Rechercher...</mat-label>
+          <input matInput 
+                 [(ngModel)]="searchTerm" 
+                 (keyup.enter)="onSearch()"
+                 placeholder="Motif, nom patiente...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <!-- Filtre par statut -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Statut</mat-label>
+          <mat-select [(ngModel)]="selectedStatut" (selectionChange)="onFilterChange()">
+            <mat-option value="">Tous les statuts</mat-option>
+            <mat-option *ngFor="let statut of statutOptions" [value]="statut">
+              {{ getStatutLabel(statut) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Filtre par date -->
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Période</mat-label>
+          <mat-select [(ngModel)]="selectedDateFilter" (selectionChange)="onFilterChange()">
+            <mat-option *ngFor="let option of dateFilterOptions" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Actions de filtre -->
+        <div class="filter-actions">
+          <button mat-button (click)="onSearch()" color="primary">
+            <mat-icon>search</mat-icon>
+            Rechercher
+          </button>
+          <button mat-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon>
+            Effacer
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tableau des rendez-vous -->
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>
+        <span>Liste des Rendez-vous</span>
+        <span class="total-count" *ngIf="totalElements$ | async as total">
+          ({{ total }} rendez-vous)
+        </span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Indicateur de chargement -->
+      <div *ngIf="loading$ | async" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Chargement des rendez-vous...</p>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="error$ | async as error" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error.message || 'Erreur lors du chargement des données' }}</p>
+        <button mat-button color="primary" (click)="refreshData()">
+          <mat-icon>refresh</mat-icon>
+          Réessayer
+        </button>
+      </div>
+
+      <!-- Tableau -->
+      <div class="table-container" *ngIf="!(loading$ | async) && !(error$ | async)">
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)" class="rendez-vous-table">
+          
+          <!-- Colonne Date -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="date-cell" [class.today]="isRendezVousToday(rendezVous?.date)" [class.passed]="isRendezVousPassed(rendezVous?.date)">
+                <mat-icon class="date-icon">event</mat-icon>
+                {{ formatDate(rendezVous?.date) }}
+                <span class="day-indicator" *ngIf="isRendezVousToday(rendezVous?.date)">Aujourd'hui</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Heure -->
+          <ng-container matColumnDef="heure">
+            <th mat-header-cell *matHeaderCellDef>Heure</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="time-cell">
+                <mat-icon class="time-icon">access_time</mat-icon>
+                {{ formatTime(rendezVous?.date) }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Patiente -->
+          <ng-container matColumnDef="patiente">
+            <th mat-header-cell *matHeaderCellDef>Patiente</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="patient-cell" (click)="viewPatientProfile(rendezVous)" class="clickable">
+                <mat-icon class="patient-icon">person</mat-icon>
+                <div class="patient-info">
+                  <span class="patient-name">{{ getPatienteNom(rendezVous) }}</span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Motif -->
+          <ng-container matColumnDef="motif">
+            <th mat-header-cell *matHeaderCellDef>Motif</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="motif-cell" [matTooltip]="rendezVous.motif || 'Aucun motif'">
+                {{ (rendezVous.motif || 'Aucun motif') | slice:0:40 }}{{ (rendezVous.motif?.length || 0) > 40 ? '...' : '' }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Centre -->
+          <ng-container matColumnDef="centre">
+            <th mat-header-cell *matHeaderCellDef>Centre</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="centre-cell">
+                <mat-icon class="centre-icon">local_hospital</mat-icon>
+                {{ getCentreNom(rendezVous.centre) }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Statut -->
+          <ng-container matColumnDef="statut">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <mat-chip [class]="getStatutClass(rendezVous?.statut)" class="status-chip">
+                {{ getStatutLabel(rendezVous?.statut) }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Colonne Actions -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let rendezVous">
+              <div class="actions-cell">
+                <button mat-icon-button 
+                        matTooltip="Voir détails"
+                        (click)="viewRendezVous(rendezVous)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+
+                <button mat-icon-button 
+                        matTooltip="Modifier"
+                        [disabled]="!canEdit(rendezVous)"
+                        (click)="editRendezVous(rendezVous)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <!-- Actions de statut -->
+                <button mat-icon-button 
+                        [matMenuTriggerFor]="actionMenu"
+                        matTooltip="Actions"
+                        [disabled]="isRendezVousPassed(rendezVous?.date)">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #actionMenu="matMenu">
+                  <!-- Confirmer -->
+                  <button mat-menu-item 
+                          *ngIf="canConfirm(rendezVous)"
+                          (click)="confirmerRendezVous(rendezVous)">
+                    <mat-icon color="primary">check_circle</mat-icon>
+                    <span>Confirmer</span>
+                  </button>
+
+                  <!-- Annuler -->
+                  <button mat-menu-item 
+                          *ngIf="canCancel(rendezVous)"
+                          (click)="annulerRendezVous(rendezVous)">
+                    <mat-icon color="warn">cancel</mat-icon>
+                    <span>Annuler</span>
+                  </button>
+
+                  <!-- Reporter -->
+                  <button mat-menu-item 
+                          *ngIf="canReport(rendezVous)"
+                          (click)="reporterRendezVous(rendezVous)">
+                    <mat-icon>schedule</mat-icon>
+                    <span>Reporter</span>
+                  </button>
+
+                  <mat-divider></mat-divider>
+
+                  <!-- Actions supplémentaires -->
+                  <button mat-menu-item (click)="sendReminder(rendezVous)">
+                    <mat-icon>notifications</mat-icon>
+                    <span>Envoyer rappel</span>
+                  </button>
+
+                  <button mat-menu-item (click)="markAsUrgent(rendezVous)">
+                    <mat-icon color="warn">priority_high</mat-icon>
+                    <span>Marquer urgent</span>
+                  </button>
+
+                  <mat-divider></mat-divider>
+
+                  <!-- Supprimer -->
+                  <button mat-menu-item 
+                          (click)="deleteRendezVous(rendezVous)"
+                          class="delete-action">
+                    <mat-icon color="warn">delete</mat-icon>
+                    <span>Supprimer</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+              class="rendez-vous-row"
+              [class.urgent]="isRendezVousToday(row?.date)"
+              [class.passed]="isRendezVousPassed(row?.date)"></tr>
+        </table>
+
+        <!-- Message si aucune donnée -->
+        <div *ngIf="dataSource.data.length === 0" class="no-data-container">
+          <mat-icon class="no-data-icon">schedule</mat-icon>
+          <h3>Aucun rendez-vous trouvé</h3>
+          <p>Il n'y a aucun rendez-vous correspondant à vos critères de recherche.</p>
+          <button mat-raised-button color="primary" (click)="createRendezVous()">
+            <mat-icon>add</mat-icon>
+            Créer un rendez-vous
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator 
+        *ngIf="!(loading$ | async) && dataSource.data.length > 0"
+        [length]="totalElements$ | async"
+        [pageSize]="pageSize$ | async"
+        [pageIndex]="currentPage$ | async"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div> 

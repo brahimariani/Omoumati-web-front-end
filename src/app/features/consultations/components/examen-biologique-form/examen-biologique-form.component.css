@@ -1,0 +1,646 @@
+/* ============================
+   FORMULAIRE EXAMEN BIOLOGIQUE
+   DESIGN MODERNE AVEC ACTES
+   ============================ */
+
+.examen-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* En-tête du formulaire */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.title-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.75rem !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+}
+
+.form-title h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 1.5rem;
+}
+
+.patient-name {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.header-stats {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--primary-600);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-top: var(--spacing-xs);
+}
+
+/* Formulaire principal */
+.examen-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.form-section {
+  background: var(--bg-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: 1px solid var(--gray-200) !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-section:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.form-section .mat-mdc-card-header {
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg) !important;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.form-section .mat-mdc-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--spacing-sm) !important;
+  color: var(--text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: 1.125rem !important;
+  margin: 0 !important;
+}
+
+.form-section .mat-mdc-card-title mat-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.25rem !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.form-section .mat-mdc-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+  margin: var(--spacing-xs) 0 0 0 !important;
+}
+
+.form-section .mat-mdc-card-content {
+  padding: var(--spacing-lg) !important;
+}
+
+/* Grille des actes biologiques */
+.actes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.acte-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.acte-form-group:hover {
+  border-color: var(--primary-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.acte-form-group.acte-filled {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+  box-shadow: var(--shadow-md);
+}
+
+.acte-form-group.acte-standard::before {
+  content: 'Standard';
+  position: absolute;
+  top: -8px;
+  left: var(--spacing-md);
+  background: var(--primary-500);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.acte-form-group:not(.acte-standard)::before {
+  content: 'Personnalisé';
+  position: absolute;
+  top: -8px;
+  left: var(--spacing-md);
+  background: var(--info);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* En-tête de l'acte */
+.acte-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.acte-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.acte-nom {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.acte-type {
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  width: fit-content;
+}
+
+.acte-type.custom {
+  background: var(--info-light);
+  color: var(--info-dark);
+}
+
+.acte-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.delete-acte,
+.clear-acte {
+  width: 32px !important;
+  height: 32px !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.delete-acte:hover {
+  color: var(--error) !important;
+  background: var(--error-light) !important;
+}
+
+.clear-acte:hover {
+  color: var(--warning) !important;
+  background: var(--warning-light) !important;
+}
+
+.delete-acte mat-icon,
+.clear-acte mat-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+/* Champs de saisie */
+.acte-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.field-nom,
+.field-valeur,
+.field-unite,
+.field-normes {
+  width: 100%;
+}
+
+.field-valeur {
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+}
+
+.acte-filled .field-valeur {
+  background: white;
+  box-shadow: var(--shadow-xs);
+}
+
+/* Analyse automatique */
+.acte-analyse {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-300);
+  background: var(--bg-primary);
+}
+
+.analyse-result {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+}
+
+.analyse-result.analyse-normal {
+  background: var(--success-light);
+  border: 1px solid var(--success);
+}
+
+.analyse-result.analyse-anomalie {
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
+}
+
+.analyse-result.analyse-critique {
+  background: var(--error-light);
+  border: 1px solid var(--error);
+  animation: pulse 2s infinite;
+}
+
+.analyse-result.analyse-positif {
+  background: var(--info-light);
+  border: 1px solid var(--info);
+}
+
+.analyse-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.analyse-result.analyse-normal .analyse-icon {
+  color: var(--success) !important;
+}
+
+.analyse-result.analyse-anomalie .analyse-icon {
+  color: var(--warning) !important;
+}
+
+.analyse-result.analyse-critique .analyse-icon {
+  color: var(--error) !important;
+}
+
+.analyse-result.analyse-positif .analyse-icon {
+  color: var(--info) !important;
+}
+
+.analyse-text {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Section ajouter un acte */
+.add-acte-section .mat-mdc-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  align-items: center;
+  text-align: center;
+}
+
+.add-acte-btn {
+  padding: var(--spacing-md) var(--spacing-xl) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.quick-add-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.quick-add-btn {
+  font-size: 0.75rem !important;
+  padding: var(--spacing-xs) var(--spacing-sm) !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: var(--font-weight-medium) !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-add-btn:hover {
+  background: var(--primary-50) !important;
+  border-color: var(--primary-500) !important;
+  color: var(--primary-600) !important;
+}
+
+/* Champ pleine largeur */
+.full-width {
+  width: 100%;
+}
+
+/* Actions du formulaire */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  position: sticky;
+  bottom: var(--spacing-lg);
+  z-index: 10;
+}
+
+.actions-left {
+  display: flex;
+  align-items: center;
+}
+
+.form-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--info-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--info);
+}
+
+.summary-icon {
+  color: var(--info) !important;
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.summary-text {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--info-dark);
+}
+
+.actions-right {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.cancel-btn {
+  color: var(--text-secondary) !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+.cancel-btn:hover {
+  background: var(--gray-100) !important;
+  color: var(--text-primary) !important;
+}
+
+.submit-btn {
+  padding: var(--spacing-sm) var(--spacing-xl) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+.submit-btn mat-icon {
+  margin-right: var(--spacing-xs) !important;
+}
+
+/* Indicateur de chargement */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.loading-overlay p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .actes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .examen-form-container {
+    padding: var(--spacing-md);
+  }
+
+  .form-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .header-stats {
+    justify-content: center;
+  }
+
+  .actes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .actions-left,
+  .actions-right {
+    justify-content: center;
+  }
+
+  .quick-add-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title h2 {
+    font-size: 1.25rem;
+  }
+
+  .acte-form-group {
+    padding: var(--spacing-md);
+  }
+
+  .acte-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
+
+  .acte-actions {
+    align-self: flex-end;
+  }
+}
+
+/* Animations */
+.acte-form-group {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.analyse-result {
+  animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Accessibilité */
+.acte-form-group:focus-within {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.delete-acte:focus,
+.clear-acte:focus,
+.add-acte-btn:focus,
+.quick-add-btn:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* Styles pour les champs Material */
+.mat-mdc-form-field {
+  font-family: var(--font-family) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--primary-500) !important;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-hint {
+  color: var(--text-secondary) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Scrollbar personnalisée */
+.examen-form-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.examen-form-container::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.examen-form-container::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+.examen-form-container::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+} 

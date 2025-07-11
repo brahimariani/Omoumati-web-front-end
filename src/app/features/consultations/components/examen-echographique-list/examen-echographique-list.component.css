@@ -1,0 +1,732 @@
+/* ============================
+   EXAMEN ÉCHOGRAPHIQUE LIST
+   DESIGN MODERNE ET ÉLÉGANT
+   ============================ */
+
+:host {
+  --card-radius: 16px;
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gradient-primary: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  --gradient-success: linear-gradient(135deg, var(--success), var(--success-dark));
+  --gradient-warning: linear-gradient(135deg, var(--warning), var(--warning-dark));
+  --gradient-error: linear-gradient(135deg, var(--error), var(--error-dark));
+}
+
+.examens-list-container {
+  padding: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+/* ===== EN-TÊTE DE LA LISTE ===== */
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2xl);
+  padding: var(--spacing-xl);
+  background: var(--bg-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--gray-200);
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.title-icon .header-icon {
+  color: white;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.title-content h3 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.patient-info {
+  margin: var(--spacing-xs) 0 0 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.refresh-btn {
+  background: var(--gray-100);
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.refresh-btn:hover {
+  background: var(--gray-200);
+  transform: rotate(180deg);
+}
+
+.add-btn {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  padding: 0 var(--spacing-xl);
+  height: 44px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.add-btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ===== ÉTATS DE CHARGEMENT ET ERREUR ===== */
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  margin: var(--spacing-xl) 0;
+}
+
+.loading-container p {
+  margin-top: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.error-icon {
+  font-size: 48px;
+  color: var(--error);
+  margin-bottom: var(--spacing-md);
+}
+
+.error-content h4 {
+  color: var(--error);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.error-content p {
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+/* ===== ÉTAT VIDE ===== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: 2px dashed var(--gray-300);
+}
+
+.empty-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: var(--gray-100);
+  border-radius: 50%;
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-icon {
+  font-size: 40px;
+  color: var(--text-tertiary);
+}
+
+.empty-state h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--text-secondary);
+}
+
+.empty-action-btn {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ===== GRILLE DES EXAMENS ===== */
+
+.examens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+/* ===== CARTES D'EXAMEN AMÉLIORÉES ===== */
+
+.examen-card-wrapper {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.examen-card {
+  position: relative;
+  background: var(--bg-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  transition: var(--transition);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.examen-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-4px);
+  border-color: var(--primary-300);
+}
+
+/* Barre de statut */
+.status-bar {
+  height: 4px;
+  width: 100%;
+  background: var(--gray-300);
+  transition: var(--transition);
+}
+
+.status-bar.statut-complet {
+  background: var(--gradient-success);
+}
+
+.status-bar.statut-partiel {
+  background: var(--gradient-warning);
+}
+
+.status-bar.statut-anomalie {
+  background: var(--gradient-error);
+}
+
+.status-bar.statut-minimal {
+  background: var(--gray-400);
+}
+
+/* En-tête de carte */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.header-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.exam-type {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.exam-icon {
+  color: var(--primary-600);
+  font-size: 20px;
+}
+
+.exam-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.exam-date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.date-icon {
+  font-size: 16px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  transition: var(--transition);
+}
+
+.status-indicator.statut-complet {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.status-indicator.statut-partiel {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+
+.status-indicator.statut-anomalie {
+  background: var(--error-light);
+  color: var(--error);
+}
+
+.status-indicator.statut-minimal {
+  background: var(--gray-200);
+  color: var(--text-tertiary);
+}
+
+.menu-btn {
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.menu-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+/* Contenu de la carte */
+.card-content {
+  flex: 1;
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Métriques principales */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.metric-card:hover {
+  background: var(--gray-100);
+  transform: translateY(-1px);
+}
+
+.metric-card.embryons {
+  border-color: var(--text-tertiary);
+}
+
+.metric-card.mesures {
+  border-color: var(--text-tertiary);
+}
+
+.metric-card.images {
+  border-color: var(--text-tertiary);
+}
+
+.metric-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-value {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Sections de détails */
+.details-section {
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.details-section.anomalies {
+  background: var(--error-light);
+  border-color: var(--error);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.section-icon {
+  color: var(--primary-600);
+  font-size: 18px;
+}
+
+.section-icon.warning {
+  color: var(--error);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Grille des mesures */
+.measures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.measure-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  text-align: center;
+}
+
+.measure-label {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.measure-value {
+  font-size: 0.95rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-top: var(--spacing-xs);
+}
+
+/* Grille des annexes */
+.annexes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.annexe-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+}
+
+.annexe-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.annexe-label mat-icon {
+  font-size: 16px;
+}
+
+.annexe-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* Liste des anomalies */
+.anomalies-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.anomalie-tag {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: white;
+  color: var(--error);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-medium);
+  border: 1px solid var(--error);
+}
+
+.anomalie-tag mat-icon {
+  font-size: 14px;
+}
+
+/* Observations */
+.observations-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+}
+
+/* Actions de la carte */
+.card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--gray-100);
+  background: var(--gray-50);
+}
+
+.action-btn {
+  flex: 1;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.action-btn.primary {
+  border-color: var(--primary-500);
+  color: var(--primary-600);
+}
+
+.action-btn.primary:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-600);
+}
+
+.action-btn.secondary {
+  border-color: var(--gray-400);
+  color: var(--text-secondary);
+}
+
+.action-btn.secondary:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-500);
+}
+
+.action-btn.tertiary {
+  border-color: var(--success);
+  color: var(--success-dark);
+}
+
+.action-btn.tertiary:hover {
+  background: var(--success-light);
+  border-color: var(--success-dark);
+}
+
+/* Menu d'actions */
+.delete-action {
+  color: var(--error) !important;
+}
+
+.delete-action mat-icon {
+  color: var(--error) !important;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 1200px) {
+  .examens-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .examens-list-container {
+    padding: var(--spacing-md);
+  }
+
+  .list-header {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .examens-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .measures-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .title-section {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+
+  .title-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .title-content h3 {
+    font-size: 1.5rem;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr;
+  }
+
+  .measures-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.examen-card-wrapper {
+  animation: slideInUp 0.4s ease-out;
+}
+
+.examen-card-wrapper:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+.examen-card-wrapper:nth-child(3n) {
+  animation-delay: 0.2s;
+}
+
+/* ===== ACCESSIBILITÉ ===== */
+
+.examen-card:focus-within {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.action-btn:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+} 

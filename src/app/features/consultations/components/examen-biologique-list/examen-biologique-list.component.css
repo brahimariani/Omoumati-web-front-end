@@ -1,0 +1,585 @@
+/* ============================
+   LISTE DES EXAMENS BIOLOGIQUES
+   DESIGN MODERNE AVEC ACTES
+   ============================ */
+
+.examens-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  min-height: 400px;
+}
+
+/* En-tête de la liste */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.title-icon {
+  color: var(--primary-500) !important;
+  font-size: 1.5rem !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+.list-title h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: 1.25rem;
+}
+
+.patient-name {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* États de chargement et d'erreur */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.loading-container p,
+.error-container p {
+  margin: var(--spacing-md) 0 0 0;
+  color: var(--text-secondary);
+}
+
+.error-icon {
+  color: var(--error) !important;
+  font-size: 3rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
+}
+
+.error-container h4 {
+  margin: var(--spacing-md) 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+}
+
+/* Contenu principal */
+.examens-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* État vide */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--gray-300);
+}
+
+.empty-icon mat-icon {
+  color: var(--gray-400) !important;
+  font-size: 4rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+}
+
+.empty-state h4 {
+  margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--text-secondary);
+}
+
+/* Grille des examens */
+.examens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.examen-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.3s ease;
+}
+
+.examen-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--primary-300);
+}
+
+.examen-card.has-anomalies {
+  border-left: 4px solid var(--error);
+}
+
+.examen-card.has-anomalies::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent var(--error) transparent transparent;
+  z-index: 1;
+}
+
+/* En-tête de carte */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.examen-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.date-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.status-chip {
+  font-size: 0.75rem !important;
+  font-weight: var(--font-weight-semibold) !important;
+  height: 28px !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.status-chip.status-normal {
+  background: var(--success-light) !important;
+  color: var(--success-dark) !important;
+}
+
+.status-chip.status-anomalie {
+  background: var(--error-light) !important;
+  color: var(--error-dark) !important;
+}
+
+.status-chip mat-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.examen-card:hover .card-actions {
+  opacity: 1;
+}
+
+/* Contenu de la carte */
+.card-content {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.actes-section,
+.observation-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.section-title mat-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  color: var(--primary-500) !important;
+}
+
+/* Grille des actes biologiques */
+.actes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.acte-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.acte-item:hover {
+  border-color: var(--primary-300);
+  box-shadow: var(--shadow-xs);
+}
+
+.acte-item.acte-anomalie {
+  border-color: var(--warning);
+  background: var(--warning-light);
+}
+
+.acte-item.acte-critique {
+  border-color: var(--error);
+  background: var(--error-light);
+  animation: pulse 2s infinite;
+}
+
+.acte-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.acte-nom {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  flex: 1;
+}
+
+.acte-status-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+.acte-status-icon.critical {
+  color: var(--error) !important;
+}
+
+.acte-status-icon.anomalie {
+  color: var(--warning) !important;
+}
+
+.acte-valeur {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+}
+
+.valeur {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.unite {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.acte-normes {
+  margin-top: var(--spacing-xs);
+}
+
+.acte-normes small {
+  font-size: 0.625rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* Observations */
+.observation-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary-500);
+  font-style: italic;
+}
+
+/* Alertes médicales */
+.alerts-section {
+  margin-top: var(--spacing-sm);
+}
+
+.medical-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-xs);
+}
+
+.medical-alert:last-child {
+  margin-bottom: 0;
+}
+
+.alert-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.alert-icon.critical {
+  color: var(--error) !important;
+  animation: pulse 2s infinite;
+}
+
+.alert-icon.warning {
+  color: var(--warning) !important;
+}
+
+.alert-text {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.medical-alert:has(.alert-icon.critical) {
+  background: var(--error-light);
+  border: 1px solid var(--error);
+}
+
+.medical-alert:has(.alert-icon.warning) {
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
+}
+
+/* Pied de carte */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-100);
+}
+
+.quick-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.quick-action {
+  width: 32px !important;
+  height: 32px !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-action:hover {
+  color: var(--primary-500) !important;
+  background: var(--primary-50) !important;
+}
+
+.quick-action mat-icon {
+  font-size: 1rem !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.status-indicator mat-icon {
+  font-size: 1.25rem !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.status-indicator mat-icon.status-normal {
+  color: var(--success) !important;
+}
+
+.status-indicator mat-icon.status-anomalie {
+  color: var(--error) !important;
+}
+
+.delete-action {
+  color: var(--error) !important;
+}
+
+.delete-action mat-icon {
+  color: var(--error) !important;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .examens-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .examens-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .list-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: center;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .card-actions {
+    align-self: flex-end;
+  }
+
+  .actes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+.examen-card {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.medical-alert {
+  animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Accessibilité */
+.examen-card:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+.quick-action:focus,
+.card-actions button:focus {
+  outline: 2px solid var(--primary-500);
+  outline-offset: 2px;
+}
+
+/* Scrollbar personnalisée */
+.examens-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.examens-content::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.examens-content::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+.examens-content::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+} 

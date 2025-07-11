@@ -1,0 +1,198 @@
+<div class="grossesse-details-container">
+  <!-- En-tête avec informations principales -->
+  <div class="details-header">
+    <div class="header-content">
+      <div class="patient-info">
+        <div class="patient-avatar">
+          <mat-icon>pregnant_woman</mat-icon>
+        </div>
+        <div class="patient-details">
+          <h1 class="patient-name" *ngIf="grossesse$ | async as grossesse">
+            {{ getPatienteName(grossesse) }}
+          </h1>
+          <p class="grossesse-info" *ngIf="grossesse$ | async as grossesse">
+            Grossesse G{{ grossesse.gestation }}P{{ grossesse.parite }} • 
+            {{ calculateGestationalAge(grossesse.dateDerniereRegle) }} SA
+          </p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="onEditGrossesse()" *ngIf="grossesse$ | async as grossesse">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+        <button mat-button (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Retour
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error$ | async as error" class="error-container">
+    <mat-icon>error</mat-icon>
+    <h3>Erreur de chargement</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="onRetry()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="details-content">
+    
+    <!-- Section 1: Détails de la grossesse -->
+    <mat-card class="details-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>info</mat-icon>
+          Détails de la Grossesse
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content *ngIf="grossesse$ | async as grossesse">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Date des dernières règles</label>
+            <span>{{ formatDate(grossesse.dateDerniereRegle) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Date prévue d'accouchement</label>
+            <span>{{ formatDate(grossesse.datePrevueAccouchment) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Âge gestationnel</label>
+            <span>{{ calculateGestationalAge(grossesse.dateDerniereRegle) }} semaines</span>
+          </div>
+          <div class="detail-item">
+            <label>Gestation</label>
+            <span>G{{ grossesse.gestation }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Parité</label>
+            <span>P{{ grossesse.parite }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Grossesse désirée</label>
+            <mat-chip [color]="grossesse.estDesiree ? 'primary' : 'warn'">
+              {{ grossesse.estDesiree ? 'Oui' : 'Non' }}
+            </mat-chip>
+          </div>
+          <!--
+          <div class="detail-item full-width" *ngIf="grossesse.">
+            <label>Remarques</label>
+            <span>{{ grossesse.remarques }}</span>
+          </div>
+          -->
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 2: Consultations avec le nouveau composant -->
+    <div class="consultations-section" *ngIf="grossesse$ | async as grossesse">
+      <app-consultation-list
+        [grossesseId]="grossesse.id"
+        [patienteName]="getPatienteName(grossesse)"
+        (consultationAdded)="onConsultationAdded($event)"
+        (consultationUpdated)="onConsultationUpdated($event)"
+        (consultationDeleted)="onConsultationDeleted($event)">
+      </app-consultation-list>
+    </div>
+
+    <!-- Section 3: Déclaration d'accouchement -->
+    <mat-card class="accouchement-section" *ngIf="grossesse$ | async as grossesse">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>child_care</mat-icon>
+          Accouchement
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Si pas d'accouchement déclaré -->
+        <div *ngIf="!hasAccouchement(grossesse)" class="accouchement-pending">
+          <div class="status-info">
+            <mat-icon class="status-icon">schedule</mat-icon>
+            <div class="status-text">
+              <h3>Grossesse en cours</h3>
+              <p>Âge gestationnel: {{ calculateGestationalAge(grossesse.dateDerniereRegle) }} SA</p>
+              <p>Date prévue: {{ formatDate(grossesse.datePrevueAccouchment) }}</p>
+            </div>
+          </div>
+          <div class="accouchement-actions">
+            <button mat-raised-button color="primary" (click)="onDeclareAccouchement()" 
+                    [disabled]="!canDeclareAccouchement(grossesse)">
+              <mat-icon>child_care</mat-icon>
+              Déclarer l'Accouchement
+            </button>
+            <p class="action-note" *ngIf="!canDeclareAccouchement(grossesse)">
+              L'accouchement peut être déclaré à partir de 28 SA
+            </p>
+          </div>
+        </div>
+
+        <!-- Si accouchement déclaré -->
+        <div *ngIf="hasAccouchement(grossesse)" class="accouchement-declared">
+          <div class="accouchement-info">
+            <mat-icon class="status-icon completed">check_circle</mat-icon>
+            <div class="status-text">
+              <h3>Accouchement déclaré</h3>
+              <p>Date: {{ formatDate(grossesse.accouchement.date) }}</p>
+              <p>Type: {{ grossesse.accouchement.modaliteExtraction }}</p>
+            </div>
+          </div>
+          <div class="accouchement-actions">
+            <button mat-raised-button (click)="onViewAccouchement()">
+              <mat-icon>visibility</mat-icon>
+              Voir Détails
+            </button>
+            
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 4: Complications -->
+    <div class="complications-section">
+      <!-- Alertes automatiques -->
+      <mat-card class="automatic-alerts" *ngIf="getAutomaticAlerts() as alerts; else noAlerts">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon color="warn">notification_important</mat-icon>
+            Alertes Automatiques
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngFor="let alert of alerts" class="alert-item" [ngClass]="'alert-' + alert.severity">
+            <mat-icon>{{ alert.icon }}</mat-icon>
+            <div class="alert-content">
+              <strong>{{ alert.title }}</strong>
+              <p>{{ alert.message }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <ng-template #noAlerts></ng-template>
+
+      <!-- Composant de complications intégré -->
+      <app-complication-list
+        [complications]="(complications$ | async) ?? []"
+        [contextData]="(complicationContextData$ | async) ?? undefined"
+        [title]="'Complications de Grossesse'"
+        [canAdd]="true"
+        [canEdit]="true"
+        [canDelete]="true"
+        (complicationAdded)="onComplicationAdded($event)"
+        (complicationUpdated)="onComplicationUpdated($event)"
+        (complicationDeleted)="onComplicationDeleted($event)">
+      </app-complication-list>
+    </div>
+
+  </div>
+</div>

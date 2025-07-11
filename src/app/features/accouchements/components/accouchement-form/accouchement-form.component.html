@@ -1,0 +1,194 @@
+<div class="accouchement-form-container">
+  <mat-card class="accouchement-form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="form-icon">child_care</mat-icon>
+        {{ getFormTitle() }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ getFormSubtitle() }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="accouchementForm" (ngSubmit)="onSubmit()" class="accouchement-form">
+        
+        <!-- Section Date et heure -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>schedule</mat-icon>
+            Date et heure d'accouchement
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Date d'accouchement</mat-label>
+              <input matInput 
+                     [matDatepicker]="pickerDate"
+                     formControlName="date"
+                     placeholder="Sélectionner la date">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerDate"></mat-datepicker-toggle>
+              <mat-datepicker #pickerDate></mat-datepicker>
+              <mat-hint>Date et heure de l'accouchement</mat-hint>
+              <mat-error *ngIf="date?.hasError('required')">
+                La date d'accouchement est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Section Modalité d'extraction -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>medical_services</mat-icon>
+            Modalité d'extraction
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Type d'accouchement</mat-label>
+              <mat-select formControlName="modaliteExtraction" placeholder="Choisir la modalité">
+                <mat-option *ngFor="let modalite of modalitesExtraction" [value]="modalite.value">
+                  <div class="option-content">
+                    <!--<mat-icon>{{ modalite.icon }}</mat-icon>-->
+                    <span>{{ modalite.label }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-hint>Méthode utilisée pour l'accouchement</mat-hint>
+              <mat-error *ngIf="modaliteExtraction?.hasError('required')">
+                La modalité d'extraction est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Alertes conditionnelles selon la modalité -->
+          <div class="alert-section" *ngIf="isCesarean()">
+            <div class="alert-card warning">
+              <mat-icon>warning</mat-icon>
+              <div class="alert-content">
+                <h4>Césarienne</h4>
+                <p>Intervention chirurgicale nécessitant un suivi post-opératoire spécialisé.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-section" *ngIf="requiresSpecialCare()">
+            <div class="alert-card warning">
+              <mat-icon>medical_services</mat-icon>
+              <div class="alert-content">
+                <h4>Intervention instrumentale</h4>
+                <p>Accouchement nécessitant une surveillance particulière de la mère et du nouveau-né.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-section" *ngIf="isNaturalDelivery()">
+            <div class="alert-card success">
+              <mat-icon>check_circle</mat-icon>
+              <div class="alert-content">
+                <h4>Accouchement naturel</h4>
+                <p>Accouchement par voie basse sans intervention instrumentale.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Lieu d'accouchement -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>location_on</mat-icon>
+            Lieu d'accouchement
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Lieu</mat-label>
+              <mat-select formControlName="lieu" placeholder="Choisir le lieu">
+                <mat-option *ngFor="let lieu of lieuxAccouchement" [value]="lieu.value">
+                  <div class="option-content">
+                    <!--<mat-icon>{{ lieu.icon }}</mat-icon>-->
+                    <span>{{ lieu.label }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-hint>Établissement ou lieu de l'accouchement</mat-hint>
+              <mat-error *ngIf="lieu?.hasError('required')">
+                Le lieu d'accouchement est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Section Assistance médicale -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>people</mat-icon>
+            Assistance médicale
+          </h3>
+          
+          <div class="checkbox-container">
+            <mat-checkbox formControlName="assisstanceQualifiee" class="assistance-checkbox">
+              <span class="checkbox-label">Assistance qualifiée</span>
+              <span class="checkbox-hint">Présence d'un personnel médical qualifié</span>
+            </mat-checkbox>
+          </div>
+
+          <!-- Alerte si pas d'assistance qualifiée -->
+          <div class="alert-section" *ngIf="assisstanceQualifiee?.value === false">
+            <div class="alert-card error">
+              <mat-icon>error</mat-icon>
+              <div class="alert-content">
+                <h4>Attention</h4>
+                <p>L'absence d'assistance qualifiée peut présenter des risques. Assurez-vous que cette information est correcte.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Observations -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <mat-icon>note</mat-icon>
+            Observations médicales
+          </h3>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field full-width">
+              <mat-label>Observations</mat-label>
+              <textarea matInput 
+                        formControlName="observation"
+                        placeholder="Observations, complications, remarques..."
+                        rows="4"
+                        maxlength="1000"></textarea>
+              <mat-hint align="end">{{ observation?.value?.length || 0 }}/1000</mat-hint>
+              <mat-error *ngIf="observation?.hasError('maxlength')">
+                Les observations ne peuvent pas dépasser 1000 caractères
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button mat-button 
+                  type="button" 
+                  (click)="onCancel()"
+                  class="cancel-button">
+            <mat-icon>close</mat-icon>
+            Annuler
+          </button>
+          
+          <button mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="!isFormValid()"
+                  class="submit-button">
+            <mat-icon>save</mat-icon>
+            {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

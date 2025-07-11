@@ -1,0 +1,211 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.register-card {
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.register-card mat-card-header {
+  background: linear-gradient(45deg, #4CAF50, #45A049);
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+.register-card mat-card-title {
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.register-card mat-card-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.register-card mat-card-content {
+  padding: 32px 24px;
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 10;
+}
+
+/* Sections du formulaire */
+.form-section {
+  margin-bottom: 32px;
+}
+
+.form-section h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.button-row button {
+  min-width: 140px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Indicateur de force du mot de passe */
+.password-strength {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+}
+
+.password-strength h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.strength-criteria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.criterion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.criterion.valid {
+  color: #4CAF50;
+}
+
+.criterion mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.criterion.valid mat-icon {
+  color: #4CAF50;
+}
+
+/* Conditions d'utilisation */
+.terms-checkbox {
+  margin-bottom: 16px;
+}
+
+.terms-checkbox a {
+  color: #2196F3;
+  text-decoration: none;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 16px;
+  }
+  
+  .register-card {
+    max-width: 100%;
+  }
+  
+  .register-card mat-card-content {
+    padding: 24px 16px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .half-width {
+    width: 100%;
+  }
+  
+  .button-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .button-row button {
+    width: 100%;
+  }
+  
+  .strength-criteria {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-card mat-card-header {
+    padding: 16px;
+  }
+  
+  .register-card mat-card-title {
+    font-size: 20px;
+  }
+  
+  .form-section h3 {
+    font-size: 16px;
+  }
+} 

@@ -1,0 +1,266 @@
+<div class="profile-page">
+  <!-- Loading Overlay pour le chargement du profil -->
+  <div *ngIf="profileLoading$ | async" class="loading-overlay">
+    <div class="loading-content">
+      <mat-spinner diameter="50" color="primary"></mat-spinner>
+      <p class="loading-text">Chargement du profil...</p>
+    </div>
+  </div>
+
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="user-avatar-large" *ngIf="userProfile">
+        <div class="avatar-circle">
+          {{ (userProfile.prenom.charAt(0) || '') + (userProfile.nom.charAt(0) || '') | uppercase }}
+        </div>
+      </div>
+      <div class="user-details" *ngIf="userProfile">
+        <h1 class="user-name">{{ userProfile.prenom }} {{ userProfile.nom }}</h1>
+        <span class="user-role">{{ getRoleLabel(userProfile.role.nom || '') }}</span>
+        <p class="user-email">{{ userProfile.email }}</p>
+        <p class="user-matricule" *ngIf="userProfile.matricule">
+          <mat-icon class="matricule-icon">badge</mat-icon>
+          Matricule: {{ userProfile.matricule }}
+        </p>
+      </div>
+      <div class="header-actions">
+        <button mat-icon-button (click)="refreshProfile()" 
+                matTooltip="Actualiser le profil" 
+                [disabled]="profileLoading$ | async">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-raised-button color="primary" (click)="toggleEditMode()" *ngIf="!isEditMode">
+          <mat-icon>edit</mat-icon> Modifier le profil
+        </button>
+        <button mat-stroked-button (click)="toggleEditMode()" *ngIf="isEditMode">
+          <mat-icon>cancel</mat-icon> Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu principal avec tabs -->
+  <div class="profile-content" *ngIf="userProfile">
+    <mat-tab-group class="profile-tabs">
+      <!-- Onglet Informations Personnelles -->
+      <mat-tab label="Informations Personnelles">
+        <div class="tab-content">
+          <mat-card class="form-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>person</mat-icon>
+                Informations personnelles
+              </mat-card-title>
+              <mat-card-subtitle>
+                Gérez vos informations de base
+              </mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()" class="profile-form">
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nom</mat-label>
+                    <input matInput formControlName="nom" [readonly]="!isEditMode">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-error *ngIf="profileForm.get('nom')?.hasError('required')">
+                      Le nom est requis
+                    </mat-error>
+                    <mat-error *ngIf="profileForm.get('nom')?.hasError('minlength')">
+                      Le nom doit contenir au moins 2 caractères
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Prénom</mat-label>
+                    <input matInput formControlName="prenom" [readonly]="!isEditMode">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-error *ngIf="profileForm.get('prenom')?.hasError('required')">
+                      Le prénom est requis
+                    </mat-error>
+                    <mat-error *ngIf="profileForm.get('prenom')?.hasError('minlength')">
+                      Le prénom doit contenir au moins 2 caractères
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" formControlName="email" [readonly]="!isEditMode">
+                    <mat-icon matPrefix>email</mat-icon>
+                    <mat-error *ngIf="profileForm.get('email')?.hasError('required')">
+                      L'email est requis
+                    </mat-error>
+                    <mat-error *ngIf="profileForm.get('email')?.hasError('email')">
+                      Veuillez saisir une adresse email valide
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Téléphone</mat-label>
+                    <input matInput formControlName="telephone" [readonly]="!isEditMode" placeholder="0123456789">
+                    <mat-icon matPrefix>phone</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Matricule</mat-label>
+                    <input matInput formControlName="matricule" [readonly]="!isEditMode">
+                    <mat-icon matPrefix>badge</mat-icon>
+                  </mat-form-field>
+
+                  <!-- Rôle en lecture seule - ne peut pas être modifié par l'utilisateur -->
+                  <mat-form-field appearance="outline">
+                    <mat-label>Rôle</mat-label>
+                    <input matInput [value]="getRoleLabel(userProfile.role.nom || '')" readonly>
+                    <mat-icon matPrefix>security</mat-icon>
+                    <mat-hint>Le rôle est géré par l'administrateur et ne peut pas être modifié</mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Adresse</mat-label>
+                  <textarea matInput formControlName="adresse" [readonly]="!isEditMode" rows="2" 
+                            placeholder="Votre adresse complète..."></textarea>
+                  <mat-icon matPrefix>location_on</mat-icon>
+                </mat-form-field>
+
+
+
+                <div class="form-actions" *ngIf="isEditMode">
+                  <button mat-raised-button color="primary" type="button" 
+                          (click)="onSubmitProfile()"
+                          [disabled]="(profileUpdateLoading$ | async)">
+                    <mat-spinner diameter="20" *ngIf="profileUpdateLoading$ | async"></mat-spinner>
+                    <mat-icon *ngIf="!(profileUpdateLoading$ | async)">save</mat-icon>
+                    {{ (profileUpdateLoading$ | async) ? 'Sauvegarde...' : 'Sauvegarder les modifications' }}
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Onglet Sécurité -->
+      <mat-tab label="Sécurité">
+        <div class="tab-content">
+          <mat-card class="form-card">
+            <mat-card-header>
+              <mat-card-title>
+                <mat-icon>security</mat-icon>
+                Sécurité du compte
+              </mat-card-title>
+              <mat-card-subtitle>
+                Modifiez votre mot de passe pour sécuriser votre compte
+              </mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()" class="password-form">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Mot de passe actuel</mat-label>
+                  <input matInput [type]="hideCurrentPassword ? 'password' : 'text'" formControlName="currentPassword">
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <button type="button" mat-icon-button matSuffix (click)="hideCurrentPassword = !hideCurrentPassword">
+                    <mat-icon>{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+                    Le mot de passe actuel est requis
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nouveau mot de passe</mat-label>
+                  <input matInput [type]="hideNewPassword ? 'password' : 'text'" formControlName="newPassword">
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <button type="button" mat-icon-button matSuffix (click)="hideNewPassword = !hideNewPassword">
+                    <mat-icon>{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('required')">
+                    Le nouveau mot de passe est requis
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
+                    Le mot de passe doit contenir au moins 8 caractères
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.get('newPassword')?.hasError('passwordComplexity')">
+                    Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Confirmer le nouveau mot de passe</mat-label>
+                  <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
+                  <mat-icon matPrefix>lock</mat-icon>
+                  <button type="button" mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword">
+                    <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                  <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">
+                    La confirmation est requise
+                  </mat-error>
+                  <mat-error *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch')">
+                    Les mots de passe ne correspondent pas
+                  </mat-error>
+                </mat-form-field>
+
+                <!-- Indicateurs de force du mot de passe -->
+                <div class="password-strength" *ngIf="passwordForm.get('newPassword')?.value">
+                  <h4>Critères de sécurité :</h4>
+                  <div class="strength-criteria">
+                    <div class="criterion" [class.valid]="hasMinLength()">
+                      <mat-icon>{{ hasMinLength() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <span>Au moins 8 caractères</span>
+                    </div>
+                    <div class="criterion" [class.valid]="hasUpperCase()">
+                      <mat-icon>{{ hasUpperCase() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <span>Une majuscule</span>
+                    </div>
+                    <div class="criterion" [class.valid]="hasLowerCase()">
+                      <mat-icon>{{ hasLowerCase() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <span>Une minuscule</span>
+                    </div>
+                    <div class="criterion" [class.valid]="hasNumeric()">
+                      <mat-icon>{{ hasNumeric() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <span>Un chiffre</span>
+                    </div>
+                    <div class="criterion" [class.valid]="hasSpecialChar()">
+                      <mat-icon>{{ hasSpecialChar() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                      <span>Un caractère spécial</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" 
+                          [disabled]="passwordForm.invalid || (passwordUpdateLoading$ | async)">
+                    <mat-spinner diameter="20" *ngIf="passwordUpdateLoading$ | async"></mat-spinner>
+                    <mat-icon *ngIf="!(passwordUpdateLoading$ | async)">security</mat-icon>
+                    {{ (passwordUpdateLoading$ | async) ? 'Modification...' : 'Modifier le mot de passe' }}
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+
+    </mat-tab-group>
+  </div>
+
+  <!-- Message si aucun profil n'est chargé -->
+  <div *ngIf="!userProfile && !(profileLoading$ | async)" class="no-profile-message">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">person_off</mat-icon>
+          <h3>Profil non disponible</h3>
+          <p>Impossible de charger les informations du profil utilisateur.</p>
+          <button mat-raised-button color="primary" (click)="refreshProfile()">
+            <mat-icon>refresh</mat-icon>
+            Réessayer
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
